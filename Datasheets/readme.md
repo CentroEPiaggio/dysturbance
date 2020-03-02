@@ -1,1 +1,1 @@
-This folder contains all the datasheets of the standard components integrated in the Dysturbance testbed.
+This folder contains all the datasheets of the standard components integrated into the Dysturbance testbed.
