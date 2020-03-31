@@ -1,0 +1,19 @@
+<package format="2">
+  <name>dysturbance_ros_description</name>
+  <version>0.0.1</version>
+  <description>
+    ROS package for the EUROBENCH DYSTURBANCE project.
+  </description>
+  <author>qbrobotics®</author>
+  <maintainer email="alessandro.tondo@qbrobotics.com">Alessandro Tondo</maintainer>
+  <license>BSD 3-Clause</license>
+
+  <url type="bugtracker">https://github.com/CentroEPiaggio/dysturbance/issues</url>
+  <url type="repository">https://github.com/CentroEPiaggio/dysturbance/dysturbance_ros</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+    <architecture_independent/>
+  </export>
+</package>
