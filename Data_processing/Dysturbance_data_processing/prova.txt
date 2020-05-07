@@ -1,0 +1,6 @@
+Experiment Prova
+Frequency_pendulum 100 Hz
+Frequency_force 1000 Hz
+Frequency_torque 250 Hz
+
+File Format csv

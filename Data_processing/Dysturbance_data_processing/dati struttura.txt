@@ -1,0 +1,15 @@
+Ciao Ale,
+I dati della struttura che dovrebbero essere presenti nello Yaml e che mi servono a me per il pre-processing sono
+
+Pendulum_length --> distanza asse di rotazione pendolo dal tip del sensore di forza.
+Pendulum_mass --> massa del pendolo, considerando solo quella aggiunta. Quella della barra stessa sarà calcolata tramite un calcolo sulla densità lineare, visto che il pendulum_length varia
+Pendulum_height --> altezza dell'asse di rotazione del pendolo.
+Used_tip --> ancora non so se mi serve, ma dato che avremo dei tip diversi sul sensore di forza, un indicatore di quale tipo è potrebbe tornare comodo.
+
+Per quanto riguarda i dati sul robot, non è specificato come vanno salvati. Cio' che mi servirebbe a me per il normalization factor è:
+
+Robot_mass --> massa complessiva del robot in testing.
+Robot_height--> Altezza complessiva del robot in testing
+Robot_CoM_height --> se è possibile misurarla in qualche modo, sarebbe ottimo averla, per confrontarla col punto di impatto 
+Base_depth --> mi servirebbe sapere la lunghezza della base di appoggio (dei piedi per intenderci)
+Base_width --> stessa cosa di sopra, ma indica quanto è la distanza tra le parti esterne dei due piedi.

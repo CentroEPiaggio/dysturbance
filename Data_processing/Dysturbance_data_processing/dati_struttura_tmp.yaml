@@ -1,0 +1,36 @@
+experiment:
+  date: <date>
+  time: <time>
+  subject: ""
+  actual_repetition: <int>
+  expected_repetitions: <int>
+  succeded: <bool>  # false, if interrupted before its end
+  notes: ""
+  
+  protocol:
+    name: ""
+    param_1: <param_type>
+    param_i: <param_type>
+  
+  pendulum:
+    length: <float>
+    added_mass: <float>
+    axis_height: <float>
+    tip_type: ""
+  
+  robot:
+    mass: <float>
+    height: <float>
+    center_of_mass_height: <float>
+    base_depth: <float>
+    base_width: <float>
+  
+  raw_data:
+    column_lables: ["time", "sensor_1", "sensor_j"]
+    column_units: ["seconds", "newtons", "radians"]
+    sampling_frequency: <float>
+  
+  preprocessed_data:
+    column_lables: ["time", "sensor_1", "sensor_k"]
+    column_units: ["minutes", "newtons", "degrees"]
+    sampling_frequency: <float>
