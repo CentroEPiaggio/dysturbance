@@ -1,0 +1,23 @@
+#!/usr/bin/octave -qf
+
+
+% Dysturbance - EuroBench Consortium
+% Created By: Simone Monteleone
+% mail: simone.monteleone@iit.it
+
+fprintf("current directory: %s\n", pwd())
+addpath("src")
+arg_list = argv ();
+if nargin ~= 1
+  fprintf("ERROR: There should be only 2 args, the name of the folder in which we want to compute the global PIs and the Protocol number\n");
+  fprintf("Usage:\n");
+  fprintf("\t./pi_csic.m global_folder_directory Protocol_number \n\n");
+  exit(127);
+endif
+
+fprintf("data folder: %s\n", arg_list{1});
+fprintf("Protocol: %s \n", arg_list{2})
+data_folder = arg_list{1};
+Protocol = arg_list{2};
+
+Compute_Global_PI(data_folder, Protocol);
