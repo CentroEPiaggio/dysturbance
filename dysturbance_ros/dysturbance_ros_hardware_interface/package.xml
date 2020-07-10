@@ -15,4 +15,5 @@
 
   <depend>roscpp</depend>
   <depend>hardware_interface</depend>
+  <depend>dysturbance_ros_msgs</depend>
 </package>

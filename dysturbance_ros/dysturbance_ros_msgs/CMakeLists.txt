@@ -11,7 +11,8 @@ find_package(catkin REQUIRED
 add_message_files(
   DIRECTORY msg
   FILES
-
+    State.msg
+    StateStamped.msg
 )
 
 generate_messages(

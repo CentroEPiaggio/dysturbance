@@ -6,6 +6,7 @@ find_package(catkin REQUIRED
   COMPONENTS
     roscpp
     hardware_interface
+    dysturbance_ros_msgs
 )
 
 include_directories(include
@@ -20,6 +21,7 @@ catkin_package(
   CATKIN_DEPENDS
     roscpp
     hardware_interface
+    dysturbance_ros_msgs
 )
 
 # Exported libraries
@@ -30,6 +32,7 @@ add_library(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   PUBLIC
     ${catkin_LIBRARIES}
+    NIDAQmx
 )
 
 add_dependencies(${PROJECT_NAME}

@@ -29,6 +29,7 @@
 #define DYSTURBANCE_ROS_MSGS_H
 
 // auto-generated msg headers
-
+#include <dysturbance_ros_msgs/State.h>
+#include <dysturbance_ros_msgs/StateStamped.h>
 
 #endif //DYSTURBANCE_ROS_MSGS_H

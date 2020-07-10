@@ -28,7 +28,17 @@
 #ifndef DYSTURBANCE_ROS_CONTROL_H
 #define DYSTURBANCE_ROS_CONTROL_H
 
+// Standard libraries
+#include <mutex>
+
+// ROS libraries
+#include <controller_manager/controller_manager.h>
 #include <ros/ros.h>
+#include <ros/callback_queue.h>
+#include <std_msgs/Int32.h>
+
+// Internal libraries
+#include <dysturbance_ros_hardware_interface/dysturbance_ros_hardware_interface.h>
 
 namespace dysturbance_ros_control {
 
@@ -37,6 +47,26 @@ class dysturbanceControl {
   dysturbanceControl();
   virtual ~dysturbanceControl();
 
+ private:
+  ros::CallbackQueuePtr callback_queue_;
+  ros::AsyncSpinner spinner_;
+  ros::NodeHandle node_handle_;
+  ros::NodeHandle node_handle_control_;
+  ros::Publisher frequency_publisher_;
+  ros::WallTimer control_timer_;
+  ros::WallTimer frequency_timer_;
+  ros::WallDuration control_duration_;
+  std::mutex sync_protector_;
+  int counter_;  // control loop counter (just to check the frequency)
+
+  // do not change the following variables order
+  dysturbance_ros_hardware_interface::dysturbanceHW device_;
+  bool init_success_;
+  controller_manager::ControllerManager controller_manager_;
+
+  void controlCallback(const ros::WallTimerEvent &timer_event);
+  void frequencyCallback(const ros::WallTimerEvent &timer_event);
+  void update(const ros::WallTime &time, const ros::WallDuration &period);
 };
 
 }  // namespace dysturbance_ros_control

@@ -28,8 +28,21 @@
 #ifndef DYSTURBANCE_ROS_HARDWARE_INTERFACE_H
 #define DYSTURBANCE_ROS_HARDWARE_INTERFACE_H
 
+// Standard libraries
+#include <vector>
+
+// ROS libraries
 #include <ros/ros.h>
 #include <hardware_interface/robot_hw.h>
+
+// Internal libraries
+#include <dysturbance_ros_hardware_interface/NIDAQmx.h>
+#include <dysturbance_ros_msgs/dysturbance_ros_msgs.h>
+
+#define NIDAQ_SAMPLING_FREQUENCY 10000
+#define STORAGE_FREQUENCY 250
+#define NUM_CHANNELS 7
+#define NUM_SAMPLES_PER_CHANNEL (NIDAQ_SAMPLING_FREQUENCY/STORAGE_FREQUENCY)
 
 namespace dysturbance_ros_hardware_interface {
 
@@ -37,6 +50,18 @@ class dysturbanceHW : public hardware_interface::RobotHW {
  public:
   dysturbanceHW();
   ~dysturbanceHW() override;
+
+  bool init(ros::NodeHandle &root_nh, ros::NodeHandle &robot_hw_nh) override;
+  void read(const ros::Time &time, const ros::Duration &period) override;
+  void write(const ros::Time &time, const ros::Duration &period) override;
+
+ private:
+  TaskHandle task_handle_;
+  ros::Publisher data_publisher_;
+
+  std::string channels_;
+  std::vector<std::vector<float64>> data_;
+  std::vector<ros::Time> time_;
 };
 
 typedef std::shared_ptr<dysturbanceHW> dysturbanceHWPtr;

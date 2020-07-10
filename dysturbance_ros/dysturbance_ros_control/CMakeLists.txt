@@ -5,6 +5,9 @@ project(dysturbance_ros_control VERSION 0.0.1 LANGUAGES CXX)
 find_package(catkin REQUIRED
   COMPONENTS
     roscpp
+    controller_manager
+    dysturbance_ros_hardware_interface
+    dysturbance_ros_msgs
     dysturbance_ros_utils
 )
 
@@ -19,6 +22,9 @@ catkin_package(
     ${PROJECT_NAME}
   CATKIN_DEPENDS
     roscpp
+    controller_manager
+    dysturbance_ros_hardware_interface
+    dysturbance_ros_msgs
     dysturbance_ros_utils
 )
 

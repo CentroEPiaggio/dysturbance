@@ -14,5 +14,8 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <depend>roscpp</depend>
+  <depend>controller_manager</depend>
+  <depend>dysturbance_ros_hardware_interface</depend>
+  <depend>dysturbance_ros_msgs</depend>
   <depend>dysturbance_ros_utils</depend>
 </package>
