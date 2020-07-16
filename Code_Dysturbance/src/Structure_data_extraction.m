@@ -12,7 +12,7 @@ function [Pendulum_data, Pendulum_tip] = Structure_data_extraction(structureyaml
 %
 % Dysturbance - EuroBench Consortium
 % Created By: Simone Monteleone
-% mail: simone.monteleone@iit.it
+% mail: simone.monteleone@@phd.unipi.it
 %--------------------------------------------------------------------------
 
 % retrieve pendulum data from yaml

@@ -5,7 +5,7 @@ function Norm_factor = normalization_factor(robotdatafile, Frontal_or_lateral)
 %
 % Dysturbance - EuroBench Consortium
 % Created By: Simone Monteleone
-% mail: simone.monteleone@iit.it
+% mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
 
 %% Extract robot data from file

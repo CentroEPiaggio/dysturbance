@@ -5,7 +5,7 @@ function [Stability_margin_matrix, Second_PI] = Collect_Local_PI(Tests_folders, 
 %
 % Dysturbance - EuroBench Consortium
 % Created By: Simone Monteleone
-% mail: simone.monteleone@iit.it
+% mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
 
 num_folder = numel(Tests_folders);

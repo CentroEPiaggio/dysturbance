@@ -14,7 +14,7 @@ function Global_absorbed_Energy_PI(Global_DE_matrix, Global_PI_folder)
 %
 % Dysturbance - EuroBench Consortium
 % Created By: Simone Monteleone
-% mail: simone.monteleone@iit.it
+% mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
 
 % first, we must group the experiments that are holded in the same

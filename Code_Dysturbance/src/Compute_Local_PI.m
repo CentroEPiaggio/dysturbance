@@ -5,7 +5,7 @@ function Compute_Local_PI(filename,yaml_file, result_folder, isfall)
 % 
 % Dysturbance - EuroBench Consortium
 % Created By: Simone Monteleone
-% mail: simone.monteleone@iit.it
+% mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
 
 % Find the folder where to store the experiment data. It should already exists containing the input raw data

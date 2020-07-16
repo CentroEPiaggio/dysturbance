@@ -1,6 +1,11 @@
 function check_isfall(isfall, Data_local_folder)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+%--------------------------------------------------------------------------
+% This function check if during the tests, the robot is fallen or not
+%
+% Dysturbance - EuroBench Consortium
+% Created By: Simone Monteleone
+% mail: simone.monteleone@phd.unipi.it
+%--------------------------------------------------------------------------
 if isfall == "true"
     check_fall = 1;
 elseif isfall == "false"

@@ -5,10 +5,10 @@ function [protocol_data, datapath] = Dysturbance_raw_data_extraction(filename, y
 %
 % Dysturbance - EuroBench Consortium
 % Created By: Simone Monteleone
-% mail: simone.monteleone@iit.it
+% mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
 
-yaml_path = strcat(result_dir,'\raw_data_input\',yamlfile);
+yaml_path = strcat(result_dir,'\raw_data_input\',yaml_file);
 raw_filepath = strcat(result_dir,'\raw_data_input\',filename);
 
 if exist(yaml_path,'file')
@@ -107,6 +107,7 @@ Position_No_outliers = medfilt1(Pendulum_position, 'omitnan');
 % Position_filtered = filter(FILTER, Position_No_outliers);
 
 %----------------------- Symmetric Noise filtering ------------------------
+Filter_order = 6;
 Torque_filtered = smooth(Torque_No_outliers,Filter_order);
 Position_filtered = smooth(Position_No_outliers,Filter_order);
 
@@ -115,8 +116,8 @@ header =['UTC Time [ms]','Pendulum Angular Position [deg]','Contact Force [N]','
 Pre_processed_data_matrix = [header; [UTC_Time, Position_filtered, Force_sensor, Torque_filtered]];
 
 % data must be saved in a specified folder
-Pre_processed_file_name = strcat(filename(1:end-4),'_PP', ...
-    '_F_o_',num2str(Filter_order),'.csv');
+index = strfind(filename,"datafile") - 1;
+Pre_processed_file_name = strcat(filename(1:index),'platformData.csv');
 
 Pre_processed_data_folder = strcat(result_dir,'\Preprocessed_data');
 

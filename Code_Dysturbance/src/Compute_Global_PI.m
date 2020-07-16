@@ -4,7 +4,7 @@ function Compute_Global_PI(data_folder, Protocol)
 %
 % Dysturbance - EuroBench Consortium
 % Created By: Simone Monteleone
-% mail: simone.monteleone@iit.it
+% mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
 
 % creation of the folder to store the Global PI data

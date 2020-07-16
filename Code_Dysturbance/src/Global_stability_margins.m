@@ -3,9 +3,9 @@ function [PI_plot_output,Stability_margin_PI] = Global_stability_margins(KPI_val
 % This function compute the complexive kpi value depending on the KPI it is
 % calculated in it, and if it is dependent with frequency.
 % KPI Names:
-% - 'Impulsive Stability Margin'
-% - 'Sinusoidal Stability Margin'
-% - 'Quasi-static Stability Margin'
+% - 'Impulsive Stability Margin' 1 
+% - 'Sinusoidal Stability Margin' 2or 3
+% - 'Quasi-static Stability Margin' 4
 %
 % The KPI_value inserted will be a matrix of all the value derived from
 % singular test computation. They will be listed in different rows, as in
@@ -19,7 +19,7 @@ function [PI_plot_output,Stability_margin_PI] = Global_stability_margins(KPI_val
 %
 % Dysturbance - EuroBench Consortium
 % Created By: Simone Monteleone
-% mail: simone.monteleone@iit.it
+% mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
 switch Protocol
     case 1

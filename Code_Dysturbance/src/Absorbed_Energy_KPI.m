@@ -4,7 +4,7 @@ function [E_max, E_final, DE, E_perc, KPI_matrix] = Absorbed_Energy_KPI(datafile
 %
 % Dysturbance - EuroBench Consortium
 % Created By: Simone Monteleone
-% mail: simone.monteleone@iit.it
+% mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
 %% Pendulum_data
 Pendulum_length = Pendulum_data(1);

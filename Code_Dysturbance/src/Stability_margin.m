@@ -12,7 +12,7 @@ function [Stability_Margin] = Stability_margin(datafile,Protocol_number, Data_fo
 %
 % Dysturbance - EuroBench Consortium
 % Created By: Simone Monteleone
-% mail: simone.monteleone@iit.it
+% mail: simone.monteleone@@phd.unipi.it
 %--------------------------------------------------------------------------
 %% Pedulum_data
 Pendulum_length = Pendulum_data(1);

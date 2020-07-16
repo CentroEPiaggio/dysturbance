@@ -16,7 +16,7 @@ function Global_excited_impedance(Equivalent_excited_Impedence_matrix, Global_PI
 %
 % Dysturbance - EuroBench Consortium
 % Created By: Simone Monteleone
-% mail: simone.monteleone@iit.it
+% mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
 
 % sistemo i dati in matrice in modo che le righe siano ordinati per valore

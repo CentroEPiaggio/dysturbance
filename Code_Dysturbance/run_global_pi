@@ -3,7 +3,7 @@
 
 % Dysturbance - EuroBench Consortium
 % Created By: Simone Monteleone
-% mail: simone.monteleone@iit.it
+% mail: simone.monteleone@phd.unipi.it
 
 fprintf("current directory: %s\n", pwd())
 addpath("src")
