@@ -29,6 +29,8 @@
 #define DYSTURBANCE_ROS_CONTROL_H
 
 // Standard libraries
+#include <fstream>
+#include <iomanip>
 #include <mutex>
 
 // ROS libraries
@@ -53,11 +55,15 @@ class dysturbanceControl {
   ros::NodeHandle node_handle_;
   ros::NodeHandle node_handle_control_;
   ros::Publisher frequency_publisher_;
+  ros::Subscriber data_subscriber_;
   ros::WallTimer control_timer_;
   ros::WallTimer frequency_timer_;
   ros::WallDuration control_duration_;
   std::mutex sync_protector_;
   int counter_;  // control loop counter (just to check the frequency)
+
+  std::ofstream platform_data_file_;
+  std::string system_state_;
 
   // do not change the following variables order
   dysturbance_ros_hardware_interface::dysturbanceHW device_;
@@ -65,6 +71,7 @@ class dysturbanceControl {
   controller_manager::ControllerManager controller_manager_;
 
   void controlCallback(const ros::WallTimerEvent &timer_event);
+  void dataAcquisitionCallback(const dysturbance_ros_msgs::StateStamped &msg);
   void frequencyCallback(const ros::WallTimerEvent &timer_event);
   void update(const ros::WallTime &time, const ros::WallDuration &period);
 };

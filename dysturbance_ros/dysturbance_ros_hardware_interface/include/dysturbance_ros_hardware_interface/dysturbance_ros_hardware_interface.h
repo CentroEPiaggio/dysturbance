@@ -41,27 +41,27 @@
 
 #define NIDAQ_SAMPLING_FREQUENCY 10000
 #define STORAGE_FREQUENCY 250
-#define NUM_CHANNELS 7
+#define NUM_CHANNELS 3
 #define NUM_SAMPLES_PER_CHANNEL (NIDAQ_SAMPLING_FREQUENCY/STORAGE_FREQUENCY)
 
 namespace dysturbance_ros_hardware_interface {
 
 class dysturbanceHW : public hardware_interface::RobotHW {
  public:
-  dysturbanceHW();
-  ~dysturbanceHW() override;
+  dysturbanceHW() = default;
+  ~dysturbanceHW() override = default;
 
   bool init(ros::NodeHandle &root_nh, ros::NodeHandle &robot_hw_nh) override;
   void read(const ros::Time &time, const ros::Duration &period) override;
   void write(const ros::Time &time, const ros::Duration &period) override;
 
  private:
-  TaskHandle task_handle_;
   ros::Publisher data_publisher_;
+  ros::Time last_time_;
+  ros::Time init_time_;
 
+  std::unique_ptr<TaskHandle> task_handle_;
   std::string channels_;
-  std::vector<std::vector<float64>> data_;
-  std::vector<ros::Time> time_;
 };
 
 typedef std::shared_ptr<dysturbanceHW> dysturbanceHWPtr;

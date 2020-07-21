@@ -1,0 +1,29 @@
+<launch>
+  <!-- general information -->
+  <arg name="subject" default="undefined" doc="The identifier (e.g. name) of the subject performing the experiment."/>
+  <arg name="notes" default="" doc="Some relevant notes regarding the experiment setup."/>
+  <arg name="repetitions" default="3" doc="The number of repetitions of the experiment."/>
+
+  <!-- protocol information -->
+  <arg name="protocol" default="undefined" doc="The identifier of the protocol to be used in the current experiment."/>
+  <arg name="protocol_param_1" default="" doc=""/>
+  <arg name="protocol_param_i" default="" doc=""/>
+
+  <!-- pendulum information -->
+  <arg name="pendulum_length" default="1.0" doc="The pendulum length [m]."/>
+  <arg name="pendulum_axis_height" default="1.0" doc="The pendulum axis height [m]."/>
+  <arg name="pendulum_added_mass" default="1.0" doc="The pendulum added mass (not including the pendulum mass itself) [kg]."/>
+  <arg name="pendulum_tip_type" default="default" doc="The pendulum tip type."/>
+
+  <!-- robot information -->
+  <arg name="robot_mass" doc="The robot mass [kg]."/>
+  <arg name="robot_height" doc="The robot height [m]."/>
+  <arg name="robot_com_height" doc="The robot Center of Mass height [m]."/>
+  <arg name="robot_base_depth" doc="The robot base depth [m]."/>
+  <arg name="robot_base_width" doc="The robot base width [m]."/>
+
+  <!-- start the control node -->
+  <include file="$(find qb_device_bringup)/launch/robot_control_node_bringup.launch">
+    <arg name="control_duration" value="$(arg control_duration)"/>
+  </include>
+</launch>

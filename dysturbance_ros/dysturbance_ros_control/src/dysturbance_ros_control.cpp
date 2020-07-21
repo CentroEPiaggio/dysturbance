@@ -42,7 +42,17 @@ dysturbanceControl::dysturbanceControl()
   spinner_.start();
 
   if (init_success_) {
+    std::string data_file_name = "subject_" + node_handle_.param<std::string>("subject_num", "01");
+    data_file_name += "_cond_" + node_handle_.param<std::string>("cond_num", "01");
+    data_file_name += "_run_" + node_handle_.param<std::string>("run_num", "01");
+    data_file_name += "_platformData.csv";
+    platform_data_file_.open(data_file_name, std::ios_base::app);
+    platform_data_file_ << "time; pendulum_position; pendulum_torque; contact_force; system_state";
+    platform_data_file_ << std::fixed << std::setw(6) << std::setprecision(3) << std::setfill(' ');  //TODO: check values with data
+    system_state_ = "initialized";
+
     frequency_publisher_ = node_handle_.advertise<std_msgs::Int32>("frequency", 1);
+    data_subscriber_ = node_handle_.subscribe("data_acquisition", 1, &dysturbanceControl::dataAcquisitionCallback, this);
     control_timer_ = node_handle_control_.createWallTimer(control_duration_, &dysturbanceControl::controlCallback, this);
     frequency_timer_ = node_handle_.createWallTimer(ros::WallDuration(1), &dysturbanceControl::frequencyCallback, this);
   }
@@ -60,6 +70,16 @@ void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event)
   counter_++;
 
   // can serve async pending request when the lock is released
+}
+
+void dysturbanceControl::dataAcquisitionCallback(const dysturbance_ros_msgs::StateStamped &msg) {
+  for (int i=0; i<msg.data.times.size(); i++) {
+    platform_data_file_ << msg.data.times.at(i) << "; ";
+    platform_data_file_ << msg.data.pendulum_positions.at(i) << "; ";
+    platform_data_file_ << msg.data.pendulum_torques.at(i) << "; ";
+    platform_data_file_ << msg.data.contact_forces.at(i) << "; ";
+    platform_data_file_ << system_state_ << std::endl;
+  }
 }
 
 void dysturbanceControl::frequencyCallback(const ros::WallTimerEvent &timer_event) {
