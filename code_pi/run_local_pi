@@ -4,23 +4,22 @@
 % Created By: Simone Monteleone
 % mail: simone.monteleone@phd.unipi.it
 
-printf ("current directory: %s\n", pwd())
+fprintf("current directory: %s\n", pwd())
 addpath("src")
-arg_list = argv ();
+arg_list = argv();
 if nargin ~= 4
-  fprintf ("ERROR: There should be 3 args. A .csv file containing the experiment data, a .yaml file containing the anthropometric data of the subject, the dir where the results will be stored and the flag if is fall  \n");
-  fprintf ("Usage:\n");
-  fprintf ("\t./pi_csic.m csv_filename structure_yaml_filename result_dir bool_isfall \n\n");
+  fprintf("[ERROR] There should be 4 args:\n")
+  fprintf("         * a .csv file containing the experiment data;\n")
+  fprintf("         * a .yaml file containing the anthropometric data of the subject;\n")
+  fprintf("         * a name for the directory where the results will be stored;\n")
+  fprintf("         * a flag which is true if the subject is fall.\n\n");
+  fprintf("Usage:   ./run_local_pi data.csv structure.yaml output_dir false\n\n");
   exit(127);
 endif
 
-fprintf ("csv file: %s\n", arg_list{1});
-fprintf ("structure file: %s\n", arg_list{2});
-fprintf ("result dir: %s\n", arg_list{3});
-fprintf ("the system is fallen: %s \n", arg_list{4});
-filename = arg_list{1};
-yaml_file = arg_list{2};
-result_folder = arg_list{3};
-isfall = arg_list{4};
+fprintf("csv file: %s\n", arg_list{1});
+fprintf("structure file: %s\n", arg_list{2});
+fprintf("result dir: %s\n", arg_list{3});
+fprintf("the system is fallen: %s\n", arg_list{4});
 
-Compute_Local_PI(filename, yaml_file, result_folder, isfall);
+Compute_Local_PI(arg_list{1}, arg_list{2}, arg_list{3}, arg_list{4});
