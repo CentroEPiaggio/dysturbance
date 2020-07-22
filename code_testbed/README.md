@@ -5,7 +5,7 @@ Try to execute the code on a different environment will probably end in a failur
 ## Purpose
 This code is aimed to control the pendulum of the EUROBENCH DYSTURBANCE platform to perform several type of experiments on a given target, and gather the sensor measurements that will be used to estimate the stability under certain perturbations.
 
-Analysis and post-processing computations are addressed in [`code_pi`](../code_pi/README.md).
+Analysis and post-processing computations are addressed in [`code_pi`](../code_pi/).
 
 ## Requirements
 * Windows 10 64-bit IoT Enterprise
