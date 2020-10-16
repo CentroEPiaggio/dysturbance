@@ -36,7 +36,7 @@
 #include <hardware_interface/robot_hw.h>
 
 // Internal libraries
-#include <dysturbance_ros_hardware_interface/NIDAQmx.h>
+#include <NIDAQmx.h>
 #include <dysturbance_ros_msgs/dysturbance_ros_msgs.h>
 
 #define NIDAQ_SAMPLING_FREQUENCY 10000
@@ -49,7 +49,7 @@ namespace dysturbance_ros_hardware_interface {
 class dysturbanceHW : public hardware_interface::RobotHW {
  public:
   dysturbanceHW() = default;
-  ~dysturbanceHW() override = default;
+  ~dysturbanceHW() override;
 
   bool init(ros::NodeHandle &root_nh, ros::NodeHandle &robot_hw_nh) override;
   void read(const ros::Time &time, const ros::Duration &period) override;
@@ -60,8 +60,10 @@ class dysturbanceHW : public hardware_interface::RobotHW {
   ros::Time last_time_;
   ros::Time init_time_;
 
-  std::unique_ptr<TaskHandle> task_handle_;
+  TaskHandle task_handle_ {nullptr};
   std::string channels_;
+
+  static bool errorCodeToString(int error_code, std::string &error_string);
 };
 
 typedef std::shared_ptr<dysturbanceHW> dysturbanceHWPtr;

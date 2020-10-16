@@ -29,13 +29,34 @@
 
 using namespace dysturbance_ros_hardware_interface;
 
+dysturbanceHW::~dysturbanceHW() {
+  if (task_handle_) {
+    std::string error_string;
+    if (errorCodeToString(DAQmxClearTask(task_handle_), error_string)) {
+      ROS_ERROR_STREAM("DAQmxClearTask failed with error : " << error_string << ".");
+    }
+  }
+}
+
 bool dysturbanceHW::init(ros::NodeHandle &root_nh, ros::NodeHandle &robot_hw_nh) {
+  std::string error_string;
   channels_ = "Dev1/ai0, Dev1/ai1, Dev1/ai2";
-  DAQmxCreateTask("", task_handle_.get());
-  DAQmxCreateAIVoltageChan(task_handle_.get(), channels_.c_str(), "", DAQmx_Val_Diff, 0.0, 5.0, DAQmx_Val_Volts, nullptr);
-  DAQmxCfgSampClkTiming(task_handle_.get(), "", NIDAQ_SAMPLING_FREQUENCY, DAQmx_Val_Rising, DAQmx_Val_ContSamps, NUM_SAMPLES_PER_CHANNEL);
-  DAQmxStartTask(task_handle_.get());
-  //TODO: check returns of all the above DAQ methods
+  if (errorCodeToString(DAQmxCreateTask("", &task_handle_), error_string)) {
+    ROS_ERROR_STREAM("DAQmxCreateTask failed with error : " << error_string << ".");
+    return false;
+  }
+  if (errorCodeToString(DAQmxCreateAIVoltageChan(task_handle_, channels_.c_str(), "", DAQmx_Val_Diff, -5.0, 5.0, DAQmx_Val_Volts, nullptr), error_string)) {
+    ROS_ERROR_STREAM("DAQmxCreateAIVoltageChan failed with error : " << error_string << ".");
+    return false;
+  }
+  if (errorCodeToString(DAQmxCfgSampClkTiming(task_handle_, "", NIDAQ_SAMPLING_FREQUENCY, DAQmx_Val_Rising, DAQmx_Val_ContSamps, NUM_SAMPLES_PER_CHANNEL), error_string)) {
+    ROS_ERROR_STREAM("DAQmxCfgSampClkTiming failed with error : " << error_string << ".");
+    return false;
+  }
+  if (errorCodeToString(DAQmxStartTask(task_handle_), error_string)) {
+    ROS_ERROR_STREAM("DAQmxStartTask failed with error : " << error_string << ".");
+    return false;
+  }
   data_publisher_ = robot_hw_nh.advertise<dysturbance_ros_msgs::StateStamped>("data_acquisition", 1);
   init_time_ = ros::Time::now();
   last_time_ = init_time_;
@@ -43,10 +64,15 @@ bool dysturbanceHW::init(ros::NodeHandle &root_nh, ros::NodeHandle &robot_hw_nh)
 }
 
 void dysturbanceHW::read(const ros::Time &time, const ros::Duration &period) {
+  std::string error_string;
   int32 samples_read = 0;
-  std::vector<float64> data(NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS);
-  DAQmxReadAnalogF64(task_handle_.get(), NUM_SAMPLES_PER_CHANNEL, 0.002, DAQmx_Val_GroupByChannel, &data[0], NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, &samples_read, nullptr);
-  //TODO: check returns of the above DAQ method
+  std::vector<float64> data(NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, 0);
+
+  if (errorCodeToString(DAQmxReadAnalogF64(task_handle_, NUM_SAMPLES_PER_CHANNEL, 0.002, DAQmx_Val_GroupByChannel, &data[0], NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, &samples_read, nullptr), error_string)) {
+    ROS_ERROR_STREAM("DAQmxCreateAIVoltageChan failed with error : " << error_string << ".");
+    return;
+  }
+
   if (samples_read == 0) {
     ROS_ERROR_STREAM("No samples retrieved");
     return;
@@ -74,4 +100,11 @@ void dysturbanceHW::read(const ros::Time &time, const ros::Duration &period) {
 
 void dysturbanceHW::write(const ros::Time &time, const ros::Duration &period) {
   // sensors do not need to write anything (this is for actuators)
+}
+
+bool dysturbanceHW::errorCodeToString(int error_code, std::string &error_string) {
+  char error_str[1024] = "";
+  DAQmxGetErrorString(error_code, error_str, 1024);
+  error_string.assign(error_str);
+  return !error_string.empty();
 }
