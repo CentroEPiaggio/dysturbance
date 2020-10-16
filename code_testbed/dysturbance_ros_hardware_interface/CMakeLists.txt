@@ -10,6 +10,7 @@ find_package(catkin REQUIRED
 )
 
 include_directories(include
+  "C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/include"
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -27,6 +28,11 @@ catkin_package(
 # Exported libraries
 add_library(${PROJECT_NAME}
   src/dysturbance_ros_hardware_interface.cpp
+)
+
+target_link_directories(${PROJECT_NAME}
+  PUBLIC
+    "C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib64/msvc"
 )
 
 target_link_libraries(${PROJECT_NAME}
