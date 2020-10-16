@@ -34,7 +34,7 @@ dysturbanceControl::dysturbanceControl()
       callback_queue_(boost::make_shared<ros::CallbackQueue>()),
       node_handle_(ros::NodeHandle()),
       node_handle_control_(node_handle_, "control"),
-      control_duration_(node_handle_.param<double>("control_duration", 0.01)),
+      control_duration_(node_handle_.param<double>("control_duration", 0.004)),
       counter_(0),
       init_success_(device_.init(node_handle_, node_handle_)),
       controller_manager_(&device_, node_handle_control_) {
