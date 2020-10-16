@@ -1,6 +1,6 @@
 <launch>
   <!-- robot settings -->
-  <arg name="control_duration" default="0.01" doc="The duration of the control loop [s]."/>
+  <arg name="control_duration" default="0.004" doc="The duration of the control loop [s]."/>
 
   <!-- load parameters -->
   <param name="control_duration" type="double" value="$(arg control_duration)"/>
