@@ -1,0 +1,96 @@
+*.py[cod]
+*.swn
+
+# C extensions
+*.so
+*.o
+
+# Packages
+autom4te.cache/
+bin
+build
+config.log
+config.status
+develop-eggs
+dist
+*.egg
+*.egg-info
+eggs
+.DS_Store
+.installed.cfg
+lib
+lib64
+.libs/
+Makefile
+parts
+__pycache__
+sdist
+var
+*.lo
+*.dirstamp
+*.deps/
+m4/
+cov-int
+config.*
+/*.in
+aclocal.m4
+build-aux
+configure
+ar-lib
+depcomp
+missing
+
+
+# Installer logs
+pip-log.txt
+
+# Unit tst / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# Autogeneration
+schemas/ET
+schemas/gm
+schemas/struct_list.txt
+schemas/sys
+
+Debug/
+Release/
+
+compile
+install-sh
+ltmain.sh
+python/INSTALL
+python/Makefile.in
+python/install-sh
+test-driver
+tests/gmock/Makefile.in
+tests/gmock/gtest/Makefile.in
+tests/gtest/Makefile.in
+debian/changelog
+libopcuaclient.pc
+libopcuacore.pc
+libopcuaprotocol.pc
+libopcuaserver.pc
+libtool
+stamp-h1
+tests/gmock/gtest/libtool
+tests/gmock/gtest/scripts/gtest-config
+tests/gmock/libtool
+tests/gmock/scripts/gmock-config
+tests/gtest/libtool
+tests/gtest/scripts/gtest-config
+.mypy_cache
+vscode
+
+# QtCreator
+CMakeLists.txt.user
