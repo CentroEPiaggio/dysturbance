@@ -1,0 +1,13 @@
+dist: xenial
+language: cpp
+compiler: gcc
+env: VERBOSE=1
+
+install:
+  - sudo apt-get install libboost-all-dev -qq
+  - sudo apt-get install libboost-python-dev -qq
+  - sudo apt-get install libcppunit-dev
+
+#script: autoreconf -f -i && ./configure --disable-python-bindings && make && make check
+script: autoreconf -f -i && ./configure && make && make check
+
