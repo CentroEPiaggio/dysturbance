@@ -6,9 +6,8 @@ set(BUILD_SERVER ON)
 set(BUILD_PYTHON ON)
 set(BUILD_TESTING OFF)
 
-add_subdirectory(freeopcua)
-
-set(FreeOpcUa_LIBRARIES opcua)
+set(DCMAKE_BUILD_TYPE=Release)
+set(FreeOpcUa_LIBRARIES opcuacore opcuaclient opcuaserver opcuaprotocol)
 
 find_package(catkin REQUIRED
   roscpp
@@ -16,12 +15,14 @@ find_package(catkin REQUIRED
   ros_opcua_srvs
 )
 
+find_package(freeopcua CONFIG REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system thread)
 
 catkin_package(
-  LIBRARIES opcuaprotocol opcuacore opcuaclient opcuaserver
+  LIBRARIES ${FreeOpcUa_LIBRARIES}
   INCLUDE_DIRS include freeopcua/include
   CATKIN_DEPENDS roscpp ros_opcua_msgs ros_opcua_srvs
+  DEPENDS Boost freeopcua
 )
 
 ###########
