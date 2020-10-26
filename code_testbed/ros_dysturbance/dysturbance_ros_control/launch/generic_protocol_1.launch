@@ -1,0 +1,17 @@
+<launch>
+  <!-- protocol information -->
+  <rosparam file="config_protocol_1.yaml" command="load"/>
+
+  <!-- pendulum information -->
+  <rosparam file="config_pendulum.yaml" command="load"/>
+
+  <!-- subject information -->
+  <rosparam file="config_subject.yaml" command="load"/>
+
+  <!-- platform information -->
+  <rosparam file="config_platform.yaml" command="load"/>
+
+  <!-- start the control node to execute the experiment and start the data acquisition -->
+  <node name="data_acquisition" pkg="dysturbance_ros_control" type="dysturbance_ros_default"
+        respawn="false" output="screen" required="true"/>
+</launch>

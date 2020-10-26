@@ -1,0 +1,9 @@
+protocol:
+  name: "sinusoidal_force_disturbance"  # The identifier of the protocol to be used in the current experiment
+  notes: ""  # Some relevant notes regarding the experiment setup
+  repetitions: 3  # The number of repetitions of the experiment
+  parameters:
+    force_amplitude: 0.0  # The pendulum sinusoidal force amplitude [N]
+    force_midline: 0.0  # The pendulum sinusoidal force midline offset [N]
+    frequency: 0.0  # The pendulum oscillation frequency [Hz]
+    cycles_number: 10  # The number of sinusoidal periods
