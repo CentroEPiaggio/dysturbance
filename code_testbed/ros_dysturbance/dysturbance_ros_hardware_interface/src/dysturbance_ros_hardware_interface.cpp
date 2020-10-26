@@ -33,28 +33,46 @@ dysturbanceHW::~dysturbanceHW() {
   if (task_handle_) {
     std::string error_string;
     if (errorCodeToString(DAQmxClearTask(task_handle_), error_string)) {
-      ROS_ERROR_STREAM("DAQmxClearTask failed with error : " << error_string << ".");
+      ROS_ERROR_STREAM("NI DAQmxClearTask failed with error : " << error_string << ".");
     }
+  }
+
+  ros_opcua_srvs::Disconnect srv;
+  if (!opcua_disconnect_client_.call(srv)) {
+    ROS_ERROR_STREAM("OPC-UA error: failed to disconnect.");
   }
 }
 
 bool dysturbanceHW::init(ros::NodeHandle &root_nh, ros::NodeHandle &robot_hw_nh) {
+  opcua_connect_client_ = robot_hw_nh.serviceClient<ros_opcua_srvs::Connect>("connect");
+  opcua_disconnect_client_ = robot_hw_nh.serviceClient<ros_opcua_srvs::Disconnect>("disconnect");
+  opcua_read_client_ = robot_hw_nh.serviceClient<ros_opcua_srvs::Read>("read");
+  opcua_write_client_ = robot_hw_nh.serviceClient<ros_opcua_srvs::Write>("write");
+
+  ros_opcua_srvs::Connect srv;
+  srv.request.endpoint = "opc.tcp://192.168.250.1:4840";
+  if (!opcua_connect_client_.call(srv)) {  //TODO: check if it needs to wait for OPC-UA to startup
+    ROS_ERROR_STREAM("OPC-UA error: failed to connect to " << srv.request.endpoint << ".");
+    return false;
+  }
+  opcua_node_id_ = "ns=4;i=4001";  //TODO: check if it needs to be a param
+
   std::string error_string;
-  channels_ = "Dev1/ai0, Dev1/ai1, Dev1/ai2";
+  channels_ = "Dev1/ai0, Dev1/ai2, Dev1/ai4";
   if (errorCodeToString(DAQmxCreateTask("", &task_handle_), error_string)) {
-    ROS_ERROR_STREAM("DAQmxCreateTask failed with error : " << error_string << ".");
+    ROS_ERROR_STREAM("NI DAQmxCreateTask failed with error : " << error_string << ".");
     return false;
   }
   if (errorCodeToString(DAQmxCreateAIVoltageChan(task_handle_, channels_.c_str(), "", DAQmx_Val_Diff, -5.0, 5.0, DAQmx_Val_Volts, nullptr), error_string)) {
-    ROS_ERROR_STREAM("DAQmxCreateAIVoltageChan failed with error : " << error_string << ".");
+    ROS_ERROR_STREAM("NI DAQmxCreateAIVoltageChan failed with error : " << error_string << ".");
     return false;
   }
   if (errorCodeToString(DAQmxCfgSampClkTiming(task_handle_, "", NIDAQ_SAMPLING_FREQUENCY, DAQmx_Val_Rising, DAQmx_Val_ContSamps, NUM_SAMPLES_PER_CHANNEL), error_string)) {
-    ROS_ERROR_STREAM("DAQmxCfgSampClkTiming failed with error : " << error_string << ".");
+    ROS_ERROR_STREAM("NI DAQmxCfgSampClkTiming failed with error : " << error_string << ".");
     return false;
   }
   if (errorCodeToString(DAQmxStartTask(task_handle_), error_string)) {
-    ROS_ERROR_STREAM("DAQmxStartTask failed with error : " << error_string << ".");
+    ROS_ERROR_STREAM("NI DAQmxStartTask failed with error : " << error_string << ".");
     return false;
   }
   data_publisher_ = robot_hw_nh.advertise<dysturbance_ros_msgs::StateStamped>("data_acquisition", 1);
@@ -69,16 +87,16 @@ void dysturbanceHW::read(const ros::Time &time, const ros::Duration &period) {
   std::vector<float64> data(NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, 0);
 
   if (errorCodeToString(DAQmxReadAnalogF64(task_handle_, NUM_SAMPLES_PER_CHANNEL, 0.002, DAQmx_Val_GroupByChannel, &data[0], NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, &samples_read, nullptr), error_string)) {
-    ROS_ERROR_STREAM("DAQmxCreateAIVoltageChan failed with error : " << error_string << ".");
+    ROS_ERROR_STREAM("NI DAQmxCreateAIVoltageChan failed with error : " << error_string << ".");
     return;
   }
 
   if (samples_read == 0) {
-    ROS_ERROR_STREAM("No samples retrieved");
+    ROS_ERROR_STREAM("NI DAQ error: No samples retrieved");
     return;
   }
   if (samples_read < NUM_SAMPLES_PER_CHANNEL) {
-    ROS_WARN_STREAM("Fewer samples than expected");
+    ROS_WARN_STREAM("NI DAQ warning: Fewer samples than expected");
   }
 
   dysturbance_ros_msgs::StateStamped msg;

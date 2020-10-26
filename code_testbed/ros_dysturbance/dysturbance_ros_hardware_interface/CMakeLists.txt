@@ -6,6 +6,7 @@ find_package(catkin REQUIRED
   COMPONENTS
     roscpp
     hardware_interface
+    ros_opcua_srvs
     dysturbance_ros_msgs
 )
 
@@ -22,17 +23,13 @@ catkin_package(
   CATKIN_DEPENDS
     roscpp
     hardware_interface
+    ros_opcua_srvs
     dysturbance_ros_msgs
 )
 
 # Exported libraries
 add_library(${PROJECT_NAME}
   src/dysturbance_ros_hardware_interface.cpp
-)
-
-target_link_directories(${PROJECT_NAME}
-  PUBLIC
-    "C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib64/msvc"
 )
 
 target_link_libraries(${PROJECT_NAME}

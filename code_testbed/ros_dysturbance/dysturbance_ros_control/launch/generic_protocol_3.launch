@@ -1,17 +1,9 @@
 <launch>
-  <!-- protocol information -->
-  <rosparam file="config_protocol_3.yaml" command="load"/>
-
-  <!-- pendulum information -->
-  <rosparam file="config_pendulum.yaml" command="load"/>
-
-  <!-- subject information -->
-  <rosparam file="config_subject.yaml" command="load"/>
-
-  <!-- platform information -->
-  <rosparam file="config_platform.yaml" command="load"/>
-
   <!-- start the control node to execute the experiment and start the data acquisition -->
-  <node name="data_acquisition" pkg="dysturbance_ros_control" type="dysturbance_ros_default"
-        respawn="false" output="screen" required="true"/>
+  <include file="$(find dysturbance_ros_control)/launch/generic_protocol.launch">
+    <arg name="config_pendulum" value="config_pendulum"/>
+    <arg name="config_platform" value="config_platform"/>
+    <arg name="config_protocol" value="config_protocol_3"/>
+    <arg name="config_subject" value="config_subject"/>
+  </include>
 </launch>

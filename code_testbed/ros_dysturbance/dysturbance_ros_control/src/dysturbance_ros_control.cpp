@@ -73,6 +73,7 @@ void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event)
 }
 
 void dysturbanceControl::dataAcquisitionCallback(const dysturbance_ros_msgs::StateStamped &msg) {
+  device_.readOPCUA<std::string>("system_state", system_state_);
   for (int i=0; i<msg.data.times.size(); i++) {
     platform_data_file_ << msg.data.times.at(i) << "; ";
     platform_data_file_ << msg.data.pendulum_positions.at(i) << "; ";
@@ -83,7 +84,7 @@ void dysturbanceControl::dataAcquisitionCallback(const dysturbance_ros_msgs::Sta
 }
 
 void dysturbanceControl::frequencyCallback(const ros::WallTimerEvent &timer_event) {
-  ROS_DEBUG_STREAM("Control frequency: " << counter_ << "Hz");
+  ROS_DEBUG_STREAM("Control node frequency: " << counter_ << "Hz");
   frequency_publisher_.publish([this](){ std_msgs::Int32 hz_msg; hz_msg.data = counter_; counter_ = 0; return hz_msg; }());  // publish the control loop real Hz
 }
 
@@ -92,7 +93,7 @@ void dysturbanceControl::update(const ros::WallTime &time, const ros::WallDurati
   device_.read(ros::Time(time.toSec()), ros::Duration(period.toSec()));
 
   // update the controllers (set the new control actions)
-  controller_manager_.update(ros::Time(time.toSec()), ros::Duration(period.toSec()));  // does it nothing since no controller is loaded
+//  controller_manager_.update(ros::Time(time.toSec()), ros::Duration(period.toSec()));  // does it nothing since no controller is loaded
 
   // write the commands to the hardware
   device_.write(ros::Time(time.toSec()), ros::Duration(period.toSec()));

@@ -1,0 +1,26 @@
+<launch>
+  <arg name="config_pendulum" doc="The configuration parameters of the pendulum for the current experiment."/>
+  <arg name="config_platform" doc="The configuration parameters of the platform for the current experiment."/>
+  <arg name="config_protocol" doc="The configuration parameters of the protocol for the current experiment."/>
+  <arg name="config_subject" doc="The configuration parameters of the subject for the current experiment."/>
+
+  <!-- pendulum information -->
+  <rosparam file="$(arg config_pendulum).yaml" command="load"/>
+
+  <!-- platform information -->
+  <rosparam file="$(arg config_platform).yaml" command="load"/>
+
+  <!-- protocol information -->
+  <rosparam file="$(arg config_protocol).yaml" command="load"/>
+
+  <!-- subject information -->
+  <rosparam file="$(arg config_subject).yaml" command="load"/>
+
+  <!-- start the control node to execute the experiment and start the data acquisition -->
+  <node name="data_acquisition" pkg="dysturbance_ros_control" type="dysturbance_ros_default"
+        respawn="false" output="screen" required="true"/>
+
+  <!-- start the OPC-UA communication node -->
+  <node name="opcua_client" pkg="ros_opcua_impl_freeopcua" type="client_node"
+        respawn="false" output="screen" required="true"/>
+</launch>
