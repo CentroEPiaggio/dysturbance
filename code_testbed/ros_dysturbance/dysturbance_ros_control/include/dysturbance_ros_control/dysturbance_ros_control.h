@@ -63,7 +63,7 @@ class dysturbanceControl {
   int counter_;  // control loop counter (just to check the frequency)
 
   std::ofstream platform_data_file_;
-  std::string system_state_;
+  int system_state_;
 
   // do not change the following variables order
   dysturbance_ros_hardware_interface::dysturbanceHW device_;

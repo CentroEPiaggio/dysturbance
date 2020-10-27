@@ -7,7 +7,6 @@ set(BUILD_PYTHON ON)
 set(BUILD_TESTING OFF)
 
 set(DCMAKE_BUILD_TYPE=Release)
-set(FreeOpcUa_LIBRARIES opcuacore opcuaclient opcuaserver opcuaprotocol)
 
 find_package(catkin REQUIRED
   roscpp
@@ -15,12 +14,13 @@ find_package(catkin REQUIRED
   ros_opcua_srvs
 )
 
-find_package(freeopcua CONFIG REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system thread)
+find_package(freeopcua CONFIG REQUIRED)
+set(freeopcua_LIBRARIES opcuacore opcuaclient opcuaserver opcuaprotocol)
+set(freeopcua_INCLUDE_DIRS freeopcua/include)
 
 catkin_package(
-  LIBRARIES ${FreeOpcUa_LIBRARIES}
-  INCLUDE_DIRS include freeopcua/include
+  INCLUDE_DIRS include
   CATKIN_DEPENDS roscpp ros_opcua_msgs ros_opcua_srvs
   DEPENDS Boost freeopcua
 )
@@ -33,14 +33,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 include_directories(
   include
-  freeopcua/include
+  ${freeopcua_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
 )
 
 add_executable(client_node src/opcua_client.cpp)
 add_dependencies(client_node ros_opcua_msgs_generate_messages_cpp ros_opcua_srvs_generate_messages_cpp)
-target_link_libraries(client_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${FreeOpcUa_LIBRARIES})
+target_link_libraries(client_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${freeopcua_LIBRARIES})
 
 #############
 ## Install ##

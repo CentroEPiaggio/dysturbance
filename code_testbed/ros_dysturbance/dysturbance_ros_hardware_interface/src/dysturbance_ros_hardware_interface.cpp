@@ -55,7 +55,7 @@ bool dysturbanceHW::init(ros::NodeHandle &root_nh, ros::NodeHandle &robot_hw_nh)
     ROS_ERROR_STREAM("OPC-UA error: failed to connect to " << srv.request.endpoint << ".");
     return false;
   }
-  opcua_node_id_ = "ns=4;i=4001";  //TODO: check if it needs to be a param
+  opcua_node_id_prefix_ = "ns=4;s=";  //TODO: check if it needs to be a param
 
   std::string error_string;
   channels_ = "Dev1/ai0, Dev1/ai2, Dev1/ai4";
@@ -118,6 +118,90 @@ void dysturbanceHW::read(const ros::Time &time, const ros::Duration &period) {
 
 void dysturbanceHW::write(const ros::Time &time, const ros::Duration &period) {
   // sensors do not need to write anything (this is for actuators)
+}
+
+void dysturbanceHW::readOPCUABool(const std::string &variable_name, bool &variable) {
+  ros_opcua_srvs::Read srv;
+  srv.request.node.nodeId = opcua_node_id_prefix_ + variable_name;
+  if (!opcua_read_client_.call(srv)) {
+    ROS_ERROR_STREAM("OPC-UA read error: failed to read variable.");
+    return;
+  }
+  variable = srv.response.data.bool_d;
+}
+
+void dysturbanceHW::readOPCUAInt32(const std::string &variable_name, int &variable) {
+  ros_opcua_srvs::Read srv;
+  srv.request.node.nodeId = opcua_node_id_prefix_ + variable_name;
+  if (!opcua_read_client_.call(srv)) {
+    ROS_ERROR_STREAM("OPC-UA read error: failed to read variable.");
+    return;
+  }
+  variable = srv.response.data.int32_d;
+}
+
+void dysturbanceHW::readOPCUAFloat64(const std::string &variable_name, double &variable) {
+  ros_opcua_srvs::Read srv;
+  srv.request.node.nodeId = opcua_node_id_prefix_ + variable_name;
+  if (!opcua_read_client_.call(srv)) {
+    ROS_ERROR_STREAM("OPC-UA read error: failed to read variable.");
+    return;
+  }
+  variable = srv.response.data.double_d;
+}
+
+void dysturbanceHW::readOPCUAString(const std::string &variable_name, std::string &variable) {
+  ros_opcua_srvs::Read srv;
+  srv.request.node.nodeId = opcua_node_id_prefix_ + variable_name;
+  if (!opcua_read_client_.call(srv)) {
+    ROS_ERROR_STREAM("OPC-UA read error: failed to read variable.");
+    return;
+  }
+  variable = srv.response.data.string_d;
+}
+
+void dysturbanceHW::writeOPCUABool(const std::string &variable_name, bool variable) {
+  ros_opcua_srvs::Write srv;
+  srv.request.node.nodeId = opcua_node_id_prefix_ + variable_name;
+  srv.request.data.type = "bool";
+  srv.request.data.bool_d = variable;
+  if (!opcua_read_client_.call(srv)) {
+    ROS_ERROR_STREAM("OPC-UA write error: failed to write variable.");
+    return;
+  }
+}
+
+void dysturbanceHW::writeOPCUAInt32(const std::string &variable_name, int variable) {
+  ros_opcua_srvs::Write srv;
+  srv.request.node.nodeId = opcua_node_id_prefix_ + variable_name;
+  srv.request.data.type = "int32";
+  srv.request.data.int32_d = variable;
+  if (!opcua_read_client_.call(srv)) {
+    ROS_ERROR_STREAM("OPC-UA write error: failed to write variable.");
+    return;
+  }
+}
+
+void dysturbanceHW::writeOPCUAFloat64(const std::string &variable_name, double variable) {
+  ros_opcua_srvs::Write srv;
+  srv.request.node.nodeId = opcua_node_id_prefix_ + variable_name;
+  srv.request.data.type = "float64";
+  srv.request.data.double_d = variable;
+  if (!opcua_read_client_.call(srv)) {
+    ROS_ERROR_STREAM("OPC-UA write error: failed to write variable.");
+    return;
+  }
+}
+
+void dysturbanceHW::writeOPCUAString(const std::string &variable_name, const std::string &variable) {
+  ros_opcua_srvs::Write srv;
+  srv.request.node.nodeId = opcua_node_id_prefix_ + variable_name;
+  srv.request.data.type = "string";
+  srv.request.data.string_d = variable;
+  if (!opcua_read_client_.call(srv)) {
+    ROS_ERROR_STREAM("OPC-UA write error: failed to write variable.");
+    return;
+  }
 }
 
 bool dysturbanceHW::errorCodeToString(int error_code, std::string &error_string) {

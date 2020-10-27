@@ -59,68 +59,21 @@ class dysturbanceHW : public hardware_interface::RobotHW {
   void read(const ros::Time &time, const ros::Duration &period) override;
   void write(const ros::Time &time, const ros::Duration &period) override;
 
-  template<typename T>
-  void readOPCUA(const std::string &variable_name, T &variable) {
-    ros_opcua_srvs::Read srv;
-    srv.request.node.nodeId = opcua_node_id_;
-    srv.request.node.qualifiedName = variable_name;
-    if (!opcua_read_client_.call(srv)) {
-      ROS_ERROR_STREAM("OPC-UA read error: failed to read variable.");
-      return;
-    }
-    switch(srv.response.data.type) {
-      case "bool":
-        variable = srv.response.data.bool_d;
-        break;
-      case "int32":
-        variable = srv.response.data.int32_d;
-        break;
-      case "double":
-        variable = srv.response.data.double_d;
-        break;
-      case "string":
-        variable = srv.response.data.string_d;
-        break;
-      default:
-        ROS_ERROR_STREAM("OPC-UA read error: unrecognized variable type.");
-        return;
-    }
-  }
-  template<typename T>
-  void writeOPCUA(const std::string &variable_name, const std::string &variable_type, const T &variable) {
-    ros_opcua_srvs::Write srv;
-    srv.request.node.nodeId = opcua_node_id_;
-    srv.request.node.qualifiedName = variable_name;
-    srv.request.data.type = variable_type;
-    switch(srv.request.data.type) {
-      case "bool":
-        srv.request.data.bool_d = variable;
-        break;
-      case "int32":
-        srv.request.data.int32_d = variable;
-        break;
-      case "double":
-        srv.request.data.double_d = variable;
-        break;
-      case "string":
-        srv.request.data.string_d = variable;
-        break;
-      default:
-        ROS_ERROR_STREAM("OPC-UA write error: unrecognized variable type.");
-        return;
-    }
-    if (!opcua_read_client_.call(srv)) {
-      ROS_ERROR_STREAM("OPC-UA write error: failed to write variable.");
-      return;
-    }
-  }
+  void readOPCUABool(const std::string &variable_name, bool &variable);
+  void readOPCUAInt32(const std::string &variable_name, int &variable);
+  void readOPCUAFloat64(const std::string &variable_name, double &variable);
+  void readOPCUAString(const std::string &variable_name, std::string &variable);
+  void writeOPCUABool(const std::string &variable_name, bool variable);
+  void writeOPCUAInt32(const std::string &variable_name, int variable);
+  void writeOPCUAFloat64(const std::string &variable_name, double variable);
+  void writeOPCUAString(const std::string &variable_name, const std::string &variable);
 
  private:
   ros::ServiceClient opcua_connect_client_;
   ros::ServiceClient opcua_disconnect_client_;
   ros::ServiceClient opcua_read_client_;
   ros::ServiceClient opcua_write_client_;
-  std::string opcua_node_id_;
+  std::string opcua_node_id_prefix_;
 
   ros::Publisher data_publisher_;
   ros::Time last_time_;

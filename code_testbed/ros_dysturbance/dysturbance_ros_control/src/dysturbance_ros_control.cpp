@@ -49,7 +49,6 @@ dysturbanceControl::dysturbanceControl()
     platform_data_file_.open(data_file_name, std::ios_base::app);
     platform_data_file_ << "time; pendulum_position; pendulum_torque; contact_force; system_state";
     platform_data_file_ << std::fixed << std::setw(6) << std::setprecision(3) << std::setfill(' ');  //TODO: check values with data
-    system_state_ = "initialized";
 
     frequency_publisher_ = node_handle_.advertise<std_msgs::Int32>("frequency", 1);
     data_subscriber_ = node_handle_.subscribe("data_acquisition", 1, &dysturbanceControl::dataAcquisitionCallback, this);
@@ -73,7 +72,7 @@ void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event)
 }
 
 void dysturbanceControl::dataAcquisitionCallback(const dysturbance_ros_msgs::StateStamped &msg) {
-  device_.readOPCUA<std::string>("system_state", system_state_);
+  device_.readOPCUAInt32("System_State", system_state_);
   for (int i=0; i<msg.data.times.size(); i++) {
     platform_data_file_ << msg.data.times.at(i) << "; ";
     platform_data_file_ << msg.data.pendulum_positions.at(i) << "; ";

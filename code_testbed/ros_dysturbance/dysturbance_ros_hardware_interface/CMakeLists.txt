@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.0.2 FATAL_ERROR)
 project(dysturbance_ros_hardware_interface VERSION 0.0.1 LANGUAGES CXX)
 
+set(NIDAQmx_INCLUDE_DIRS $ENV{niextccompilersupp}include)
+set(NIDAQmx_LIBRARIES $ENV{niextccompilersupp}lib64/msvc)
+
 # Dependency Settings
 find_package(catkin REQUIRED
   COMPONENTS
@@ -11,7 +14,7 @@ find_package(catkin REQUIRED
 )
 
 include_directories(include
-  "C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/include"
+  ${NIDAQmx_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -30,6 +33,11 @@ catkin_package(
 # Exported libraries
 add_library(${PROJECT_NAME}
   src/dysturbance_ros_hardware_interface.cpp
+)
+
+target_link_directories(${PROJECT_NAME}
+  PUBLIC
+    ${NIDAQmx_LIBRARIES}
 )
 
 target_link_libraries(${PROJECT_NAME}
