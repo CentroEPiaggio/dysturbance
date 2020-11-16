@@ -26,6 +26,8 @@
  */
 
 #include <dysturbance_ros_control/dysturbance_ros_control.h>
+#include <windows.h>
+#include <shellapi.h>
 
 using namespace dysturbance_ros_control;
 
@@ -42,13 +44,24 @@ dysturbanceControl::dysturbanceControl()
   spinner_.start();
 
   if (init_success_) {
+    std::string base_path = "../Desktop/experiments/";
     std::string base_file_name = "subject_" + node_handle_.param<std::string>("subject/id", "0000");
     base_file_name += "_cond_" + node_handle_.param<std::string>("protocol/id", "0") + node_handle_.param<std::string>("protocol/parameters/id", "0000");
-    std::string data_file_name = base_file_name + "_run_" + node_handle_.param<std::string>("run_num", "01") + "_platformData.csv";
 
-    platform_data_file_.open(data_file_name, std::ios_base::app);
-    platform_data_file_ << "time; pendulum_position; pendulum_torque; contact_force; system_state";
-    platform_data_file_ << std::fixed << std::setw(6) << std::setprecision(3) << std::setfill(' ');  //TODO: check values with data
+    std::string config_file_name = base_path + base_file_name + "_testbed.yaml";
+    std::string rosparam_dump_cmd = "/c rosparam dump " + config_file_name + " " + node_handle_.getNamespace();
+    ShellExecuteA(nullptr, "open", "cmd.exe", rosparam_dump_cmd.c_str(), nullptr, SW_HIDE);
+
+    for (int i=0; true; i++) {
+      std::string data_file_name = base_path + base_file_name + "_run_" + std::to_string(i) + "_platformData.csv";
+      std::ifstream existing_data_file(data_file_name);
+      if (!existing_data_file.good()) {  // if file does not exist, it is the current run
+        platform_data_file_.open(data_file_name, std::ios_base::app);
+        platform_data_file_ << "time; pendulum_position; pendulum_torque; contact_force; system_state";
+        platform_data_file_ << std::fixed << std::setw(6) << std::setprecision(3) << std::setfill(' ');  //TODO: check values with data
+        break;
+      }
+    }
 
     frequency_publisher_ = node_handle_.advertise<std_msgs::Int32>("frequency", 1);
     data_subscriber_ = node_handle_.subscribe("data_acquisition", 1, &dysturbanceControl::dataAcquisitionCallback, this);
