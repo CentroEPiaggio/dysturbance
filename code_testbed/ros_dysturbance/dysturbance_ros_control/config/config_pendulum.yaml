@@ -1,4 +1,5 @@
 pendulum:
+  id: "0000"  # The integer unique identifier used for data storage
   length: 1.0  # The pendulum length [m]
   axis_height: 1.0  # The pendulum axis height [m]
   added_mass: 1.0  # The pendulum added mass (not including the pendulum mass itself) [kg]

@@ -1,3 +1,4 @@
 platform:
+  id: "00"  # The integer unique identifier used for data storage
   ground_inclination: 0.0  # The ground inclination [deg]
   ground_type: "default"  # The ground material type
