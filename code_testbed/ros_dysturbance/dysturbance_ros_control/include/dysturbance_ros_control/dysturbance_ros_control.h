@@ -29,6 +29,7 @@
 #define DYSTURBANCE_ROS_CONTROL_H
 
 // Standard libraries
+#include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <mutex>
@@ -56,6 +57,7 @@ class dysturbanceControl {
   ros::NodeHandle node_handle_control_;
   ros::Publisher frequency_publisher_;
   ros::Subscriber data_subscriber_;
+  ros::WallTimer control_setup_timer_;
   ros::WallTimer control_timer_;
   ros::WallTimer frequency_timer_;
   ros::WallDuration control_duration_;
@@ -71,8 +73,11 @@ class dysturbanceControl {
   controller_manager::ControllerManager controller_manager_;
 
   void controlCallback(const ros::WallTimerEvent &timer_event);
+  void controlSetupCallback(const ros::WallTimerEvent &timer_event);
   void dataAcquisitionCallback(const dysturbance_ros_msgs::StateStamped &msg);
   void frequencyCallback(const ros::WallTimerEvent &timer_event);
+  bool isUserChoiceValid(std::string &answer) const;
+  void promptUserChoice(const std::string &question) const;
   void update(const ros::WallTime &time, const ros::WallDuration &period);
 };
 

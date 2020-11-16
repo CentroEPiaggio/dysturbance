@@ -65,12 +65,12 @@ dysturbanceControl::dysturbanceControl()
 
     frequency_publisher_ = node_handle_.advertise<std_msgs::Int32>("frequency", 1);
     data_subscriber_ = node_handle_.subscribe("data_acquisition", 1, &dysturbanceControl::dataAcquisitionCallback, this);
-    control_timer_ = node_handle_control_.createWallTimer(control_duration_, &dysturbanceControl::controlCallback, this);
-    frequency_timer_ = node_handle_.createWallTimer(ros::WallDuration(1), &dysturbanceControl::frequencyCallback, this);
+    control_setup_timer_ = node_handle_.createWallTimer(ros::WallDuration(1.0), &qbDeviceControl::controlSetupCallback, this, true);  // oneshot
   }
 }
 
 dysturbanceControl::~dysturbanceControl() {
+  platform_data_file_.close();
   control_timer_.stop();
   frequency_timer_.stop();
   spinner_.stop();
@@ -81,7 +81,45 @@ void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event)
   update(timer_event.current_real, timer_event.current_real - timer_event.last_real);
   counter_++;
 
+  if (system_state_ == 0) {  // experiment has ended
+    platform_data_file_.close();
+    control_timer_.stop();
+    //TODO: prompt experiment details and exit
+  }
+
   // can serve async pending request when the lock is released
+}
+
+void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_event) {
+  control_setup_timer_.stop();
+
+  std::string protocol_id = node_handle_.param<std::string>("protocol/id", "0");
+  switch (std::stoi(protocol_id)) {
+    case 1:
+      //TODO add protocol initial computations
+      break;
+    case 2:
+      //TODO add protocol initial computations
+      break;
+    case 3:
+      //TODO add protocol initial computations
+      break;
+    default:  // unexpected protocol number
+      return;
+  }
+
+  //TODO: add protocol details
+  promptUserChoice("Do you want to start the current protocol with the given settings?");  // blocking
+  ROS_INFO_STREAM("Starting Protocol " + protocol_id + "...");
+  device_.writeOPCUABool("Protocol_" + protocol_id + "_Enable", true);
+
+  //TODO: add experiment details
+  promptUserChoice("Do you want to start the current experiment?");  // blocking
+  ROS_INFO_STREAM("Starting Experiment...");
+  device_.writeOPCUABool("Protocol_" + protocol_id + "_Start_Experiment", true);
+
+  control_timer_ = node_handle_control_.createWallTimer(control_duration_, &dysturbanceControl::controlCallback, this);
+  frequency_timer_ = node_handle_.createWallTimer(ros::WallDuration(1), &dysturbanceControl::frequencyCallback, this);
 }
 
 void dysturbanceControl::dataAcquisitionCallback(const dysturbance_ros_msgs::StateStamped &msg) {
@@ -98,6 +136,21 @@ void dysturbanceControl::dataAcquisitionCallback(const dysturbance_ros_msgs::Sta
 void dysturbanceControl::frequencyCallback(const ros::WallTimerEvent &timer_event) {
   ROS_DEBUG_STREAM("Control node frequency: " << counter_ << "Hz");
   frequency_publisher_.publish([this](){ std_msgs::Int32 hz_msg; hz_msg.data = counter_; counter_ = 0; return hz_msg; }());  // publish the control loop real Hz
+}
+
+bool dysturbanceControl::isUserChoiceValid(std::string &answer) {
+  std::transform(answer.begin(), answer.end(), answer.begin(), ::tolower);
+  return answer == "y" || answer == "n" || answer == "yes" || answer == "no";
+}
+
+void dysturbanceControl::promptUserChoice(const std::string &question) {
+  std::string answer = "";
+  do {
+    ROS_INFO_STREAM(question + "[Y/n]");
+  } while(std::cin >> answer && !isUserChoiceValid(answer));
+  if (!std::cin) {
+    throw std::runtime_error("User input read failed...");
+  }
 }
 
 void dysturbanceControl::update(const ros::WallTime &time, const ros::WallDuration &period) {
