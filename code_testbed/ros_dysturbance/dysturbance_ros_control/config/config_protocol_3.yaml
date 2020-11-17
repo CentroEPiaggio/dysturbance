@@ -4,7 +4,7 @@ protocol:
   notes: ""  # Some relevant notes regarding the experiment setup
   repetitions: 3  # The number of repetitions of the experiment
   parameters:
-    id: "0000"  # The integer unique identifier used for data storage
+    id: "000"  # The integer unique identifier used for data storage
     force_amplitude: 0.0  # The pendulum sinusoidal force amplitude [N]
     frequency: 0.0  # The pendulum oscillation frequency [Hz]
     cycles_number: 10  # The number of sinusoidal periods

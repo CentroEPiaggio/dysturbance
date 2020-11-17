@@ -4,5 +4,5 @@ protocol:
   notes: ""  # Some relevant notes regarding the experiment setup
   repetitions: 3  # The number of repetitions of the experiment
   parameters:
-    id: "0"  # The integer unique identifier used for data storage
+    id: "000"  # The integer unique identifier used for data storage
     force_ramp_slope: 0.0  # The pendulum force ramp slope [N/s]

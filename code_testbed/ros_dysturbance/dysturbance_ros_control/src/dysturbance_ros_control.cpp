@@ -45,8 +45,11 @@ dysturbanceControl::dysturbanceControl()
 
   if (init_success_) {
     std::string base_path = "../Desktop/experiments/";
-    std::string base_file_name = "subject_" + node_handle_.param<std::string>("subject/id", "0000");
-    base_file_name += "_cond_" + node_handle_.param<std::string>("protocol/id", "0") + node_handle_.param<std::string>("protocol/parameters/id", "0000");
+    std::string base_file_name = "subject_" + node_handle_.param<std::string>("subject/id", "0000") + "_cond_";
+    base_file_name += node_handle_.param<std::string>("protocol/id", "0");
+    base_file_name += node_handle_.param<std::string>("protocol/parameters/id", "000");
+    base_file_name += node_handle_.param<std::string>("pendulum/id", "0000");
+    base_file_name += node_handle_.param<std::string>("platform/id", "00");
 
     std::string config_file_name = base_path + base_file_name + "_testbed.yaml";
     std::string rosparam_dump_cmd = "/c rosparam dump " + config_file_name + " " + node_handle_.getNamespace();
@@ -97,7 +100,8 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
   ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
   ROS_INFO_STREAM("  Protocol ID : " << protocol_id);
   ROS_INFO_STREAM("  Protocol Name : " << node_handle_.param<std::string>("protocol/name", "undefined"));
-  ROS_INFO_STREAM("  Protocol Parameters : ");
+  ROS_INFO_STREAM("  Protocol Parameters :");
+  ROS_INFO_STREAM("   * ID : " << node_handle_.param<std::string>("protocol/parameters/id", "undefined"));
   switch (std::stoi(protocol_id)) {
     case 1:
       //TODO add protocol initial computations
@@ -126,11 +130,28 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
     default:  // unexpected protocol number
       return;
   }
-  ROS_INFO_STREAM("  Pendulum Parameters : ");
+  ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
+  ROS_INFO_STREAM("  Pendulum ID : " << node_handle_.param<std::string>("pendulum/id", "undefined"));
+  ROS_INFO_STREAM("  Pendulum Parameters :");
   ROS_INFO_STREAM("   * Length : " << node_handle_.param<float>("pendulum/length", 0.0) << " [m]");
   ROS_INFO_STREAM("   * Axis Height : " << node_handle_.param<float>("pendulum/axis_height", 0.0) << " [m]");
   ROS_INFO_STREAM("   * Added Mass : " << node_handle_.param<float>("pendulum/added_mass", 0.0) << " [kg]");
   ROS_INFO_STREAM("   * Tip Type : " << node_handle_.param<std::string>("pendulum/tip_type", "undefined"));
+  ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
+  ROS_INFO_STREAM("  Platform ID : " << node_handle_.param<std::string>("platform/id", "undefined"));
+  ROS_INFO_STREAM("  Platform Parameters :");
+  ROS_INFO_STREAM("   * Ground Inclination : " << node_handle_.param<float>("platform/ground_inclination", 0.0) << " [deg]");
+  ROS_INFO_STREAM("   * Ground Type : " << node_handle_.param<std::string>("platform/ground_type", "undefined"));
+  ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
+  ROS_INFO_STREAM("  Subject ID : " << node_handle_.param<std::string>("subject/id", "undefined"));
+  ROS_INFO_STREAM("  Subject Name : " << node_handle_.param<std::string>("subject/name", "undefined"));
+  ROS_INFO_STREAM("  Subject Parameters :");
+  ROS_INFO_STREAM("   * Mass : " << node_handle_.param<float>("subject/mass", 0.0) << " [kg]");
+  ROS_INFO_STREAM("   * Height : " << node_handle_.param<float>("subject/height", 0.0) << " [m]");
+  ROS_INFO_STREAM("   * CoM Height : " << node_handle_.param<float>("subject/com_height", 0.0) << " [m]");
+  ROS_INFO_STREAM("   * Base Depth : " << node_handle_.param<float>("subject/base_depth", 0.0) << " [m]");
+  ROS_INFO_STREAM("   * Base Width : " << node_handle_.param<float>("subject/base_width", 0.0) << " [m]");
+  ROS_INFO_STREAM("   * Orientation : " << node_handle_.param<float>("subject/orientation", 0.0) << " [deg]");
   ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
 
   if (!promptUserChoice("Do you want to start the current protocol with the given settings?")) {  // blocking
