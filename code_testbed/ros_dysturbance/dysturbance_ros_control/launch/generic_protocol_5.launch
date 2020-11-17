@@ -1,0 +1,9 @@
+<launch>
+  <!-- start the control node to execute the experiment and start the data acquisition -->
+  <include file="$(find dysturbance_ros_control)/launch/generic_protocol.launch">
+    <arg name="config_pendulum" value="config_pendulum"/>
+    <arg name="config_platform" value="config_platform"/>
+    <arg name="config_protocol" value="config_protocol_5"/>
+    <arg name="config_subject" value="config_subject"/>
+  </include>
+</launch>

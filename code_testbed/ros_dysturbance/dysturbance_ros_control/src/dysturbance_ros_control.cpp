@@ -104,6 +104,12 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
     case 3:
       //TODO add protocol initial computations
       break;
+    case 4:
+      //TODO add protocol initial computations
+      break;
+    case 5:
+      //TODO add protocol initial computations
+      break;
     default:  // unexpected protocol number
       return;
   }
