@@ -68,7 +68,7 @@ dysturbanceControl::dysturbanceControl()
 
     frequency_publisher_ = node_handle_.advertise<std_msgs::Int32>("frequency", 1);
     data_subscriber_ = node_handle_.subscribe("data_acquisition", 1, &dysturbanceControl::dataAcquisitionCallback, this);
-    control_setup_timer_ = node_handle_.createWallTimer(ros::WallDuration(1.0), &qbDeviceControl::controlSetupCallback, this, true);  // oneshot
+    control_setup_timer_ = node_handle_.createWallTimer(ros::WallDuration(1.0), &dysturbanceControl::controlSetupCallback, this, true);  // oneshot
   }
 }
 
@@ -161,7 +161,7 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
   ROS_INFO_STREAM("Starting Protocol " << protocol_id << "...");
   device_.writeOPCUABool("Protocol_" + protocol_id + "_Enable", true);
 
-  if (!promptUserChoice("Do you want to start the current experiment?") {  // blocking
+  if (!promptUserChoice("Do you want to start the current experiment?")) {  // blocking
     ROS_INFO_STREAM("Terminating by user...");
     //TODO call a terminating routine for the motion controller
     return;
@@ -189,12 +189,12 @@ void dysturbanceControl::frequencyCallback(const ros::WallTimerEvent &timer_even
   frequency_publisher_.publish([this](){ std_msgs::Int32 hz_msg; hz_msg.data = counter_; counter_ = 0; return hz_msg; }());  // publish the control loop real Hz
 }
 
-bool dysturbanceControl::isUserChoiceValid(std::string &answer) {
+bool dysturbanceControl::isUserChoiceValid(std::string &answer) const {
   std::transform(answer.begin(), answer.end(), answer.begin(), ::tolower);
   return answer == "y" || answer == "n" || answer == "yes" || answer == "no";
 }
 
-bool dysturbanceControl::promptUserChoice(const std::string &question) {
+bool dysturbanceControl::promptUserChoice(const std::string &question) const {
   std::string answer = "";
   do {
     ROS_INFO_STREAM(question + "[Y/n]");
