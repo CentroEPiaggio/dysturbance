@@ -6,6 +6,5 @@ protocol:
   parameters:
     id: "0000"  # The integer unique identifier used for data storage
     displacement_amplitude: 0.0  # The pendulum sinusoidal displacement amplitude [deg]
-    displacement_midline: 0.0  # The pendulum sinusoidal displacement midline offset [deg]
     frequency: 0.0  # The pendulum oscillation frequency [Hz]
     cycles_number: 10  # The number of sinusoidal periods
