@@ -133,13 +133,18 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
   ROS_INFO_STREAM("   * Tip Type : " << node_handle_.param<std::string>("pendulum/tip_type", "undefined"));
   ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
 
-  //TODO: add protocol details
-  promptUserChoice("Do you want to start the current protocol with the given settings?");  // blocking
+  if (!promptUserChoice("Do you want to start the current protocol with the given settings?")) {  // blocking
+    ROS_INFO_STREAM("Terminating by user...");
+    return;
+  }
   ROS_INFO_STREAM("Starting Protocol " << protocol_id << "...");
   device_.writeOPCUABool("Protocol_" + protocol_id + "_Enable", true);
 
-  //TODO: add experiment details
-  promptUserChoice("Do you want to start the current experiment?");  // blocking
+  if (!promptUserChoice("Do you want to start the current experiment?") {  // blocking
+    ROS_INFO_STREAM("Terminating by user...");
+    //TODO call a terminating routine for the motion controller
+    return;
+  }
   ROS_INFO_STREAM("Starting Experiment...");
   device_.writeOPCUABool("Protocol_" + protocol_id + "_Start_Experiment", true);
 
@@ -168,7 +173,7 @@ bool dysturbanceControl::isUserChoiceValid(std::string &answer) {
   return answer == "y" || answer == "n" || answer == "yes" || answer == "no";
 }
 
-void dysturbanceControl::promptUserChoice(const std::string &question) {
+bool dysturbanceControl::promptUserChoice(const std::string &question) {
   std::string answer = "";
   do {
     ROS_INFO_STREAM(question + "[Y/n]");
@@ -176,6 +181,7 @@ void dysturbanceControl::promptUserChoice(const std::string &question) {
   if (!std::cin) {
     throw std::runtime_error("User input read failed...");
   }
+  return answer == "y" || answer == "yes";
 }
 
 void dysturbanceControl::update(const ros::WallTime &time, const ros::WallDuration &period) {

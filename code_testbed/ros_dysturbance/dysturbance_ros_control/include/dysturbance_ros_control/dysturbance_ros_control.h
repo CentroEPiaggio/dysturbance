@@ -77,7 +77,7 @@ class dysturbanceControl {
   void dataAcquisitionCallback(const dysturbance_ros_msgs::StateStamped &msg);
   void frequencyCallback(const ros::WallTimerEvent &timer_event);
   bool isUserChoiceValid(std::string &answer) const;
-  void promptUserChoice(const std::string &question) const;
+  bool promptUserChoice(const std::string &question) const;
   void update(const ros::WallTime &time, const ros::WallDuration &period);
 };
 
