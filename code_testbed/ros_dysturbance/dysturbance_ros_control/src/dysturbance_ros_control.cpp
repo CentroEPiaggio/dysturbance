@@ -94,29 +94,48 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
   control_setup_timer_.stop();
 
   std::string protocol_id = node_handle_.param<std::string>("protocol/id", "0");
+  ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
+  ROS_INFO_STREAM("  Protocol ID : " << protocol_id);
+  ROS_INFO_STREAM("  Protocol Name : " << node_handle_.param<std::string>("protocol/name", "undefined"));
+  ROS_INFO_STREAM("  Protocol Parameters : ");
   switch (std::stoi(protocol_id)) {
     case 1:
       //TODO add protocol initial computations
+      ROS_INFO_STREAM("   * Initial Energy : " << node_handle_.param<float>("protocol/parameters/initial_energy", 0.0) << " [J]");
       break;
     case 2:
       //TODO add protocol initial computations
+      ROS_INFO_STREAM("   * Displacement Amplitude : " << node_handle_.param<float>("protocol/parameters/displacement_amplitude", 0.0) << " [deg]");
+      ROS_INFO_STREAM("   * Sinusoid Frequency : " << node_handle_.param<float>("protocol/parameters/frequency", 0.0) << " [Hz]");
+      ROS_INFO_STREAM("   * Cycles Number : " << node_handle_.param<int>("protocol/parameters/cycles_number", 0) << " [#]");
       break;
     case 3:
       //TODO add protocol initial computations
+      ROS_INFO_STREAM("   * Force Amplitude : " << node_handle_.param<float>("protocol/parameters/force_amplitude", 0.0) << " [N]");
+      ROS_INFO_STREAM("   * Sinusoid Frequency : " << node_handle_.param<float>("protocol/parameters/frequency", 0.0) << " [Hz]");
+      ROS_INFO_STREAM("   * Cycles Number : " << node_handle_.param<int>("protocol/parameters/cycles_number", 0) << " [#]");
       break;
     case 4:
       //TODO add protocol initial computations
+      ROS_INFO_STREAM("   * Displacement Ramp Slope : " << node_handle_.param<float>("protocol/parameters/displacement_ramp_slope", 0.0) << " [deg/s]");
       break;
     case 5:
       //TODO add protocol initial computations
+      ROS_INFO_STREAM("   * Force Ramp Slope : " << node_handle_.param<float>("protocol/parameters/force_ramp_slope", 0.0) << " [N/s]");
       break;
     default:  // unexpected protocol number
       return;
   }
+  ROS_INFO_STREAM("  Pendulum Parameters : ");
+  ROS_INFO_STREAM("   * Length : " << node_handle_.param<float>("pendulum/length", 0.0) << " [m]");
+  ROS_INFO_STREAM("   * Axis Height : " << node_handle_.param<float>("pendulum/axis_height", 0.0) << " [m]");
+  ROS_INFO_STREAM("   * Added Mass : " << node_handle_.param<float>("pendulum/added_mass", 0.0) << " [kg]");
+  ROS_INFO_STREAM("   * Tip Type : " << node_handle_.param<std::string>("pendulum/tip_type", "undefined"));
+  ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
 
   //TODO: add protocol details
   promptUserChoice("Do you want to start the current protocol with the given settings?");  // blocking
-  ROS_INFO_STREAM("Starting Protocol " + protocol_id + "...");
+  ROS_INFO_STREAM("Starting Protocol " << protocol_id << "...");
   device_.writeOPCUABool("Protocol_" + protocol_id + "_Enable", true);
 
   //TODO: add experiment details
