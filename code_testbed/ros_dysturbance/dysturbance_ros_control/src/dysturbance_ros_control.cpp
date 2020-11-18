@@ -105,18 +105,25 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
   ROS_INFO_STREAM("   * ID : " << node_handle_.param<std::string>("protocol/parameters/id", "undefined"));
   switch (std::stoi(protocol_id)) {
     case 1:
-      //TODO add protocol initial computations
-      ROS_INFO_STREAM("   * Initial Energy : " << node_handle_.param<float>("protocol/parameters/initial_energy", 0.0) << " [J]");
+      {
+        double p1_upper_position = 0;  //TODO add protocol initial computations
+        device_.writeOPCUAFloat64("P1_Upper_Position", p1_upper_position);
+        ROS_INFO_STREAM("   * Initial Energy : " << p1_upper_position << " [J]");
+      }
       break;
     case 2:
-      //TODO add protocol initial computations
+      device_.writeOPCUAFloat64("P2_Displacement_Amplitude", node_handle_.param<float>("protocol/parameters/displacement_amplitude", 0.0));
+      device_.writeOPCUAFloat64("P2_Frequency", node_handle_.param<float>("protocol/parameters/frequency", 0.0));
+      device_.writeOPCUAUInt16("P2_Cycles", node_handle_.param<int>("protocol/parameters/cycles_number", 0));
       ROS_INFO_STREAM("   * Displacement Amplitude : " << node_handle_.param<float>("protocol/parameters/displacement_amplitude", 0.0) << " [deg]");
       ROS_INFO_STREAM("   * Sinusoid Frequency : " << node_handle_.param<float>("protocol/parameters/frequency", 0.0) << " [Hz]");
       ROS_INFO_STREAM("   * Cycles Number : " << node_handle_.param<int>("protocol/parameters/cycles_number", 0) << " [#]");
       break;
     case 3:
-      //TODO add protocol initial computations
-      ROS_INFO_STREAM("   * Force Amplitude : " << node_handle_.param<float>("protocol/parameters/force_amplitude", 0.0) << " [N]");
+      device_.writeOPCUAFloat64("P3_Displacement_Amplitude", node_handle_.param<float>("protocol/parameters/displacement_amplitude", 0.0));
+      device_.writeOPCUAFloat64("P3_Frequency", node_handle_.param<float>("protocol/parameters/frequency", 0.0));
+      device_.writeOPCUAUInt16("P3_Cycles", node_handle_.param<int>("protocol/parameters/cycles_number", 0));
+      ROS_INFO_STREAM("   * Displacement Amplitude : " << node_handle_.param<float>("protocol/parameters/displacement_amplitude", 0.0) << " [deg]");
       ROS_INFO_STREAM("   * Sinusoid Frequency : " << node_handle_.param<float>("protocol/parameters/frequency", 0.0) << " [Hz]");
       ROS_INFO_STREAM("   * Cycles Number : " << node_handle_.param<int>("protocol/parameters/cycles_number", 0) << " [#]");
       break;
