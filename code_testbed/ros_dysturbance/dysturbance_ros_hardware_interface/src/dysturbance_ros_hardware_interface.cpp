@@ -44,18 +44,23 @@ dysturbanceHW::~dysturbanceHW() {
 }
 
 bool dysturbanceHW::init(ros::NodeHandle &root_nh, ros::NodeHandle &robot_hw_nh) {
-  opcua_connect_client_ = robot_hw_nh.serviceClient<ros_opcua_srvs::Connect>("connect");
-  opcua_disconnect_client_ = robot_hw_nh.serviceClient<ros_opcua_srvs::Disconnect>("disconnect");
-  opcua_read_client_ = robot_hw_nh.serviceClient<ros_opcua_srvs::Read>("read");
-  opcua_write_client_ = robot_hw_nh.serviceClient<ros_opcua_srvs::Write>("write");
+  opcua_connect_client_ = robot_hw_nh.serviceClient<ros_opcua_srvs::Connect>("opcua_client/connect");
+  opcua_disconnect_client_ = robot_hw_nh.serviceClient<ros_opcua_srvs::Disconnect>("opcua_client/disconnect");
+  opcua_read_client_ = robot_hw_nh.serviceClient<ros_opcua_srvs::Read>("opcua_client/read");
+  opcua_write_client_ = robot_hw_nh.serviceClient<ros_opcua_srvs::Write>("opcua_client/write");
 
   ros_opcua_srvs::Connect srv;
   srv.request.endpoint = "opc.tcp://192.168.250.1:4840";
-  if (!opcua_connect_client_.call(srv)) {  //TODO: check if it needs to wait for OPC-UA to startup
-    ROS_ERROR_STREAM("OPC-UA error: failed to connect to " << srv.request.endpoint << ".");
-    return false;
+  for (int i=0; i<5; i++) {
+    if (!opcua_connect_client_.call(srv)) {
+      ROS_ERROR_STREAM("OPC-UA error: failed to connect to " << srv.request.endpoint << ".");
+      ros::Duration(1.0).sleep();
+    }
+    if (i == 4) {
+      return false;
+    }
   }
-  opcua_node_id_prefix_ = "ns=4;s=";  //TODO: check if it needs to be a param
+  opcua_node_id_prefix_ = "ns=4;s=";
 
   std::string error_string;
   channels_ = "Dev1/ai0, Dev1/ai2, Dev1/ai4";
