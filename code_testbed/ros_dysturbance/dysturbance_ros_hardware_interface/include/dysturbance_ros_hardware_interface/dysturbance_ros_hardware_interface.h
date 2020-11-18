@@ -60,11 +60,13 @@ class dysturbanceHW : public hardware_interface::RobotHW {
   void write(const ros::Time &time, const ros::Duration &period) override;
 
   void readOPCUABool(const std::string &variable_name, bool &variable);
-  void readOPCUAInt32(const std::string &variable_name, int &variable);
+  void readOPCUAInt16(const std::string &variable_name, int &variable);
+  void readOPCUAUInt16(const std::string &variable_name, int &variable);
   void readOPCUAFloat64(const std::string &variable_name, double &variable);
   void readOPCUAString(const std::string &variable_name, std::string &variable);
   void writeOPCUABool(const std::string &variable_name, bool variable);
-  void writeOPCUAInt32(const std::string &variable_name, int variable);
+  void writeOPCUAInt16(const std::string &variable_name, int variable);
+  void writeOPCUAUInt16(const std::string &variable_name, int variable);
   void writeOPCUAFloat64(const std::string &variable_name, double variable);
   void writeOPCUAString(const std::string &variable_name, const std::string &variable);
 
