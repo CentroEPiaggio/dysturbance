@@ -84,7 +84,8 @@ void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event)
   update(timer_event.current_real, timer_event.current_real - timer_event.last_real);
   counter_++;
 
-  if (system_state_ == 0) {  // experiment has ended
+  if (system_state_ < 100) {  // experiment has ended
+    device_.stopAcquisition();
     platform_data_file_.close();
     control_timer_.stop();
     //TODO: prompt experiment details and exit
@@ -159,22 +160,25 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
     return;
   }
   ROS_INFO_STREAM("Starting Protocol " << protocol_id << "...");
-  device_.writeOPCUABool("Protocol_" + protocol_id + "_Enable", true);
+  device_.writeOPCUABool("P" + protocol_id + "_Enable", true);
 
   if (!promptUserChoice("Do you want to start the current experiment?")) {  // blocking
     ROS_INFO_STREAM("Terminating by user...");
     //TODO call a terminating routine for the motion controller
     return;
   }
+  if (!device_.startAcquisition()) {
+    return;
+  }
   ROS_INFO_STREAM("Starting Experiment...");
-  device_.writeOPCUABool("Protocol_" + protocol_id + "_Start_Experiment", true);
+  device_.writeOPCUABool("P" + protocol_id + "_Start_Experiment", true);
 
   control_timer_ = node_handle_control_.createWallTimer(control_duration_, &dysturbanceControl::controlCallback, this);
   frequency_timer_ = node_handle_.createWallTimer(ros::WallDuration(1), &dysturbanceControl::frequencyCallback, this);
 }
 
 void dysturbanceControl::dataAcquisitionCallback(const dysturbance_ros_msgs::StateStamped &msg) {
-  device_.readOPCUAInt32("System_State", system_state_);
+  device_.readOPCUAUInt16("P0_System_State", system_state_);
   for (int i=0; i<msg.data.times.size(); i++) {
     platform_data_file_ << std::setw(12) << msg.data.times.at(i) << "; ";
     platform_data_file_ << std::setw(12) << msg.data.pendulum_positions.at(i) << "; ";  //TODO: convert mV data to proper units
