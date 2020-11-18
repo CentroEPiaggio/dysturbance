@@ -166,19 +166,21 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
     ROS_INFO_STREAM("Terminating by user...");
     return;
   }
-  ROS_INFO_STREAM("Starting Protocol " << protocol_id << "...");
   device_.writeOPCUABool("P" + protocol_id + "_Enable", true);
+  ROS_INFO_STREAM("Starting Protocol " << protocol_id << "...");
 
   if (!promptUserChoice("Do you want to start the current experiment?")) {  // blocking
+    device_.writeOPCUABool("P0_Terminate", true);
     ROS_INFO_STREAM("Terminating by user...");
-    //TODO call a terminating routine for the motion controller
     return;
   }
   if (!device_.startAcquisition()) {
+    device_.writeOPCUABool("P0_Terminate", true);
+    ROS_ERROR_STREAM("Terminating by system...");
     return;
   }
-  ROS_INFO_STREAM("Starting Experiment...");
   device_.writeOPCUABool("P" + protocol_id + "_Start_Experiment", true);
+  ROS_INFO_STREAM("Starting Experiment...");
 
   control_timer_ = node_handle_control_.createWallTimer(control_duration_, &dysturbanceControl::controlCallback, this);
   frequency_timer_ = node_handle_.createWallTimer(ros::WallDuration(1), &dysturbanceControl::frequencyCallback, this);
