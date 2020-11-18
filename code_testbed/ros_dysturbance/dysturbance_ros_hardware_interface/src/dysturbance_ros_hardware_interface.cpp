@@ -109,10 +109,11 @@ void dysturbanceHW::read(const ros::Time &time, const ros::Duration &period) {
   float64 time_slot = (current_time-last_time_).toSec()/samples_read;
   for (int i=0; i<samples_read; i++) {
     msg.data.times.push_back((last_time_-init_time_).toSec() + i*time_slot);
-    msg.data.pendulum_positions.push_back(data.at(i*NUM_CHANNELS));
-    msg.data.pendulum_torques.push_back(data.at(i*NUM_CHANNELS) + 1);
-    msg.data.contact_forces.push_back(data.at(i*NUM_CHANNELS) + 2);
   }
+  std::copy_n(data.begin(), NUM_SAMPLES_PER_CHANNEL, std::back_inserter(msg.data.pendulum_positions));
+  std::copy_n(data.begin()+NUM_SAMPLES_PER_CHANNEL, NUM_SAMPLES_PER_CHANNEL, std::back_inserter(msg.data.pendulum_torques));
+  std::copy_n(data.begin()+2*NUM_SAMPLES_PER_CHANNEL, NUM_SAMPLES_PER_CHANNEL, std::back_inserter(msg.data.contact_forces));
+
   msg.data.is_reliable = samples_read == NUM_SAMPLES_PER_CHANNEL;
   msg.header.stamp = current_time;
   msg.header.frame_id = channels_;
