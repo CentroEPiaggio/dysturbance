@@ -60,8 +60,8 @@ dysturbanceControl::dysturbanceControl()
       std::ifstream existing_data_file(data_file_name);
       if (!existing_data_file.good()) {  // if file does not exist, it is the current run
         platform_data_file_.open(data_file_name, std::ios_base::app);
-        platform_data_file_ << "time; pendulum_position; pendulum_torque; contact_force; system_state";
-        platform_data_file_ << std::fixed << std::setw(6) << std::setprecision(3) << std::setfill(' ');  //TODO: check values with data
+        platform_data_file_ << "time; pendulum_position; pendulum_torque; contact_force; system_state" << std::endl;
+        platform_data_file_ << std::fixed << std::setprecision(6) << std::setfill(' ');
         break;
       }
     }
@@ -176,10 +176,10 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
 void dysturbanceControl::dataAcquisitionCallback(const dysturbance_ros_msgs::StateStamped &msg) {
   device_.readOPCUAInt32("System_State", system_state_);
   for (int i=0; i<msg.data.times.size(); i++) {
-    platform_data_file_ << msg.data.times.at(i) << "; ";
-    platform_data_file_ << msg.data.pendulum_positions.at(i) << "; ";
-    platform_data_file_ << msg.data.pendulum_torques.at(i) << "; ";
-    platform_data_file_ << msg.data.contact_forces.at(i) << "; ";
+    platform_data_file_ << std::setw(12) << msg.data.times.at(i) << "; ";
+    platform_data_file_ << std::setw(12) << msg.data.pendulum_positions.at(i) << "; ";  //TODO: convert mV data to proper units
+    platform_data_file_ << std::setw(12) << msg.data.pendulum_torques.at(i) << "; ";  //TODO: convert mV data to proper units
+    platform_data_file_ << std::setw(12) << msg.data.contact_forces.at(i) << "; ";  //TODO: convert mV data to proper units
     platform_data_file_ << system_state_ << std::endl;
   }
 }
