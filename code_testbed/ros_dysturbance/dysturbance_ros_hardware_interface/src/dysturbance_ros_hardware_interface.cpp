@@ -76,13 +76,27 @@ bool dysturbanceHW::init(ros::NodeHandle &root_nh, ros::NodeHandle &robot_hw_nh)
     ROS_ERROR_STREAM("NI DAQmxCfgSampClkTiming failed with error : " << error_string << ".");
     return false;
   }
+  data_publisher_ = robot_hw_nh.advertise<dysturbance_ros_msgs::StateStamped>("data_acquisition", 1);
+  return true;
+}
+
+bool dysturbanceHW::startAcquisition() {
+  std::string error_string;
   if (errorCodeToString(DAQmxStartTask(task_handle_), error_string)) {
     ROS_ERROR_STREAM("NI DAQmxStartTask failed with error : " << error_string << ".");
     return false;
   }
-  data_publisher_ = robot_hw_nh.advertise<dysturbance_ros_msgs::StateStamped>("data_acquisition", 1);
   init_time_ = ros::Time::now();
   last_time_ = init_time_;
+  return true;
+}
+
+bool dysturbanceHW::stopAcquisition() {
+  std::string error_string;
+  if (errorCodeToString(DAQmxStopTask(task_handle_), error_string)) {
+    ROS_ERROR_STREAM("NI DAQmxStopTask failed with error : " << error_string << ".");
+    return false;
+  }
   return true;
 }
 
@@ -91,7 +105,7 @@ void dysturbanceHW::read(const ros::Time &time, const ros::Duration &period) {
   int32 samples_read = 0;
   std::vector<float64> data(NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, 0);
 
-  if (errorCodeToString(DAQmxReadAnalogF64(task_handle_, NUM_SAMPLES_PER_CHANNEL, 0.002, DAQmx_Val_GroupByChannel, &data[0], NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, &samples_read, nullptr), error_string)) {
+  if (errorCodeToString(DAQmxReadAnalogF64(task_handle_, NUM_SAMPLES_PER_CHANNEL, 0.005, DAQmx_Val_GroupByChannel, &data[0], NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, &samples_read, nullptr), error_string)) {
     ROS_ERROR_STREAM("NI DAQmxCreateAIVoltageChan failed with error : " << error_string << ".");
     return;
   }
