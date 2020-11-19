@@ -3,7 +3,6 @@
   <arg name="config_platform" doc="The configuration parameters of the platform for the current experiment."/>
   <arg name="config_protocol" doc="The configuration parameters of the protocol for the current experiment."/>
   <arg name="config_subject" doc="The configuration parameters of the subject for the current experiment."/>
-  <arg name="debug_acquisition" default="false" doc="Set to exclude protocols and perform only data acquisition."/>
 
   <group ns="dysturbance">
     <!-- pendulum information -->
@@ -19,7 +18,7 @@
     <rosparam file="$(eval find('dysturbance_ros_control') + '/config/' + config_subject + '.yaml')" command="load"/>
 
     <!-- debug -->
-    <param name="debug_acquisition" type="bool" value="$(arg debug_acquisition)"/>
+    <param name="debug_acquisition" type="bool" value="false"/>
 
     <!-- start the control node to execute the experiment and start the data acquisition -->
     <node name="data_acquisition" pkg="dysturbance_ros_control" type="dysturbance_ros_default"

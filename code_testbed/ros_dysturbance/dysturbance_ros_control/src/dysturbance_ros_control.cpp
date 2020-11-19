@@ -84,7 +84,7 @@ void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event)
   update(timer_event.current_real, timer_event.current_real - timer_event.last_real);
   counter_++;
 
-  if (system_state_ < 100) {  // experiment has ended
+  if (system_state_ < 100 && !node_handle_.param<bool>("debug_acquisition", false)) {  // experiment has ended
     device_.stopAcquisition();
     platform_data_file_.close();
     control_timer_.stop();
