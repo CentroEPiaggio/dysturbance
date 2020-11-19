@@ -88,6 +88,7 @@ void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event)
     device_.stopAcquisition();
     platform_data_file_.close();
     control_timer_.stop();
+    GenerateConsoleCtrlEvent(0, 0);
     //TODO: prompt experiment details and exit
   }
 
