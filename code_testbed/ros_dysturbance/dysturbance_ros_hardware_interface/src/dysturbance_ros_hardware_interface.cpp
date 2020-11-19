@@ -52,7 +52,9 @@ bool dysturbanceHW::init(ros::NodeHandle &root_nh, ros::NodeHandle &robot_hw_nh)
   ros_opcua_srvs::Connect srv;
   srv.request.endpoint = "opc.tcp://192.168.250.1:4840";
   for (int i=0; i<5; i++) {
-    if (!opcua_connect_client_.call(srv)) {
+    if (opcua_connect_client_.call(srv)) {
+      break;
+    } else {
       ROS_ERROR_STREAM("OPC-UA error: failed to connect to " << srv.request.endpoint << ".");
       ros::Duration(1.0).sleep();
     }
