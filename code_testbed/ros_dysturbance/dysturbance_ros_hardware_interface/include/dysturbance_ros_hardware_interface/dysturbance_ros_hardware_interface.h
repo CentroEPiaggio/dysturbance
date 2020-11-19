@@ -44,7 +44,7 @@
 #include <dysturbance_ros_msgs/dysturbance_ros_msgs.h>
 
 #define NIDAQ_SAMPLING_FREQUENCY 10000
-#define STORAGE_FREQUENCY 250
+#define STORAGE_FREQUENCY 100
 #define NUM_CHANNELS 3
 #define NUM_SAMPLES_PER_CHANNEL (NIDAQ_SAMPLING_FREQUENCY/STORAGE_FREQUENCY)
 
