@@ -98,90 +98,99 @@ void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event)
 void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_event) {
   control_setup_timer_.stop();
 
-  std::string protocol_id = node_handle_.param<std::string>("protocol/id", "0");
-  ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
-  ROS_INFO_STREAM("  Protocol ID : " << protocol_id);
-  ROS_INFO_STREAM("  Protocol Name : " << node_handle_.param<std::string>("protocol/name", "undefined"));
-  ROS_INFO_STREAM("  Protocol Parameters :");
-  ROS_INFO_STREAM("   * ID : " << node_handle_.param<std::string>("protocol/parameters/id", "undefined"));
-  switch (std::stoi(protocol_id)) {
-    case 1:
-      {
-        double p1_upper_position = 0;  //TODO add protocol initial computations
-        device_.writeOPCUAFloat64("P1_Upper_Position", p1_upper_position);
-        ROS_INFO_STREAM("   * Initial Energy : " << p1_upper_position << " [J]");
-      }
-      break;
-    case 2:
-      device_.writeOPCUAFloat64("P2_Displacement_Amplitude", node_handle_.param<float>("protocol/parameters/displacement_amplitude", 0.0));
-      device_.writeOPCUAFloat64("P2_Frequency", node_handle_.param<float>("protocol/parameters/frequency", 0.0));
-      device_.writeOPCUAUInt16("P2_Cycles", node_handle_.param<int>("protocol/parameters/cycles_number", 0));
-      ROS_INFO_STREAM("   * Displacement Amplitude : " << node_handle_.param<float>("protocol/parameters/displacement_amplitude", 0.0) << " [deg]");
-      ROS_INFO_STREAM("   * Sinusoid Frequency : " << node_handle_.param<float>("protocol/parameters/frequency", 0.0) << " [Hz]");
-      ROS_INFO_STREAM("   * Cycles Number : " << node_handle_.param<int>("protocol/parameters/cycles_number", 0) << " [#]");
-      break;
-    case 3:
-      device_.writeOPCUAFloat64("P3_Displacement_Amplitude", node_handle_.param<float>("protocol/parameters/displacement_amplitude", 0.0));
-      device_.writeOPCUAFloat64("P3_Frequency", node_handle_.param<float>("protocol/parameters/frequency", 0.0));
-      device_.writeOPCUAUInt16("P3_Cycles", node_handle_.param<int>("protocol/parameters/cycles_number", 0));
-      ROS_INFO_STREAM("   * Displacement Amplitude : " << node_handle_.param<float>("protocol/parameters/displacement_amplitude", 0.0) << " [deg]");
-      ROS_INFO_STREAM("   * Sinusoid Frequency : " << node_handle_.param<float>("protocol/parameters/frequency", 0.0) << " [Hz]");
-      ROS_INFO_STREAM("   * Cycles Number : " << node_handle_.param<int>("protocol/parameters/cycles_number", 0) << " [#]");
-      break;
-    case 4:
-      //TODO add protocol initial computations
-      ROS_INFO_STREAM("   * Displacement Ramp Slope : " << node_handle_.param<float>("protocol/parameters/displacement_ramp_slope", 0.0) << " [deg/s]");
-      break;
-    case 5:
-      //TODO add protocol initial computations
-      ROS_INFO_STREAM("   * Force Ramp Slope : " << node_handle_.param<float>("protocol/parameters/force_ramp_slope", 0.0) << " [N/s]");
-      break;
-    default:  // unexpected protocol number
+  if (node_handle_.param<bool>("debug_acquisition", false)) {
+    if (!device_.startAcquisition()) {
+      ROS_ERROR_STREAM("Terminating by system...");
       return;
-  }
-  ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
-  ROS_INFO_STREAM("  Pendulum ID : " << node_handle_.param<std::string>("pendulum/id", "undefined"));
-  ROS_INFO_STREAM("  Pendulum Parameters :");
-  ROS_INFO_STREAM("   * Length : " << node_handle_.param<float>("pendulum/length", 0.0) << " [m]");
-  ROS_INFO_STREAM("   * Axis Height : " << node_handle_.param<float>("pendulum/axis_height", 0.0) << " [m]");
-  ROS_INFO_STREAM("   * Added Mass : " << node_handle_.param<float>("pendulum/added_mass", 0.0) << " [kg]");
-  ROS_INFO_STREAM("   * Tip Type : " << node_handle_.param<std::string>("pendulum/tip_type", "undefined"));
-  ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
-  ROS_INFO_STREAM("  Platform ID : " << node_handle_.param<std::string>("platform/id", "undefined"));
-  ROS_INFO_STREAM("  Platform Parameters :");
-  ROS_INFO_STREAM("   * Ground Inclination : " << node_handle_.param<float>("platform/ground_inclination", 0.0) << " [deg]");
-  ROS_INFO_STREAM("   * Ground Type : " << node_handle_.param<std::string>("platform/ground_type", "undefined"));
-  ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
-  ROS_INFO_STREAM("  Subject ID : " << node_handle_.param<std::string>("subject/id", "undefined"));
-  ROS_INFO_STREAM("  Subject Name : " << node_handle_.param<std::string>("subject/name", "undefined"));
-  ROS_INFO_STREAM("  Subject Parameters :");
-  ROS_INFO_STREAM("   * Mass : " << node_handle_.param<float>("subject/mass", 0.0) << " [kg]");
-  ROS_INFO_STREAM("   * Height : " << node_handle_.param<float>("subject/height", 0.0) << " [m]");
-  ROS_INFO_STREAM("   * CoM Height : " << node_handle_.param<float>("subject/com_height", 0.0) << " [m]");
-  ROS_INFO_STREAM("   * Base Depth : " << node_handle_.param<float>("subject/base_depth", 0.0) << " [m]");
-  ROS_INFO_STREAM("   * Base Width : " << node_handle_.param<float>("subject/base_width", 0.0) << " [m]");
-  ROS_INFO_STREAM("   * Orientation : " << node_handle_.param<float>("subject/orientation", 0.0) << " [deg]");
-  ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
+    }
+    ROS_INFO_STREAM("Debugging...");
+  } else {
+    std::string protocol_id = node_handle_.param<std::string>("protocol/id", "0");
+    ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
+    ROS_INFO_STREAM("  Protocol ID : " << protocol_id);
+    ROS_INFO_STREAM("  Protocol Name : " << node_handle_.param<std::string>("protocol/name", "undefined"));
+    ROS_INFO_STREAM("  Protocol Parameters :");
+    ROS_INFO_STREAM("   * ID : " << node_handle_.param<std::string>("protocol/parameters/id", "undefined"));
+    switch (std::stoi(protocol_id)) {
+      case 1:
+        {
+          double p1_upper_position = 0;  //TODO add protocol initial computations
+          device_.writeOPCUAFloat64("P1_Upper_Position", p1_upper_position);
+          ROS_INFO_STREAM("   * Initial Energy : " << p1_upper_position << " [J]");
+        }
+        break;
+      case 2:
+        device_.writeOPCUAFloat64("P2_Displacement_Amplitude", node_handle_.param<float>("protocol/parameters/displacement_amplitude", 0.0));
+        device_.writeOPCUAFloat64("P2_Frequency", node_handle_.param<float>("protocol/parameters/frequency", 0.0));
+        device_.writeOPCUAUInt16("P2_Cycles", node_handle_.param<int>("protocol/parameters/cycles_number", 0));
+        ROS_INFO_STREAM("   * Displacement Amplitude : " << node_handle_.param<float>("protocol/parameters/displacement_amplitude", 0.0) << " [deg]");
+        ROS_INFO_STREAM("   * Sinusoid Frequency : " << node_handle_.param<float>("protocol/parameters/frequency", 0.0) << " [Hz]");
+        ROS_INFO_STREAM("   * Cycles Number : " << node_handle_.param<int>("protocol/parameters/cycles_number", 0) << " [#]");
+        break;
+      case 3:
+        device_.writeOPCUAFloat64("P3_Torque_Amplitude", node_handle_.param<float>("protocol/parameters/force_amplitude", 0.0));
+        device_.writeOPCUAFloat64("P3_Frequency", node_handle_.param<float>("protocol/parameters/frequency", 0.0));
+        device_.writeOPCUAUInt16("P3_Cycles", node_handle_.param<int>("protocol/parameters/cycles_number", 0));
+        ROS_INFO_STREAM("   * Torque Amplitude : " << node_handle_.param<float>("protocol/parameters/force_amplitude", 0.0) << " [Nm]");
+        ROS_INFO_STREAM("   * Sinusoid Frequency : " << node_handle_.param<float>("protocol/parameters/frequency", 0.0) << " [Hz]");
+        ROS_INFO_STREAM("   * Cycles Number : " << node_handle_.param<int>("protocol/parameters/cycles_number", 0) << " [#]");
+        break;
+      case 4:
+        device_.writeOPCUAFloat64("P4_Displacement_Ramp_Slope", node_handle_.param<float>("protocol/parameters/displacement_ramp_slope", 0.0));
+        ROS_INFO_STREAM("   * Displacement Ramp Slope : " << node_handle_.param<float>("protocol/parameters/displacement_ramp_slope", 0.0) << " [deg/s]");
+        break;
+      case 5:
+        device_.writeOPCUAFloat64("P5_Torque_Ramp_Slope", node_handle_.param<float>("protocol/parameters/force_ramp_slope", 0.0));
+        ROS_INFO_STREAM("   * Torque Ramp Slope : " << node_handle_.param<float>("protocol/parameters/force_ramp_slope", 0.0) << " [Nm/s]");
+        break;
+      default:  // unexpected protocol number
+        return;
+    }
+    ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
+    ROS_INFO_STREAM("  Pendulum ID : " << node_handle_.param<std::string>("pendulum/id", "undefined"));
+    ROS_INFO_STREAM("  Pendulum Parameters :");
+    ROS_INFO_STREAM("   * Length : " << node_handle_.param<float>("pendulum/length", 0.0) << " [m]");
+    ROS_INFO_STREAM("   * Axis Height : " << node_handle_.param<float>("pendulum/axis_height", 0.0) << " [m]");
+    ROS_INFO_STREAM("   * Added Mass : " << node_handle_.param<float>("pendulum/added_mass", 0.0) << " [kg]");
+    ROS_INFO_STREAM("   * Tip Type : " << node_handle_.param<std::string>("pendulum/tip_type", "undefined"));
+    ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
+    ROS_INFO_STREAM("  Platform ID : " << node_handle_.param<std::string>("platform/id", "undefined"));
+    ROS_INFO_STREAM("  Platform Parameters :");
+    ROS_INFO_STREAM("   * Ground Inclination : " << node_handle_.param<float>("platform/ground_inclination", 0.0) << " [deg]");
+    ROS_INFO_STREAM("   * Ground Type : " << node_handle_.param<std::string>("platform/ground_type", "undefined"));
+    ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
+    ROS_INFO_STREAM("  Subject ID : " << node_handle_.param<std::string>("subject/id", "undefined"));
+    ROS_INFO_STREAM("  Subject Name : " << node_handle_.param<std::string>("subject/name", "undefined"));
+    ROS_INFO_STREAM("  Subject Parameters :");
+    ROS_INFO_STREAM("   * Mass : " << node_handle_.param<float>("subject/mass", 0.0) << " [kg]");
+    ROS_INFO_STREAM("   * Height : " << node_handle_.param<float>("subject/height", 0.0) << " [m]");
+    ROS_INFO_STREAM("   * CoM Height : " << node_handle_.param<float>("subject/com_height", 0.0) << " [m]");
+    ROS_INFO_STREAM("   * Base Depth : " << node_handle_.param<float>("subject/base_depth", 0.0) << " [m]");
+    ROS_INFO_STREAM("   * Base Width : " << node_handle_.param<float>("subject/base_width", 0.0) << " [m]");
+    ROS_INFO_STREAM("   * Orientation : " << node_handle_.param<float>("subject/orientation", 0.0) << " [deg]");
+    ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
 
-  if (!promptUserChoice("Do you want to start the current protocol with the given settings?")) {  // blocking
-    ROS_INFO_STREAM("Terminating by user...");
-    return;
-  }
-  device_.writeOPCUABool("P" + protocol_id + "_Enable", true);
-  ROS_INFO_STREAM("Starting Protocol " << protocol_id << "...");
+    if (!promptUserChoice("Do you want to start the current protocol with the given settings?")) {  // blocking
+      ROS_INFO_STREAM("Terminating by user...");
+      return;
+    }
+    device_.writeOPCUABool("P" + protocol_id + "_Enable", true);
+    ROS_INFO_STREAM("Starting Protocol " << protocol_id << "...");
 
-  if (!promptUserChoice("Do you want to start the current experiment?")) {  // blocking
-    device_.writeOPCUABool("P0_Terminate", true);
-    ROS_INFO_STREAM("Terminating by user...");
-    return;
+    if (!promptUserChoice("Do you want to start the current experiment?")) {  // blocking
+      device_.writeOPCUABool("P0_Terminate", true);
+      ROS_INFO_STREAM("Terminating by user...");
+      return;
+    }
+    if (!device_.startAcquisition()) {
+      device_.writeOPCUABool("P0_Terminate", true);
+      ROS_ERROR_STREAM("Terminating by system...");
+      return;
+    }
+    device_.readOPCUAUInt16("P0_System_State", system_state_);
+    device_.writeOPCUABool("P" + protocol_id + "_Start_Experiment", true);
+    ROS_INFO_STREAM("Starting Experiment...");
   }
-  if (!device_.startAcquisition()) {
-    device_.writeOPCUABool("P0_Terminate", true);
-    ROS_ERROR_STREAM("Terminating by system...");
-    return;
-  }
-  device_.writeOPCUABool("P" + protocol_id + "_Start_Experiment", true);
-  ROS_INFO_STREAM("Starting Experiment...");
 
   control_timer_ = node_handle_control_.createWallTimer(control_duration_, &dysturbanceControl::controlCallback, this);
   frequency_timer_ = node_handle_.createWallTimer(ros::WallDuration(1), &dysturbanceControl::frequencyCallback, this);
