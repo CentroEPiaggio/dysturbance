@@ -66,6 +66,9 @@ class dysturbanceControl {
 
   std::ofstream platform_data_file_;
   int system_state_;
+  int64_t acquisition_samples_;
+  double acquisition_duration_;
+  double encoder_offset_;
 
   // do not change the following variables order
   dysturbance_ros_hardware_interface::dysturbanceHW device_;
