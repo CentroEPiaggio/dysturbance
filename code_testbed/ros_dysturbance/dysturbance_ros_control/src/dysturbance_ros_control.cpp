@@ -81,6 +81,7 @@ dysturbanceControl::dysturbanceControl()
     frequency_publisher_ = node_handle_.advertise<std_msgs::Int32>("frequency", 1);
     data_subscriber_ = node_handle_.subscribe("data_acquisition", 1, &dysturbanceControl::dataAcquisitionCallback, this);
     control_setup_timer_ = node_handle_.createWallTimer(ros::WallDuration(1.0), &dysturbanceControl::controlSetupCallback, this, true);  // oneshot
+    frequency_timer_ = node_handle_.createWallTimer(ros::WallDuration(1.0), &dysturbanceControl::frequencyCallback, this);
   }
 }
 
@@ -233,7 +234,6 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
   }
 
   control_timer_ = node_handle_control_.createWallTimer(control_duration_, &dysturbanceControl::controlCallback, this);
-  frequency_timer_ = node_handle_.createWallTimer(ros::WallDuration(1), &dysturbanceControl::frequencyCallback, this);
 }
 
 void dysturbanceControl::dataAcquisitionCallback(const dysturbance_ros_msgs::StateStamped &msg) {
@@ -250,6 +250,8 @@ void dysturbanceControl::dataAcquisitionCallback(const dysturbance_ros_msgs::Sta
 }
 
 void dysturbanceControl::frequencyCallback(const ros::WallTimerEvent &timer_event) {
+  device_.readOPCUAUInt16("P0_System_State", system_state_);  // only to keep alive OPC-UA ROS node
+
   ROS_DEBUG_STREAM("Control node frequency: " << counter_ << "Hz");
   frequency_publisher_.publish([this](){ std_msgs::Int32 hz_msg; hz_msg.data = counter_; counter_ = 0; return hz_msg; }());  // publish the control loop real Hz
 }
