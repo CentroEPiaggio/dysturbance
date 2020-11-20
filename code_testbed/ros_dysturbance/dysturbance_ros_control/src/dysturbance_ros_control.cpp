@@ -40,7 +40,7 @@ dysturbanceControl::dysturbanceControl()
       counter_(0),
       acquisition_samples_(0),
       acquisition_duration_(0),
-      encoder_offset_(0),  // WARNING: depends on the encoder magnet mounting
+      encoder_offset_(-51.25),  // WARNING: depends on the encoder magnet mounting
       init_success_(device_.init(node_handle_, node_handle_)),
       controller_manager_(&device_, node_handle_control_) {
   node_handle_control_.setCallbackQueue(callback_queue_.get());
@@ -215,7 +215,7 @@ void dysturbanceControl::dataAcquisitionCallback(const dysturbance_ros_msgs::Sta
   device_.readOPCUAUInt16("P0_System_State", system_state_);
   for (int i=0; i<msg.data.times.size(); i++) {
     platform_data_file_ << std::setw(12) << msg.data.times.at(i) << "; ";
-    platform_data_file_ << std::setw(12) << msg.data.pendulum_positions.at(i)*72.0 + encoder_offset_ << "; ";  // 360deg @5VDC
+    platform_data_file_ << std::setw(12) << msg.data.pendulum_positions.at(i)*103.5 + encoder_offset_ << "; ";  // 360deg @3.47VDC
     platform_data_file_ << std::setw(12) << msg.data.pendulum_torques.at(i)*100.0 << "; ";  // 500Nm @5VDC
     platform_data_file_ << std::setw(12) << msg.data.contact_forces.at(i)*444.8 << "; ";  // 2224N @5VDC
     platform_data_file_ << system_state_ << std::endl;
