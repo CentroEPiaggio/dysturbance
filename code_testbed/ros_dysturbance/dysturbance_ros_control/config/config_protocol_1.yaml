@@ -6,3 +6,4 @@ protocol:
   parameters:
     id: "000"  # The integer unique identifier used for data storage
     initial_energy: 0.0  # The initial energy which determines the initial pendulum position [J]
+    impact_force: 0.0 # The desired impact force [N]
