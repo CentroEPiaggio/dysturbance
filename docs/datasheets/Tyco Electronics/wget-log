@@ -1,0 +1,101 @@
+--2020-11-23 12:04:53--  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Resolving www.te.com (www.te.com)... 104.83.106.60
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:06:53--  (try: 2)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:08:47--  (try: 3)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:10:46--  (try: 4)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:12:47--  (try: 5)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:14:48--  (try: 6)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:16:49--  (try: 7)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:18:51--  (try: 8)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:20:53--  (try: 9)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:22:54--  (try:10)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:25:03--  (try:11)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:27:06--  (try:12)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:29:09--  (try:13)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:31:14--  (try:14)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:33:19--  (try:15)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:35:28--  (try:16)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:37:31--  (try:17)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:39:32--  (try:18)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:41:33--  (try:19)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Retrying.
+
+--2020-11-23 12:43:42--  (try:20)  https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv
+Connecting to www.te.com (www.te.com)|104.83.106.60|:443... connected.
+HTTP request sent, awaiting response... No data received.
+Giving up.
+
