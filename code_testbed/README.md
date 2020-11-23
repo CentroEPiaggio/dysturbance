@@ -119,8 +119,8 @@ In the following, only the parameters in bold are directly used in variables and
      repetitions: 3  # The number of repetitions of the experiment
      parameters:
        id: "000"  # The integer unique identifier used for data storage
-       <b>initial_energy</b>: 0.0  # The initial energy which determines the initial pendulum position [J]
-       <b>impact_force</b>: 0.0 # The desired impact force [N]
+       <b>initial_energy</b>: 5.0  # The initial energy which determines the initial pendulum position [J]
+       <b>impact_force</b>: 400.0 # The desired impact force [N]
    </pre>
  - Automatic recalling of these specific and all common parameters through:
    ```
@@ -137,9 +137,9 @@ In the following, only the parameters in bold are directly used in variables and
      repetitions: 3  # The number of repetitions of the experiment
      parameters:
        id: "000"  # The integer unique identifier used for data storage
-       <b>displacement_amplitude</b>: 0.0  # The pendulum sinusoidal displacement amplitude [deg]
-       <b>frequency</b>: 0.0  # The pendulum oscillation frequency [Hz]
-       <b>cycles_number</b>: 10  # The number of sinusoidal periods
+       <b>displacement_amplitude</b>: 5.0  # The pendulum sinusoidal displacement amplitude [deg]
+       <b>frequency</b>: 0.1  # The pendulum oscillation frequency [Hz]
+       <b>cycles_number</b>: 5  # The number of sinusoidal periods
    </pre>
  - Automatic recalling of these specific and all common parameters through:
    ```
@@ -150,15 +150,15 @@ In the following, only the parameters in bold are directly used in variables and
  - [`config_protocol_3.yaml`](ros_dysturbance/dysturbance_ros_control/config/config_protocol_3.yaml): contains all the specific parameters of the current protocol.
    <pre>
    protocol:
-     id: "2"  # The integer unique identifier used for data storage
-     name: "sinusoidal_displacement_disturbance"  # The identifier of the protocol to be used in the current experiment
+     id: "3"  # The integer unique identifier used for data storage
+     name: "sinusoidal_force_disturbance"  # The identifier of the protocol to be used in the current experiment
      notes: ""  # Some relevant notes regarding the experiment setup
      repetitions: 3  # The number of repetitions of the experiment
      parameters:
-       id: "000"  # The integer unique identifier used for data storage
-       <b>displacement_amplitude</b>: 0.0  # The pendulum sinusoidal displacement amplitude [deg]
-       <b>frequency</b>: 0.0  # The pendulum oscillation frequency [Hz]
-       <b>cycles_number</b>: 10  # The number of sinusoidal periods
+       id: "001"  # The integer unique identifier used for data storage
+       <b>torque_amplitude</b>: 60.0  # The pendulum sinusoidal torque amplitude [Nm]
+       <b>frequency</b>: 0.1  # The pendulum oscillation frequency [Hz]
+       <b>cycles_number</b>: 5  # The number of sinusoidal periods
    </pre>
  - Automatic recalling of these specific and all common parameters through:
    ```
@@ -175,7 +175,7 @@ In the following, only the parameters in bold are directly used in variables and
      repetitions: 3  # The number of repetitions of the experiment
      parameters:
        id: "000"  # The integer unique identifier used for data storage
-       <b>displacement_ramp_slope</b>: 0.0  # The pendulum displacement ramp slope [deg/s]
+       <b>displacement_ramp_slope</b>: 1.0  # The pendulum displacement ramp slope [deg/s]
    </pre>
  - Automatic recalling of these specific and all common parameters through:
    ```
@@ -192,7 +192,7 @@ In the following, only the parameters in bold are directly used in variables and
      repetitions: 3  # The number of repetitions of the experiment
      parameters:
        id: "000"  # The integer unique identifier used for data storage
-       <b>force_ramp_slope</b>: 0.0  # The pendulum force ramp slope [N/s]
+       <b>torque_ramp_slope</b>: 1.0  # The pendulum torque ramp slope [Nm/s]
    </pre>
  - Automatic recalling of these specific and all common parameters through:
    ```

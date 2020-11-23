@@ -5,6 +5,6 @@ protocol:
   repetitions: 3  # The number of repetitions of the experiment
   parameters:
     id: "000"  # The integer unique identifier used for data storage
-    displacement_amplitude: 0.0  # The pendulum sinusoidal displacement amplitude [deg]
-    frequency: 0.0  # The pendulum oscillation frequency [Hz]
-    cycles_number: 10  # The number of sinusoidal periods
+    displacement_amplitude: 5.0  # The pendulum sinusoidal displacement amplitude [deg]
+    frequency: 0.1  # The pendulum oscillation frequency [Hz]
+    cycles_number: 5  # The number of sinusoidal periods
