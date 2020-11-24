@@ -32,18 +32,17 @@
 using namespace dysturbance_ros_control;
 
 dysturbanceControl::dysturbanceControl()
-    : spinner_(1, callback_queue_.get()),  // the dedicated callback queue is needed to avoid deadlocks caused by action client calls (together with controller manager update loop)
+    : spinner_(10, callback_queue_.get()),
       callback_queue_(boost::make_shared<ros::CallbackQueue>()),
       node_handle_(ros::NodeHandle()),
-      node_handle_control_(node_handle_, "control"),
       control_duration_(1.0/STORAGE_FREQUENCY),  // depends on NI-DAQ storage frequency
       counter_(0),
       acquisition_samples_(0),
       acquisition_duration_(0),
       encoder_offset_(-52.6),  // WARNING: depends on the encoder magnet mounting
       init_success_(device_.init(node_handle_, node_handle_)),
-      controller_manager_(&device_, node_handle_control_) {
-  node_handle_control_.setCallbackQueue(callback_queue_.get());
+      controller_manager_(&device_, node_handle_) {
+  node_handle_.setCallbackQueue(callback_queue_.get());
   spinner_.start();
 
   if (init_success_) {
@@ -72,7 +71,7 @@ dysturbanceControl::dysturbanceControl()
       std::ifstream existing_data_file(data_file_name);
       if (!existing_data_file.good()) {  // if file does not exist, it is the current run
         platform_data_file_.open(data_file_name, std::ios_base::app);
-        platform_data_file_ << "time [s]; pendulum_position [deg]; pendulum_torque [Nm]; contact_force [N]; system_state [#]" << std::endl;
+        platform_data_file_ << "time [s]; pendulum_position [deg]; pendulum_torque [Nm]; contact_force [N]" << std::endl;
         platform_data_file_ << std::fixed << std::setprecision(6) << std::setfill(' ');
         break;
       }
@@ -230,17 +229,15 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
     ROS_INFO_STREAM("Starting Experiment...");
   }
 
-  control_timer_ = node_handle_control_.createWallTimer(control_duration_, &dysturbanceControl::controlCallback, this);
+  control_timer_ = node_handle_.createWallTimer(control_duration_, &dysturbanceControl::controlCallback, this);
 }
 
 void dysturbanceControl::dataAcquisitionCallback(const dysturbance_ros_msgs::StateStamped &msg) {
-  device_.readOPCUAUInt16("P0_System_State", system_state_);
   for (int i=0; i<msg.data.times.size(); i++) {
     platform_data_file_ << std::setw(12) << msg.data.times.at(i) << "; ";
     platform_data_file_ << std::setw(12) << -(msg.data.pendulum_positions.at(i)*105.7 + encoder_offset_) << "; ";  // 360deg @3.47VDC
     platform_data_file_ << std::setw(12) << msg.data.pendulum_torques.at(i)*100.0 << "; ";  // 500Nm @5VDC
-    platform_data_file_ << std::setw(12) << msg.data.contact_forces.at(i)*444.8 << "; ";  // 2224N @5VDC
-    platform_data_file_ << system_state_ << std::endl;
+    platform_data_file_ << std::setw(12) << msg.data.contact_forces.at(i)*444.8 << std::endl;  // 2224N @5VDC
   }
   acquisition_samples_ += msg.data.times.size();
   acquisition_duration_ = msg.data.times.back();

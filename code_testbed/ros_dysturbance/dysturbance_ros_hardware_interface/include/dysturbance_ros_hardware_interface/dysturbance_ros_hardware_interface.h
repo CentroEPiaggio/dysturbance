@@ -82,7 +82,7 @@ class dysturbanceHW : public hardware_interface::RobotHW {
 
   ros::Publisher data_publisher_;
   ros::Time last_time_;
-  ros::Time init_time_;
+  double elapsed_duration_;
 
   TaskHandle task_handle_ {nullptr};
   std::string channels_;

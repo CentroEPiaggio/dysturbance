@@ -88,8 +88,8 @@ bool dysturbanceHW::startAcquisition() {
     ROS_ERROR_STREAM("NI DAQmxStartTask failed with error : " << error_string << ".");
     return false;
   }
-  init_time_ = ros::Time::now();
-  last_time_ = init_time_;
+  elapsed_duration_ = 0.0;
+  last_time_ = ros::Time::now();
   return true;
 }
 
@@ -104,8 +104,8 @@ bool dysturbanceHW::stopAcquisition() {
 
 void dysturbanceHW::read(const ros::Time &time, const ros::Duration &period) {
   std::string error_string;
-  int32 samples_read = 0;
-  std::vector<float64> data(NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, 0);
+  int samples_read = 0;
+  std::vector<double> data(NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, 0);
 
   if (errorCodeToString(DAQmxReadAnalogF64(task_handle_, NUM_SAMPLES_PER_CHANNEL, 0.005, DAQmx_Val_GroupByChannel, &data[0], NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, &samples_read, nullptr), error_string)) {
     ROS_ERROR_STREAM("NI DAQmxCreateAIVoltageChan failed with error : " << error_string << ".");
@@ -122,10 +122,15 @@ void dysturbanceHW::read(const ros::Time &time, const ros::Duration &period) {
 
   dysturbance_ros_msgs::StateStamped msg;
   ros::Time current_time = ros::Time::now();
-  float64 time_slot = (current_time-last_time_).toSec()/samples_read;
-  for (int i=0; i<samples_read; i++) {
-    msg.data.times.push_back((last_time_-init_time_).toSec() + i*time_slot);
+  double since_last_time = (current_time-last_time_).toSec();
+  if (since_last_time > 2.0/STORAGE_FREQUENCY) {
+    ROS_WARN_STREAM("Data acquisition is slower than expected: " << since_last_time << "s from last data stream (expected " << 2.0/STORAGE_FREQUENCY << "s).");
+    elapsed_duration_ += (std::floor(since_last_time / (1.0/STORAGE_FREQUENCY)) - 1) * (1.0/STORAGE_FREQUENCY);
   }
+  last_time_ = current_time;
+
+  double time_slot = 1.0/NIDAQ_SAMPLING_FREQUENCY;
+  std::generate_n(std::back_inserter(msg.data.times), NUM_SAMPLES_PER_CHANNEL, [&](){ return elapsed_duration_+=time_slot; });
   std::copy_n(data.begin(), NUM_SAMPLES_PER_CHANNEL, std::back_inserter(msg.data.pendulum_positions));
   std::copy_n(data.begin()+NUM_SAMPLES_PER_CHANNEL, NUM_SAMPLES_PER_CHANNEL, std::back_inserter(msg.data.pendulum_torques));
   std::copy_n(data.begin()+2*NUM_SAMPLES_PER_CHANNEL, NUM_SAMPLES_PER_CHANNEL, std::back_inserter(msg.data.contact_forces));
@@ -134,8 +139,6 @@ void dysturbanceHW::read(const ros::Time &time, const ros::Duration &period) {
   msg.header.stamp = current_time;
   msg.header.frame_id = channels_;
   data_publisher_.publish(msg);
-
-  last_time_ = current_time;
 }
 
 void dysturbanceHW::write(const ros::Time &time, const ros::Duration &period) {
