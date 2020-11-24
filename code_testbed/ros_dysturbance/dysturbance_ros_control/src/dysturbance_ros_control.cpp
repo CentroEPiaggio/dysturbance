@@ -219,14 +219,14 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
       ROS_INFO_STREAM("Terminating by user...");
       return;
     }
+    device_.readOPCUAUInt16("P0_System_State", system_state_);
+    device_.writeOPCUABool("P" + protocol_id + "_Start_Experiment", true);
+    ROS_INFO_STREAM("Starting Experiment...");
     if (!device_.startAcquisition()) {
       device_.writeOPCUABool("P0_Terminate", true);
       ROS_ERROR_STREAM("Terminating by system...");
       return;
     }
-    device_.readOPCUAUInt16("P0_System_State", system_state_);
-    device_.writeOPCUABool("P" + protocol_id + "_Start_Experiment", true);
-    ROS_INFO_STREAM("Starting Experiment...");
   }
 
   control_timer_ = node_handle_.createWallTimer(control_duration_, &dysturbanceControl::controlCallback, this);

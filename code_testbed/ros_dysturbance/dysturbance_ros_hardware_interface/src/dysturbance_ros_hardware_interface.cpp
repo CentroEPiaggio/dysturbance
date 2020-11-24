@@ -104,8 +104,8 @@ bool dysturbanceHW::stopAcquisition() {
 
 void dysturbanceHW::read(const ros::Time &time, const ros::Duration &period) {
   std::string error_string;
-  int samples_read = 0;
-  std::vector<double> data(NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, 0);
+  int32 samples_read = 0;
+  std::vector<float64> data(NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, 0);
 
   if (errorCodeToString(DAQmxReadAnalogF64(task_handle_, NUM_SAMPLES_PER_CHANNEL, 0.005, DAQmx_Val_GroupByChannel, &data[0], NUM_SAMPLES_PER_CHANNEL * NUM_CHANNELS, &samples_read, nullptr), error_string)) {
     ROS_ERROR_STREAM("NI DAQmxCreateAIVoltageChan failed with error : " << error_string << ".");
