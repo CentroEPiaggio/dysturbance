@@ -62,6 +62,9 @@ dysturbanceControl::dysturbanceControl()
     base_file_name += node_handle_.param<std::string>("pendulum/id", "0000");
     base_file_name += node_handle_.param<std::string>("platform/id", "00");
 
+    // The sample frequency is a fixed internal params but it needs to appear in the yaml dump
+    node_handle_.setParam("sampling_frequency", NIDAQ_SAMPLING_FREQUENCY);
+
     std::string config_file_name = base_path + base_file_name + "_testbed.yaml";
     std::string rosparam_dump_cmd = "/c rosparam dump " + config_file_name + " " + node_handle_.getNamespace();
     ShellExecuteA(nullptr, "open", "cmd.exe", rosparam_dump_cmd.c_str(), nullptr, SW_HIDE);
