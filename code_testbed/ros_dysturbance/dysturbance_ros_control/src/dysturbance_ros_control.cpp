@@ -71,6 +71,12 @@ dysturbanceControl::dysturbanceControl()
       GenerateConsoleCtrlEvent(0, 0);
     }
 
+    base_path += "raw_data_input/";
+    if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
+      ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
+      GenerateConsoleCtrlEvent(0, 0);
+    }
+
     // The sample frequency is a fixed internal params but it needs to appear in the yaml dump
     node_handle_.setParam("sampling_frequency", NIDAQ_SAMPLING_FREQUENCY);
 
