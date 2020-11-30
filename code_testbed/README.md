@@ -99,7 +99,7 @@ In the following, only the parameters in bold are directly used in variables and
    This fields are not directly used by the experimental protocols but which are highly required for post-processing and PI algorithm evaluation.
    ```
    subject:
-     id: "0000"  # The integer unique identifier used for data storage
+     id: 0  # The integer unique identifier used for data storage
      name: ""  # The identifier (e.g. name) of the subject performing the experiment
      mass: 0.0  # The subject mass [kg]
      height: 0.0  # The subject height [m]
@@ -113,7 +113,7 @@ In the following, only the parameters in bold are directly used in variables and
  - [`config_protocol_1.yaml`](ros_dysturbance/dysturbance_ros_control/config/config_protocol_1.yaml): contains all the specific parameters of the current protocol.
    <pre>
    protocol:
-     id: "1"  # The integer unique identifier used for data storage
+     id: 1  # The integer unique identifier used for data storage
      name: "impulsive_disturbance"  # The identifier of the protocol to be used in the current experiment
      notes: ""  # Some relevant notes regarding the experiment setup
      repetitions: 3  # The number of repetitions of the experiment
@@ -131,7 +131,7 @@ In the following, only the parameters in bold are directly used in variables and
  - [`config_protocol_2.yaml`](ros_dysturbance/dysturbance_ros_control/config/config_protocol_2.yaml): contains all the specific parameters of the current protocol.
    <pre>
    protocol:
-     id: "2"  # The integer unique identifier used for data storage
+     id: 2  # The integer unique identifier used for data storage
      name: "sinusoidal_displacement_disturbance"  # The identifier of the protocol to be used in the current experiment
      notes: ""  # Some relevant notes regarding the experiment setup
      repetitions: 3  # The number of repetitions of the experiment
@@ -150,13 +150,13 @@ In the following, only the parameters in bold are directly used in variables and
  - [`config_protocol_3.yaml`](ros_dysturbance/dysturbance_ros_control/config/config_protocol_3.yaml): contains all the specific parameters of the current protocol.
    <pre>
    protocol:
-     id: "3"  # The integer unique identifier used for data storage
+     id: 3  # The integer unique identifier used for data storage
      name: "sinusoidal_force_disturbance"  # The identifier of the protocol to be used in the current experiment
      notes: ""  # Some relevant notes regarding the experiment setup
      repetitions: 3  # The number of repetitions of the experiment
      parameters:
        id: "001"  # The integer unique identifier used for data storage
-       <b>torque_amplitude</b>: 60.0  # The pendulum sinusoidal torque amplitude [Nm]
+       <b>force_amplitude</b>: 60.0  # The pendulum sinusoidal force amplitude [N]
        <b>frequency</b>: 0.1  # The pendulum oscillation frequency [Hz]
        <b>cycles_number</b>: 5  # The number of sinusoidal periods
    </pre>
@@ -169,7 +169,7 @@ In the following, only the parameters in bold are directly used in variables and
  - [`config_protocol_4.yaml`](ros_dysturbance/dysturbance_ros_control/config/config_protocol_4.yaml): contains all the specific parameters of the current protocol.
    <pre>
    protocol:
-     id: "4"  # The integer unique identifier used for data storage
+     id: 4  # The integer unique identifier used for data storage
      name: "quasi_static_displacement_disturbance"  # The identifier of the protocol to be used in the current experiment
      notes: ""  # Some relevant notes regarding the experiment setup
      repetitions: 3  # The number of repetitions of the experiment
@@ -186,13 +186,13 @@ In the following, only the parameters in bold are directly used in variables and
  - [`config_protocol_5.yaml`](ros_dysturbance/dysturbance_ros_control/config/config_protocol_5.yaml): contains all the specific parameters of the current protocol.
    <pre>
    protocol:
-     id: "5"  # The integer unique identifier used for data storage
+     id: 5  # The integer unique identifier used for data storage
      name: "quasi_static_force_disturbance"  # The identifier of the protocol to be used in the current experiment
      notes: ""  # Some relevant notes regarding the experiment setup
      repetitions: 3  # The number of repetitions of the experiment
      parameters:
        id: "000"  # The integer unique identifier used for data storage
-       <b>torque_ramp_slope</b>: 1.0  # The pendulum torque ramp slope [Nm/s]
+       <b>force_ramp_slope</b>: 1.0  # The pendulum force ramp slope [N/s]
    </pre>
  - Automatic recalling of these specific and all common parameters through:
    ```
@@ -205,7 +205,7 @@ The files described in the above paragraphs are the default and common settings,
 ### Data Storage and File Naming Conventions
 The `.csv` data stream files are stored in a path relative to the Catkin workspace, to avoid possible error due to absolute paths.
 The directory `experiments` is indeed created next to `catkin_ws` (or whatever name had been chosen during installation) at the first experiment run, if it is not already there.
-Inside `experiments`, files are organized in directories named by the date of the runs.
+Inside `experiments`, files are organized in directories named by subject and protocols ids.
 
 This could be a hierarchical structure example:
 ```
@@ -215,12 +215,19 @@ This could be a hierarchical structure example:
   - install
   - src
 - experiments
-  - 2020_11_19
-    - subject_0000_cond_0000000000_run_0_platformData.csv
-    - subject_0000_cond_0000000000_run_1_platormData.csv
+  - subject_13
+    - protocol_1
+      - subject_13_cond_1000000000
+        - raw_data_input
+          - subject_13_cond_1000000000_run_0_platformData.csv
+          - subject_13_cond_1000000000_run_1_platormData.csv
+            ...
+          - subject_13_cond_1000000000_testbed.yaml
+      - subject_13_cond_1000000001
+        ...
+    - protocol_2
       ...
-    - subject_0000_cond_0000000000_testbed.yaml
-  - 2020_11_20
+  - subject_1
     ...
 ``` 
 
