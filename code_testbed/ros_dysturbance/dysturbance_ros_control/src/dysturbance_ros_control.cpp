@@ -46,14 +46,14 @@ dysturbanceControl::dysturbanceControl()
   spinner_.start();
 
   if (init_success_) {
-    std::string subject = "subject_" + node_handle_.param<std::string>("subject/id", "0000");
+    std::string subject = "subject_" + std::to_string(node_handle_.param<int>("subject/id", 0));
     std::string base_path = "../Desktop/experiments/" + subject + "/";
     if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
       ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
       GenerateConsoleCtrlEvent(0, 0);
     }
 
-    std::string protocol = "protocol_" + node_handle_.param<std::string>("protocol/id", "0");
+    std::string protocol = "protocol_" + std::to_string(node_handle_.param<int>("protocol/id", 0));
     base_path += protocol + "/";
     if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
       ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
@@ -61,7 +61,7 @@ dysturbanceControl::dysturbanceControl()
     }
 
     std::string base_file_name = subject + "_cond_";
-    base_file_name += node_handle_.param<std::string>("protocol/id", "0");
+    base_file_name += std::to_string(node_handle_.param<int>("protocol/id", 0));
     base_file_name += node_handle_.param<std::string>("protocol/parameters/id", "000");
     base_file_name += node_handle_.param<std::string>("pendulum/id", "0000");
     base_file_name += node_handle_.param<std::string>("platform/id", "00");
@@ -132,13 +132,13 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
     }
     ROS_INFO_STREAM("Debugging...");
   } else {
-    std::string protocol_id = node_handle_.param<std::string>("protocol/id", "0");
+    int protocol_id = node_handle_.param<int>("protocol/id", 0);
     ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
     ROS_INFO_STREAM("  Protocol ID : " << protocol_id);
     ROS_INFO_STREAM("  Protocol Name : " << node_handle_.param<std::string>("protocol/name", "undefined"));
     ROS_INFO_STREAM("  Protocol Parameters :");
     ROS_INFO_STREAM("   * ID : " << node_handle_.param<std::string>("protocol/parameters/id", "undefined"));
-    switch (std::stoi(protocol_id)) {
+    switch (protocol_id) {
       case 1:
         {
           double initial_energy = node_handle_.param<float>("protocol/parameters/initial_energy", 0.0);
@@ -211,7 +211,7 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
     ROS_INFO_STREAM("   * Ground Inclination : " << node_handle_.param<float>("platform/ground_inclination", 0.0) << " [deg]");
     ROS_INFO_STREAM("   * Ground Type : " << node_handle_.param<std::string>("platform/ground_type", "undefined"));
     ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
-    ROS_INFO_STREAM("  Subject ID : " << node_handle_.param<std::string>("subject/id", "undefined"));
+    ROS_INFO_STREAM("  Subject ID : " << node_handle_.param<int>("subject/id", 0));
     ROS_INFO_STREAM("  Subject Name : " << node_handle_.param<std::string>("subject/name", "undefined"));
     ROS_INFO_STREAM("  Subject Parameters :");
     ROS_INFO_STREAM("   * Mass : " << node_handle_.param<float>("subject/mass", 0.0) << " [kg]");
@@ -226,7 +226,7 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
       ROS_INFO_STREAM("Terminating by user...");
       return;
     }
-    device_.writeOPCUABool("P" + protocol_id + "_Enable", true);
+    device_.writeOPCUABool("P" + std::to_string(protocol_id) + "_Enable", true);
     ROS_INFO_STREAM("Starting Protocol " << protocol_id << "...");
 
     if (!promptUserChoice("Do you want to start the current experiment?")) {  // blocking
@@ -235,7 +235,7 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
       return;
     }
     device_.readOPCUAUInt16("P0_System_State", system_state_);
-    device_.writeOPCUABool("P" + protocol_id + "_Start_Experiment", true);
+    device_.writeOPCUABool("P" + std::to_string(protocol_id) + "_Start_Experiment", true);
     ROS_INFO_STREAM("Starting Experiment...");
 
     char utc_time[32] = "";

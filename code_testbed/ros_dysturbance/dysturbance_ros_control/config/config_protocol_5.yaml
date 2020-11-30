@@ -1,5 +1,5 @@
 protocol:
-  id: "5"  # The integer unique identifier used for data storage
+  id: 5  # The integer unique identifier used for data storage
   name: "quasi_static_force_disturbance"  # The identifier of the protocol to be used in the current experiment
   notes: ""  # Some relevant notes regarding the experiment setup
   repetitions: 3  # The number of repetitions of the experiment

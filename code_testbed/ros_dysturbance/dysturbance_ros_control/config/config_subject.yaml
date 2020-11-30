@@ -1,5 +1,5 @@
 subject:
-  id: "0001"  # The integer unique identifier used for data storage
+  id: 1  # The integer unique identifier used for data storage
   name: ""  # The identifier (e.g. name) of the subject performing the experiment
   mass: 0.0  # The subject mass [kg]
   height: 0.0  # The subject height [m]
