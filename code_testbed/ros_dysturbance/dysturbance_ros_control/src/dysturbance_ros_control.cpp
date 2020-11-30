@@ -46,21 +46,30 @@ dysturbanceControl::dysturbanceControl()
   spinner_.start();
 
   if (init_success_) {
-    char date[32] = "";
-    std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    std::strftime(date, sizeof(date), "%Y_%m_%d", std::localtime(&now));
-    std::string base_path = "../Desktop/experiments/" + std::string(date) + "/";
-
+    std::string subject = "subject_" + node_handle_.param<std::string>("subject/id", "0000");
+    std::string base_path = "../Desktop/experiments/" + subject + "/";
     if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
       ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
       GenerateConsoleCtrlEvent(0, 0);
     }
 
-    std::string base_file_name = "subject_" + node_handle_.param<std::string>("subject/id", "0000") + "_cond_";
+    std::string protocol = "protocol_" + node_handle_.param<std::string>("protocol/id", "0");
+    base_path += protocol + "/";
+    if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
+      ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
+      GenerateConsoleCtrlEvent(0, 0);
+    }
+
+    std::string base_file_name = subject + "_cond_";
     base_file_name += node_handle_.param<std::string>("protocol/id", "0");
     base_file_name += node_handle_.param<std::string>("protocol/parameters/id", "000");
     base_file_name += node_handle_.param<std::string>("pendulum/id", "0000");
     base_file_name += node_handle_.param<std::string>("platform/id", "00");
+    base_path += base_file_name + "/";
+    if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
+      ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
+      GenerateConsoleCtrlEvent(0, 0);
+    }
 
     // The sample frequency is a fixed internal params but it needs to appear in the yaml dump
     node_handle_.setParam("sampling_frequency", NIDAQ_SAMPLING_FREQUENCY);
