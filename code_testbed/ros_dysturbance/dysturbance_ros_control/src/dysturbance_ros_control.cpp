@@ -83,7 +83,7 @@ dysturbanceControl::dysturbanceControl()
       std::ifstream existing_data_file(data_file_name);
       if (!existing_data_file.good()) {  // if file does not exist, it is the current run
         platform_data_file_.open(data_file_name, std::ios_base::app);
-        platform_data_file_ << "time [s]; pendulum_position [deg]; pendulum_torque [Nm]; contact_force [N]; UTC_time[YY-MM-DD HH:MM:SS +-OFF]" << std::endl;
+        platform_data_file_ << "time [s]; pendulum_position [deg]; pendulum_torque [Nm]; contact_force [N]; UTC_time[YY-MM-DD HH:MM:SS +-OFF]; fallen [bool]" << std::endl;
         platform_data_file_ << std::fixed << std::setprecision(6) << std::setfill(' ');
         break;
       }
@@ -111,7 +111,10 @@ void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event)
 
   if (system_state_ < 100 && !node_handle_.param<bool>("debug_acquisition", false)) {  // experiment has ended
     ROS_INFO_STREAM("The experiment is end in " << acquisition_duration_ << "s (" << acquisition_samples_ << " samples acquired)");
+    bool fallen = promptUserChoice("Is the subject fallen during the experiment?");  // blocking
+    platform_data_file_ << ";;;;; " << std::boolalpha << fallen << std::endl;  // only for the last row
     ROS_INFO_STREAM("Exiting...");
+    ros::Duration(1.0).sleep();
 
     GenerateConsoleCtrlEvent(0, 0);
   }
@@ -238,7 +241,7 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
     char utc_time[32] = "";
     std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::strftime(utc_time, sizeof(utc_time), "%F %T %z", std::localtime(&now));
-    platform_data_file_ << ";;;; " << utc_time << std::endl;  // only for the first row
+    platform_data_file_ << ";;;; " << utc_time << ";" << std::endl;  // only for the first row
 
     if (!device_.startAcquisition()) {
       device_.writeOPCUABool("P0_Terminate", true);
@@ -256,7 +259,7 @@ void dysturbanceControl::dataAcquisitionCallback(const dysturbance_ros_msgs::Sta
     platform_data_file_ << std::setw(12) << -(msg.data.pendulum_positions.at(i)*105.7 + encoder_offset_) << "; ";  // 360deg @3.47VDC
     platform_data_file_ << std::setw(12) << msg.data.pendulum_torques.at(i)*100.0 << "; ";  // 500Nm @5VDC
     platform_data_file_ << std::setw(12) << msg.data.contact_forces.at(i)*444.8 << "; ";  // 2224N @5VDC
-    platform_data_file_ << std::endl;  // exclude UTC time
+    platform_data_file_ << "; " << std::endl;  // exclude UTC time and fallen fields
   }
   acquisition_samples_ += msg.data.times.size();
   acquisition_duration_ = msg.data.times.back();
