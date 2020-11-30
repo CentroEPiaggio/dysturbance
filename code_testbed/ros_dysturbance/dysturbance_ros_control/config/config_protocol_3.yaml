@@ -5,6 +5,6 @@ protocol:
   repetitions: 3  # The number of repetitions of the experiment
   parameters:
     id: "001"  # The integer unique identifier used for data storage
-    torque_amplitude: 60.0  # The pendulum sinusoidal torque amplitude [Nm]
+    force_amplitude: 60.0  # The pendulum sinusoidal force amplitude [N]
     frequency: 0.1  # The pendulum oscillation frequency [Hz]
     cycles_number: 5  # The number of sinusoidal periods

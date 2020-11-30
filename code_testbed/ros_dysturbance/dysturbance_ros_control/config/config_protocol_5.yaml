@@ -5,4 +5,4 @@ protocol:
   repetitions: 3  # The number of repetitions of the experiment
   parameters:
     id: "000"  # The integer unique identifier used for data storage
-    torque_ramp_slope: 1.0  # The pendulum torque ramp slope [Nm/s]
+    force_ramp_slope: 1.0  # The pendulum force ramp slope [N/s]
