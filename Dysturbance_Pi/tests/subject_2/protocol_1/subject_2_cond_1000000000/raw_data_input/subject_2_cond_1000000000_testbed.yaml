@@ -1,0 +1,30 @@
+debug_acquisition: false
+pendulum:
+  added_mass: 0.0
+  axis_height: 1.0
+  id: '0000'
+  length: 1.0
+  tip_type: default
+platform:
+  ground_inclination: 0.0
+  ground_type: default
+  id: '00'
+protocol:
+  id: 1
+  name: impulsive_disturbance
+  notes: ''
+  parameters:
+    id: '000'
+    impact_force: 400.0
+    initial_energy: 5.0
+  repetitions: 3
+sampling_frequency: 10000.0
+subject:
+  base_depth: 0.3
+  base_width: 0.5
+  com_height: 0.3
+  height: 0.6
+  id: 2
+  mass: 25.0
+  name: tipo_ego
+  orientation: 0.0
