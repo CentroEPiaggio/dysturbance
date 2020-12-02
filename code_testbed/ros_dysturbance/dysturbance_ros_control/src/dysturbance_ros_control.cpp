@@ -85,10 +85,10 @@ dysturbanceControl::dysturbanceControl()
     ShellExecuteA(nullptr, "open", "cmd.exe", rosparam_dump_cmd.c_str(), nullptr, SW_HIDE);
 
     for (int i=0; true; i++) {
-      std::string data_file_name = base_path + base_file_name + "_run_" + std::to_string(i) + "_platformData.csv";
-      std::ifstream existing_data_file(data_file_name);
+      platform_data_file_name_ = base_path + base_file_name + "_run_" + std::to_string(i) + "_platformData.csv";
+      std::ifstream existing_data_file(platform_data_file_name_);
       if (!existing_data_file.good()) {  // if file does not exist, it is the current run
-        platform_data_file_.open(data_file_name, std::ios_base::app);
+        platform_data_file_.open(platform_data_file_name_, std::ios_base::app);
         platform_data_file_ << "time [s]; pendulum_position [deg]; pendulum_torque [Nm]; contact_force [N]; UTC_time[YY-MM-DD HH:MM:SS +-OFF]; fallen [bool]" << std::endl;
         platform_data_file_ << std::fixed << std::setprecision(6) << std::setfill(' ');
         break;
@@ -108,6 +108,12 @@ dysturbanceControl::~dysturbanceControl() {
   control_timer_.stop();
   frequency_timer_.stop();
   spinner_.stop();
+
+  if (!acquisition_samples_) {
+    if (!DeleteFileA(platform_data_file_name_.c_str())) {
+      ROS_ERROR_STREAM("Cannot delete the empty data file.\nTerminating by system...");
+    }
+  }
 }
 
 void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event) {

@@ -64,6 +64,7 @@ class dysturbanceControl {
   std::mutex sync_protector_;
   int counter_;  // control loop counter (just to check the frequency)
 
+  std::string platform_data_file_name_;
   std::ofstream platform_data_file_;
   int system_state_;
   int64_t acquisition_samples_;
