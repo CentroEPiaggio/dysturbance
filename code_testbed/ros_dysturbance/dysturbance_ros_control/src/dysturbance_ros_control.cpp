@@ -228,10 +228,18 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
     ROS_INFO_STREAM("   * Orientation : " << node_handle_.param<float>("subject/orientation", 0.0) << " [deg]");
     ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
 
-    if (!promptUserChoice("Do you want to start the current protocol with the given settings?")) {  // blocking
-      ROS_INFO_STREAM("Terminating by user...");
-      return;
-    }
+    device_.readOPCUAUInt16("P0_System_State", system_state_);  // only to keep alive OPC-UA ROS node
+    do {
+      if (system_state_ == 30) {
+        ROS_WARN_STREAM("Please close the gates and release the emergency button before starting the experiment...");
+      }
+      if (!promptUserChoice("Do you want to start the current protocol with the given settings?")) {  // blocking
+        ROS_INFO_STREAM("Terminating by user...");
+        return;
+      }
+      device_.readOPCUAUInt16("P0_System_State", system_state_);  // only to keep alive OPC-UA ROS node
+    } while (system_state_ == 30);
+
     device_.writeOPCUABool("P" + std::to_string(protocol_id) + "_Enable", true);
     ROS_INFO_STREAM("Starting Protocol " << protocol_id << "...");
 
