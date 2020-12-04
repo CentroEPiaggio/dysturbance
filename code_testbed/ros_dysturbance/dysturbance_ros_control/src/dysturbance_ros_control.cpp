@@ -41,6 +41,7 @@ dysturbanceControl::dysturbanceControl()
       acquisition_duration_(0),
       encoder_offset_(-52.6),  // WARNING: depends on the encoder magnet mounting
       init_success_(device_.init(node_handle_, node_handle_)),
+      setup_success_(false),
       controller_manager_(&device_, node_handle_) {
   node_handle_.setCallbackQueue(callback_queue_.get());
   spinner_.start();
@@ -88,12 +89,21 @@ dysturbanceControl::dysturbanceControl()
       platform_data_file_name_ = base_path + base_file_name + "_run_" + std::to_string(i) + "_platformData.csv";
       std::ifstream existing_data_file(platform_data_file_name_);
       if (!existing_data_file.good()) {  // if file does not exist, it is the current run
+        if (i >= node_handle_.param<int>("protocol/repetitions", 0)) {
+          if (!promptUserChoice("You have already performed the expected number of runs, do you want to continue anyway?")) {  // blocking
+            ROS_INFO_STREAM("Terminating by user...");
+            return;
+          }
+        }
+
         platform_data_file_.open(platform_data_file_name_, std::ios_base::app);
         platform_data_file_ << "time [s]; pendulum_position [deg]; pendulum_torque [Nm]; contact_force [N]; UTC_time[YY-MM-DD HH:MM:SS +-OFF]; fallen [bool]" << std::endl;
         platform_data_file_ << std::fixed << std::setprecision(6) << std::setfill(' ');
         break;
       }
     }
+
+    setup_success_ =  true;
 
     frequency_publisher_ = node_handle_.advertise<std_msgs::Int32>("frequency", 1);
     data_subscriber_ = node_handle_.subscribe("data_acquisition", 1, &dysturbanceControl::dataAcquisitionCallback, this);
@@ -109,7 +119,7 @@ dysturbanceControl::~dysturbanceControl() {
   frequency_timer_.stop();
   spinner_.stop();
 
-  if (!acquisition_samples_) {
+  if (!acquisition_samples_ && setup_success_) {
     if (!DeleteFileA(platform_data_file_name_.c_str())) {
       ROS_ERROR_STREAM("Cannot delete the empty data file.\nTerminating by system...");
     }

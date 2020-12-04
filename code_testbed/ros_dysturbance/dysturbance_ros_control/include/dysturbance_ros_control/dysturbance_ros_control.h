@@ -74,6 +74,7 @@ class dysturbanceControl {
   // do not change the following variables order
   dysturbance_ros_hardware_interface::dysturbanceHW device_;
   bool init_success_;
+  bool setup_success_;
   controller_manager::ControllerManager controller_manager_;
 
   void controlCallback(const ros::WallTimerEvent &timer_event);
