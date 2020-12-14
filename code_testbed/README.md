@@ -239,6 +239,12 @@ subject_<b>[subject/id]</b>_cond_<b>[protocol/id]</b><b>[protocol/parameters/id]
 
 It is worth noticing that there always should be a single `*_testbed.yaml` per a series of same config (i.e. same IDs) experiment.
 
+### Reset Pendulum Position
+Execute the following command to bring the pendulum to its base position:
+```
+roslaunch dysturbance_ros_control reset_pendulum.launch
+```
+
 ### Debug Data Acquisition
 Execute the following command to make a simple check of data acquisition (without even powering up the servo motor):
 ```
