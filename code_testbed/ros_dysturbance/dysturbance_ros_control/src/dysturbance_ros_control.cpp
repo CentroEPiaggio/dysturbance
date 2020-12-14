@@ -135,10 +135,9 @@ dysturbanceControl::~dysturbanceControl() {
     platform_data_file_.close();
     control_timer_.stop();
     frequency_timer_.stop();
-
     if (!acquisition_samples_) {
       if (!DeleteFileA(platform_data_file_name_.c_str())) {
-        ROS_ERROR_STREAM("Cannot delete the empty data file.\nTerminating by system...");
+        std::cout << "Cannot delete the empty data file.\nTerminating by system...";
       }
     }
   }
@@ -195,7 +194,7 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
           double linear_density = 4.13;
 
           double initial_energy = (pendulum_added_mass + 0.5*linear_density*pendulum_length)*gravity*pendulum_length*(1 - std::cos(deg_to_rad*initial_upper_position));
-          double impact_force = std::sqrt(2*(pendulum_added_mass*std::pow(pendulm_length,2) + linear_density*std::pow(pendulm_length,2)/3)*initial_energy);
+          double impact_force = std::sqrt(2*(pendulum_added_mass*std::pow(pendulum_length,2) + linear_density*std::pow(pendulum_length,2)/3)*initial_energy);
 
           device_.writeOPCUAFloat64("P1_Upper_Position", -initial_upper_position);
           ROS_INFO_STREAM("   * Initial Upper Position : " << -initial_upper_position << " [deg]");
