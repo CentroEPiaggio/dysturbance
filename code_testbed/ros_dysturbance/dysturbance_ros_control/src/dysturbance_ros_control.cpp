@@ -50,7 +50,7 @@ dysturbanceControl::dysturbanceControl()
     if (node_handle_.param<bool>("reset_pendulum", false)) {
       device_.writeOPCUABool("P0_Terminate", true);
       ROS_INFO_STREAM("Reset pendulum position.");
-      GenerateConsoleCtrlEvent(0, 0);
+      terminate();
       return;
     }
 
@@ -58,7 +58,7 @@ dysturbanceControl::dysturbanceControl()
     std::string base_path = "../Desktop/experiments/" + subject + "/";
     if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
       ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
-      GenerateConsoleCtrlEvent(0, 0);
+      terminate();
       return;
     }
 
@@ -66,7 +66,7 @@ dysturbanceControl::dysturbanceControl()
     base_path += protocol + "/";
     if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
       ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
-      GenerateConsoleCtrlEvent(0, 0);
+      terminate();
       return;
     }
 
@@ -78,14 +78,14 @@ dysturbanceControl::dysturbanceControl()
     base_path += base_file_name + "/";
     if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
       ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
-      GenerateConsoleCtrlEvent(0, 0);
+      terminate();
       return;
     }
 
     base_path += "raw_data_input/";
     if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
       ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
-      GenerateConsoleCtrlEvent(0, 0);
+      terminate();
       return;
     }
 
@@ -103,6 +103,7 @@ dysturbanceControl::dysturbanceControl()
         if (i >= node_handle_.param<int>("protocol/repetitions", 0)) {
           if (!promptUserChoice("You have already performed the expected number of runs, do you want to continue anyway?")) {  // blocking
             ROS_INFO_STREAM("Terminating by user...");
+            terminate();
             return;
           }
         }
@@ -122,25 +123,13 @@ dysturbanceControl::dysturbanceControl()
     frequency_timer_ = node_handle_.createWallTimer(ros::WallDuration(1.0), &dysturbanceControl::frequencyCallback, this);
   } else {
     ROS_ERROR_STREAM("Cannot initialize the hardware interface.\nTerminating by system...");
-    GenerateConsoleCtrlEvent(0, 0);
+    terminate();
     return;
   }
 }
 
 dysturbanceControl::~dysturbanceControl() {
-  spinner_.stop();
-
-  if (setup_success_) {
-    device_.stopAcquisition();
-    platform_data_file_.close();
-    control_timer_.stop();
-    frequency_timer_.stop();
-    if (!acquisition_samples_) {
-      if (!DeleteFileA(platform_data_file_name_.c_str())) {
-        std::cout << "Cannot delete the empty data file.\nTerminating by system...";
-      }
-    }
-  }
+  terminate();
 }
 
 void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event) {
@@ -153,14 +142,7 @@ void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event)
     bool fallen = promptUserChoice("Is the subject fallen during the experiment?");  // blocking
     platform_data_file_ << ";;;;; " << std::boolalpha << fallen << std::endl;  // only for the last row
 
-    if (promptUserChoice("Do you want to bring the pendulum to the initial position?")) {  // blocking
-      device_.writeOPCUABool("P0_Terminate", true);
-    }
-
-    ROS_INFO_STREAM("Exiting...");
-    ros::Duration(1.0).sleep();
-    GenerateConsoleCtrlEvent(0, 0);
-    return;
+    terminate();
   }
 
   // can serve async pending request when the lock is released
@@ -172,6 +154,7 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
   if (node_handle_.param<bool>("debug_acquisition", false)) {
     if (!device_.startAcquisition()) {
       ROS_ERROR_STREAM("Terminating by system...");
+      terminate();
       return;
     }
     ROS_INFO_STREAM("Debugging...");
@@ -260,6 +243,7 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
       }
       if (!promptUserChoice("Do you want to start the current protocol with the given settings?")) {  // blocking
         ROS_INFO_STREAM("Terminating by user...");
+        terminate();
         return;
       }
       device_.readOPCUAUInt16("P0_System_State", system_state_);  // only to keep alive OPC-UA ROS node
@@ -269,8 +253,8 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
     ROS_INFO_STREAM("Starting Protocol " << protocol_id << "...");
 
     if (!promptUserChoice("Do you want to start the current experiment?")) {  // blocking
-      device_.writeOPCUABool("P0_Terminate", true);
       ROS_INFO_STREAM("Terminating by user...");
+      terminate();
       return;
     }
     device_.readOPCUAUInt16("P0_System_State", system_state_);
@@ -283,8 +267,8 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
     platform_data_file_ << ";;;; " << utc_time << ";" << std::endl;  // only for the first row
 
     if (!device_.startAcquisition()) {
-      device_.writeOPCUABool("P0_Terminate", true);
       ROS_ERROR_STREAM("Terminating by system...");
+      terminate();
       return;
     }
   }
@@ -336,4 +320,28 @@ void dysturbanceControl::update(const ros::WallTime &time, const ros::WallDurati
 
   // write the commands to the hardware
   device_.write(ros::Time(time.toSec()), ros::Duration(period.toSec()));
+}
+
+void dysturbanceControl::terminate() {
+  spinner_.stop();
+
+  if (setup_success_) {
+    device_.stopAcquisition();
+    platform_data_file_.close();
+    control_timer_.stop();
+    frequency_timer_.stop();
+    if (!acquisition_samples_) {
+      if (!DeleteFileA(platform_data_file_name_.c_str())) {
+        ROS_ERROR_STREAM("Cannot delete the empty data file...");
+      }
+    }
+  }
+
+  if (!node_handle_.param<bool>("reset_pendulum", false) && !node_handle_.param<bool>("debug_acquisition", false) && promptUserChoice("Do you want to bring the pendulum to the initial position?")) {  // blocking
+    device_.writeOPCUABool("P0_Terminate", true);
+  }
+
+  ROS_INFO_STREAM("Exiting...");
+  ros::Duration(1.0).sleep();
+  GenerateConsoleCtrlEvent(0, 0);
 }

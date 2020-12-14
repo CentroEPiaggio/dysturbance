@@ -84,6 +84,7 @@ class dysturbanceControl {
   bool isUserChoiceValid(std::string &answer) const;
   bool promptUserChoice(const std::string &question) const;
   void update(const ros::WallTime &time, const ros::WallDuration &period);
+  void terminate();
 };
 
 }  // namespace dysturbance_ros_control
