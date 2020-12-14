@@ -19,6 +19,8 @@
 
     <!-- debug -->
     <param name="debug_acquisition" type="bool" value="false"/>
+    <!-- reset pendulum position -->
+    <param name="reset_pendulum" type="bool" value="false"/>
 
     <!-- start the control node to execute the experiment and start the data acquisition -->
     <node name="data_acquisition" pkg="dysturbance_ros_control" type="dysturbance_ros_default"

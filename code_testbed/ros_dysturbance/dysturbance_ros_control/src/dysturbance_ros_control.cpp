@@ -47,11 +47,19 @@ dysturbanceControl::dysturbanceControl()
   spinner_.start();
 
   if (init_success_) {
+    if (node_handle_.param<bool>("reset_pendulum", false)) {
+      device_.writeOPCUABool("P0_Terminate", true);
+      ROS_INFO_STREAM("Reset pendulum position.");
+      GenerateConsoleCtrlEvent(0, 0);
+      return;
+    }
+
     std::string subject = "subject_" + std::to_string(node_handle_.param<int>("subject/id", 0));
     std::string base_path = "../Desktop/experiments/" + subject + "/";
     if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
       ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
       GenerateConsoleCtrlEvent(0, 0);
+      return;
     }
 
     std::string protocol = "protocol_" + std::to_string(node_handle_.param<int>("protocol/id", 0));
@@ -59,6 +67,7 @@ dysturbanceControl::dysturbanceControl()
     if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
       ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
       GenerateConsoleCtrlEvent(0, 0);
+      return;
     }
 
     std::string base_file_name = subject + "_cond_";
@@ -70,12 +79,14 @@ dysturbanceControl::dysturbanceControl()
     if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
       ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
       GenerateConsoleCtrlEvent(0, 0);
+      return;
     }
 
     base_path += "raw_data_input/";
     if (!CreateDirectoryA(base_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS) {
       ROS_ERROR_STREAM("Cannot create the experiment directory.\nTerminating by system...");
       GenerateConsoleCtrlEvent(0, 0);
+      return;
     }
 
     // The sample frequency is a fixed internal params but it needs to appear in the yaml dump
@@ -109,19 +120,26 @@ dysturbanceControl::dysturbanceControl()
     data_subscriber_ = node_handle_.subscribe("data_acquisition", 1, &dysturbanceControl::dataAcquisitionCallback, this);
     control_setup_timer_ = node_handle_.createWallTimer(ros::WallDuration(1.0), &dysturbanceControl::controlSetupCallback, this, true);  // oneshot
     frequency_timer_ = node_handle_.createWallTimer(ros::WallDuration(1.0), &dysturbanceControl::frequencyCallback, this);
+  } else {
+    ROS_ERROR_STREAM("Cannot initialize the hardware interface.\nTerminating by system...");
+    GenerateConsoleCtrlEvent(0, 0);
+    return;
   }
 }
 
 dysturbanceControl::~dysturbanceControl() {
-  device_.stopAcquisition();
-  platform_data_file_.close();
-  control_timer_.stop();
-  frequency_timer_.stop();
   spinner_.stop();
 
-  if (!acquisition_samples_ && setup_success_) {
-    if (!DeleteFileA(platform_data_file_name_.c_str())) {
-      ROS_ERROR_STREAM("Cannot delete the empty data file.\nTerminating by system...");
+  if (setup_success_) {
+    device_.stopAcquisition();
+    platform_data_file_.close();
+    control_timer_.stop();
+    frequency_timer_.stop();
+
+    if (!acquisition_samples_) {
+      if (!DeleteFileA(platform_data_file_name_.c_str())) {
+        ROS_ERROR_STREAM("Cannot delete the empty data file.\nTerminating by system...");
+      }
     }
   }
 }
@@ -143,6 +161,7 @@ void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event)
     ROS_INFO_STREAM("Exiting...");
     ros::Duration(1.0).sleep();
     GenerateConsoleCtrlEvent(0, 0);
+    return;
   }
 
   // can serve async pending request when the lock is released
