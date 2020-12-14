@@ -5,5 +5,4 @@ protocol:
   repetitions: 3  # The number of repetitions of the experiment
   parameters:
     id: "000"  # The integer unique identifier used for data storage
-    initial_energy: 5.0  # The initial energy which determines the initial pendulum position [J]
-    impact_force: 400.0 # The desired impact force [N]
+    initial_upper_position: -20.0  # The initial pendulum upper position which determines the initial energy and impact force [deg]

@@ -119,8 +119,7 @@ In the following, only the parameters in bold are directly used in variables and
      repetitions: 3  # The number of repetitions of the experiment
      parameters:
        id: "000"  # The integer unique identifier used for data storage
-       <b>initial_energy</b>: 5.0  # The initial energy which determines the initial pendulum position [J]
-       <b>impact_force</b>: 400.0 # The desired impact force [N]
+       <b>initial_upper_position</b>: -20.0  # The initial pendulum upper position which determines the initial energy and impact force [deg]
    </pre>
  - Automatic recalling of these specific and all common parameters through:
    ```

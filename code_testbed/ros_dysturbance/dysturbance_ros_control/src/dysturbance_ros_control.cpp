@@ -163,34 +163,21 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
     switch (protocol_id) {
       case 1:
         {
-          double initial_energy = node_handle_.param<float>("protocol/parameters/initial_energy", 0.0);
-          double impact_force = node_handle_.param<float>("protocol/parameters/impact_force", 0.0);
-          double impact_duration = 0.01;
+          double initial_upper_position = std::abs(node_handle_.param<float>("protocol/parameters/initial_upper_position", 0.0));
+          double pendulum_added_mass = node_handle_.param<float>("pendulum/added_mass", 0.0);
           double pendulum_length = node_handle_.param<float>("pendulum/length", 0.0);
+          double deg_to_rad = std::acos(-1)/180;
           double gravity = 9.81;
+          double impact_duration = 0.01;
           double linear_density = 4.13;
 
-          double first_term = std::pow(impact_force,2)*std::pow(impact_duration,2)/(2*initial_energy);
-          double second_term = linear_density*std::pow(pendulum_length,3)/3;
-          double pendulum_mass = (first_term - second_term)/std::pow(pendulum_length,2);
-          double rounded_mass = std::round(2*pendulum_mass)/2;
+          double initial_energy = (pendulum_added_mass + 0.5*linear_density*pendulum_length)*gravity*pendulum_length*(1 - std::cos(deg_to_rad*initial_upper_position));
+          double impact_force = std::sqrt(2*(pendulum_added_mass*std::pow(pendulm_length,2) + linear_density*std::pow(pendulm_length,2)/3)*initial_energy);
 
-          if (std::abs(rounded_mass - node_handle_.param<float>("pendulum/added_mass", 0.0)) > 0.25) {
-            ROS_INFO_STREAM("   * Expected Mass: " << rounded_mass << " [kg]");
-            if (!promptUserChoice("Have you changed the mass to match the expected one?")) {  // blocking
-              ROS_INFO_STREAM("Terminating by user...");
-              return;
-            }
-          }
-
-          double denominator = (rounded_mass + linear_density*pendulum_length/2)*gravity*pendulum_length;
-          double rad_to_deg = 180/std::acos(-1);
-          double p1_upper_position = -rad_to_deg*std::acos(1-(initial_energy/denominator));
-
-          device_.writeOPCUAFloat64("P1_Upper_Position", p1_upper_position);
-          ROS_INFO_STREAM("   * Initial Upper Position : " << p1_upper_position << " [deg]");
-          ROS_INFO_STREAM("   * Initial Energy : " << initial_energy << " [J]");
-          ROS_INFO_STREAM("   * Impact Force : " << impact_force << " [N]");
+          device_.writeOPCUAFloat64("P1_Upper_Position", -initial_upper_position);
+          ROS_INFO_STREAM("   * Initial Upper Position : " << -initial_upper_position << " [deg]");
+          ROS_INFO_STREAM("   * Expected Initial Energy : " << initial_energy << " [J]");
+          ROS_INFO_STREAM("   * Expected Impact Force : " << impact_force << " [N]");
         }
         break;
       case 2:
