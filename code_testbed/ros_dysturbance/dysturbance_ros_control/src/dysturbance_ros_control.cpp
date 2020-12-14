@@ -135,9 +135,13 @@ void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event)
     ROS_INFO_STREAM("The experiment is end in " << acquisition_duration_ << "s (" << acquisition_samples_ << " samples acquired)");
     bool fallen = promptUserChoice("Is the subject fallen during the experiment?");  // blocking
     platform_data_file_ << ";;;;; " << std::boolalpha << fallen << std::endl;  // only for the last row
+
+    if (promptUserChoice("Do you want to bring the pendulum to the initial position?")) {  // blocking
+      device_.writeOPCUABool("P0_Terminate", true);
+    }
+
     ROS_INFO_STREAM("Exiting...");
     ros::Duration(1.0).sleep();
-
     GenerateConsoleCtrlEvent(0, 0);
   }
 
