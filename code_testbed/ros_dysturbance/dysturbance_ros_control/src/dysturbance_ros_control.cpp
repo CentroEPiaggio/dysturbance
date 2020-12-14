@@ -129,7 +129,7 @@ dysturbanceControl::dysturbanceControl()
 }
 
 dysturbanceControl::~dysturbanceControl() {
-  terminate();
+  spinner_.stop();
 }
 
 void dysturbanceControl::controlCallback(const ros::WallTimerEvent &timer_event) {
@@ -323,8 +323,6 @@ void dysturbanceControl::update(const ros::WallTime &time, const ros::WallDurati
 }
 
 void dysturbanceControl::terminate() {
-  spinner_.stop();
-
   if (setup_success_) {
     device_.stopAcquisition();
     platform_data_file_.close();
