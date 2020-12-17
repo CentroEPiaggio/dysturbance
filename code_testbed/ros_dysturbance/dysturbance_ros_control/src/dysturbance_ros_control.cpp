@@ -39,7 +39,7 @@ dysturbanceControl::dysturbanceControl()
       counter_(0),
       acquisition_samples_(0),
       acquisition_duration_(0),
-      encoder_offset_(-52.6),  // WARNING: depends on the encoder magnet mounting
+      encoder_offset_(-158),  // WARNING: depends on the encoder magnet mounting
       init_success_(device_.init(node_handle_, node_handle_)),
       setup_success_(false),
       controller_manager_(&device_, node_handle_) {
@@ -215,6 +215,7 @@ void dysturbanceControl::controlSetupCallback(const ros::WallTimerEvent &timer_e
     ROS_INFO_STREAM(" ---------------------------------------------------------------------- ");
     ROS_INFO_STREAM("  Pendulum ID : " << node_handle_.param<std::string>("pendulum/id", "undefined"));
     ROS_INFO_STREAM("  Pendulum Parameters :");
+    device_.writeOPCUAFloat64("P0_Pendulum_Length", node_handle_.param<float>("pendulum/length", 0.0));
     ROS_INFO_STREAM("   * Length : " << node_handle_.param<float>("pendulum/length", 0.0) << " [m]");
     ROS_INFO_STREAM("   * Axis Height : " << node_handle_.param<float>("pendulum/axis_height", 0.0) << " [m]");
     ROS_INFO_STREAM("   * Added Mass : " << node_handle_.param<float>("pendulum/added_mass", 0.0) << " [kg]");
