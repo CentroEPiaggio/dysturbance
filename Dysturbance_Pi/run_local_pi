@@ -1,8 +1,8 @@
 #!/usr/bin/octave -qf
 
-//% Dysturbance - EuroBench Consortium
-//% Created By: Simone Monteleone
-//% mail: simone.monteleone@phd.unipi.it
+% Dysturbance - EuroBench Consortium
+% Created By: Simone Monteleone
+% mail: simone.monteleone@phd.unipi.it
 
 printf ("current directory: %s\n", pwd())
 addpath("src")
