@@ -8,7 +8,7 @@ function Compute_Global_PI(data_folder, Protocol)
 %--------------------------------------------------------------------------
 
 % creation of the folder to store the Global PI data
-Protocol_folder = strcat("\Protocol_",num2str(Protocol));
+Protocol_folder = strcat("\protocol_",num2str(Protocol));
 Global_PI_folder = strcat('tests\', data_folder,Protocol_folder,'\Global_PIs');
 mkdir(Global_PI_folder);
 
@@ -44,7 +44,6 @@ fprintf("Collecting Local PI from experiments folders ... \n");
 [Stability_margin_matrix, Second_PI] = Collect_Local_PI(Tests_folders, Protocol);
 % Second_PI is the matrix of the other PI.
 
-% SEI ARRIVATO QUI CON IL DEBUGGING
 fprintf("Computing Global PI ... \n");
 
 if Protocol == 1
@@ -54,7 +53,7 @@ if Protocol == 1
 elseif Protocol == 2 || Protocol == 3
     Global_stability_margins(Stability_margin_matrix, Protocol, Global_PI_folder);
     Excited_impedance = Second_PI;
-    Global_excited_impedance(Excited_impedance,Global_PI_folder);
+    Global_excited_impedance(Excited_impedance,Global_PI_folder, Protocol);
 elseif Protocol == 4 || Protocol == 5
     Global_stability_margins(Stability_margin_matrix, Protocol, Global_PI_folder);
 end

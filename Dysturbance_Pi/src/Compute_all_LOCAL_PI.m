@@ -8,19 +8,21 @@ for i = 1:num_folder
     folder = Tests_folders(i);
     raw_data_folder = strcat(folder,'\raw_data_input');
     Old_Folder = cd(raw_data_folder);
-    
+    clear all_data all_files num_files yaml_file filename;
     %collect the files in which are stored the raw data
     all_data = dir;
     all_files = all_data(~[all_data(:).isdir]);
     num_files = numel(all_files);
 
+    index_folder = strfind(folder{1},"subject_");
+    experiment_condition_check = folder{1}(index_folder(2):end);
     % Divide files between yaml and csv
     t = 1;
     for i2 = 1:num_files
-        if contains(all_files(i2).name, ".csv")
-            filename(t,:) = all_files(i2).name;
+        if contains(all_files(i2).name, ".csv") && contains(all_files(i2).name, experiment_condition_check)
+            filename{t} = all_files(i2).name;
             t = t + 1;
-        elseif contains(all_files(i2).name, ".yaml")
+        elseif contains(all_files(i2).name, ".yaml") && contains(all_files(i2).name, experiment_condition_check)
             yaml_file = all_files(i2).name;
         else
             fprintf("unknown file format found during raw data analysis. The file will not be considered.\n");
@@ -28,7 +30,7 @@ for i = 1:num_folder
     end
     cd(Old_Folder);
     
-    num_csv = size(filename,1);
+    num_csv = size(filename,2);
     indices = strfind(folder,"\");
     folder_cell = cellstr(folder);
     result_folder = folder_cell{1}((indices(1)+1):(indices(3)-1));
@@ -43,7 +45,7 @@ for i = 1:num_folder
             mkdir(folder_local_pi)
         end
         cd(folder_local_pi);
-        computed_csv = filename(i3,:);
+        computed_csv = filename{i3};
         local_data = dir;
         local_data_files = local_data(~[local_data(:).isdir]);
         cd(Old_Folder);

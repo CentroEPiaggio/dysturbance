@@ -19,20 +19,18 @@ function [Pendulum_data, Pendulum_tip, Frontal_or_lateral] = Structure_data_extr
 data_structure = ReadYaml(structureyaml);
 
 Pendulum_length = data_structure.pendulum.length;
-Pendulum__added_mass = data_structure.pendulum.added_mass;
+Pendulum_added_mass = data_structure.pendulum.added_mass;
 Pendulum_height = data_structure.pendulum.axis_height;
 Pendulum_tip = data_structure.pendulum.tip_type;
 sampling_frequency = data_structure.sampling_frequency;
 %------------------------- Total mass computation -------------------------
 Linear_density = 4.13; %[kg/m] linear density of the pendulum bar
-Joint_mass = 0; % [kg] mass of the component at the rotation joint
-Joint_distance = 0.02; %[m] the bar is connected to the pendulum at a certain distance from the axis
-Bar_mass = Linear_density * (Pendulum_length - Joint_distance) + Joint_mass;
+Bar_mass = Linear_density * Pendulum_length;
 
-Pendulum_mass = Bar_mass + Pendulum__added_mass;
+Pendulum_mass = Bar_mass + Pendulum_added_mass;
 
 %store pendulum data in a vector
-Pendulum_data = [Pendulum_length, Pendulum_height, Pendulum_mass, sampling_frequency];
+Pendulum_data = [Pendulum_length, Pendulum_height, Pendulum_added_mass, sampling_frequency];
 
 Orientation = data_structure.subject.orientation;
 if Orientation == 0

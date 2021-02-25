@@ -19,7 +19,7 @@ datastructure = ReadYaml(robotdatafile);
 Robot_height = datastructure.subject.height;
 Robot_mass = datastructure.subject.mass;
 Base_width = datastructure.subject.base_width;
-Base_depth = datastructure.subject.base_depth;
+Base_depth = (datastructure.subject.base_depth);
 Robot_CoM_height = datastructure.subject.com_height;
 
 %% Medium size human dimensions
@@ -58,14 +58,14 @@ m_human = m_head + m_neck + m_thorax + m_abdomen + m_pelvis + 2 * (m_upperarm + 
 h_CoM_human = 0.01 *(m_head*h_head + m_neck*h_neck + m_thorax*h_thorax + m_abdomen*h_abdomen + m_pelvis*h_pelvis + 2*(m_upperarm*h_upperarm + m_forearm*h_forearm  + m_hand*h_hand + m_thigh*h_thigh + m_calf*h_calf + m_foot*h_foot))/m_human;
 
 %% Robot_normalization factor Force
-K_factor_Force_frontal = Robot_mass/m_human * Base_depth/d_frontal_human * h_CoM_human/Robot_CoM_height;
-K_factor_Force_lateral = Robot_mass/m_human * Base_width/d_lateral_human * h_CoM_human/Robot_CoM_height;
+K_factor_Force_frontal = Robot_mass/m_human * Base_depth/2/d_frontal_human * h_CoM_human/Robot_CoM_height;
+K_factor_Force_lateral = Robot_mass/m_human * Base_width/2/d_lateral_human * h_CoM_human/Robot_CoM_height;
 
 Normalization_Factors_Force = [K_factor_Force_frontal, K_factor_Force_lateral];
 
 %% Robot_normalization factor Energy
-K_factor_Energy_frontal = Robot_mass/m_human * (sqrt(Base_depth^2 + Robot_CoM_height^2) - Robot_CoM_height)/(sqrt(d_frontal_human^2 + h_CoM_human^2) - h_CoM_human);
-K_factor_Energy_lateral = Robot_mass/m_human * (sqrt(Base_width^2 + Robot_CoM_height^2) - Robot_CoM_height)/(sqrt(d_lateral_human^2 + h_CoM_human^2) - h_CoM_human);
+K_factor_Energy_frontal = Robot_mass/m_human * (sqrt((Base_depth/2)^2 + Robot_CoM_height^2) - Robot_CoM_height)/(sqrt(d_frontal_human^2 + h_CoM_human^2) - h_CoM_human);
+K_factor_Energy_lateral = Robot_mass/m_human * (sqrt((Base_width/2)^2 + Robot_CoM_height^2) - Robot_CoM_height)/(sqrt(d_lateral_human^2 + h_CoM_human^2) - h_CoM_human);
 
 Normalization_Factors_Energy = [K_factor_Energy_frontal, K_factor_Energy_lateral];
 

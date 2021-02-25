@@ -11,7 +11,7 @@ if isfall == "true"
 elseif isfall == "false"
     check_fall = 0;
 else 
-    error("boolean isfall is not true nor false. Please correct it");
+    error("boolean isfall is not true nor false. Please correct it in %s, folder %s \n", filename, Data_local_folder);
 end
 
 header = "check for fall";
