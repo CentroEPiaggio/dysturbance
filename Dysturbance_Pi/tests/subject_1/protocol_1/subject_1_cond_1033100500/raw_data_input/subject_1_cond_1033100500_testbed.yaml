@@ -1,0 +1,30 @@
+debug_acquisition: false
+pendulum:
+  added_mass: 0.5
+  axis_height: 1.82
+  id: '1005'
+  length: 0.5
+  tip_type: default
+platform:
+  ground_inclination: 0.0
+  ground_type: default
+  id: '00'
+protocol:
+  id: 1
+  name: impulsive_disturbance
+  notes: ''
+  parameters:
+    id: '033'
+    initial_upper_position: -33.0
+  repetitions: 10
+reset_pendulum: false
+sampling_frequency: 10000.0
+subject:
+  base_depth: 0.26
+  base_width: 0.57
+  com_height: 0.41
+  height: 1.0
+  id: 1
+  mass: 26.0
+  name: AlterEgo
+  orientation: 0.0
