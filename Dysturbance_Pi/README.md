@@ -1,85 +1,35 @@
-# PI CSIC
+# PI DYSTURBANCE
 
-[![license - apache 2.0](https://img.shields.io/:license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
-Copyright CSIC & Tecnalia 2020
-
-This is an example of Performance Indicator implemented in Octave.
-It is prepared to be used within the Eurobench Benchmarking Software.
+The Performance Indicator computation for Dysturbance Testbench is implemented in MATLAB.
+Further modifications are still needed to be used within the Eurobench Benchmarking Software.
 
 ## Purposes
 
-Characterize the gait performances of a walking human subject (step length, step and stride time), based on the observed joint angles.
-More technical details provided within the code [README](src/README.md)
-
-## Installation
-
-To enable the code under octave, additional packages are needed.
-
-```console
-sudo apt-get install liboctave-dev
-```
-
-Follow [these recommendations](https://octave.org/doc/v4.2.1/Installing-and-Removing-Packages.html) to make the installation of the additional packages needed:
-
-- [control](https://octave.sourceforge.io/control/index.html)
-- [signal](https://octave.sourceforge.io/signal/index.html)
-- [mapping](https://octave.sourceforge.io/mapping/index.html)
-- [io](https://octave.sourceforge.io/io/index.html)
-- [statistics](https://octave.sourceforge.io/statistics/index.html)
-
-Once octave is configured:
-
-```console
-pkg load signal
-pkg load mapping
-pkg load statistics
-```
-
-Note that all these installation steps can be run following the `RUN` command of the [Dockerfile](Dockerfile):
-
-```shell
-sh ./install.sh
-wget -O control-3.2.0.tar.gz https://octave.sourceforge.io/download.php?package=control-3.2.0.tar.gz \
-wget -O statistics-1.4.1.tar.gz https://octave.sourceforge.io/download.php?package=statistics-1.4.1.tar.gz \
-wget -O io-2.4.12.tar.gz https://octave.sourceforge.io/download.php?package=io-2.4.12.tar.gz \
-wget -O signal-1.4.1.tar.gz https://octave.sourceforge.io/download.php?package=signal-1.4.1.tar.gz \
-wget -O mapping-1.2.1.tar.gz https://octave.sourceforge.io/download.php?package=mapping-1.2.1.tar.gz
-./package_install.m
-```
+Characterize the balancing performances of robotic subjects under external disturbances.
+Technical details on the folder structure are provided in [README](./READ_ME.txt)
+More technical details on the functions will be provided within the code [README](src/README.md)
 
 ## Usage
 
-The script `run_pi` launches this PI from the shell of a machine with octave installed.
-The permissions of this file must be changed in order to be executable:
+We created two scripts to launches the PI computation from the shell of a machine with MATLAB installed.
+The two scripts are:
+ - `run_Local_PI.bat` launches the computation of the PI for a specific run of the experiments. It requires 3 arguments;
+ - `run_Glabal_PI.bat` launches the computation of the PI for a type pf Protocol. It requires 2 arguments;
 
+Assuming the folder `./tests/` contains all the raw data, the shell commands are:
+
+1. LOCAL PI: ARGUMENTS 'csv file name' 'related yaml file name' 'placement folder'
 ```console
-chmod 755 run_pi
+run_Local_PI.bat 'subject_1_cond_1008203500_run_0_platformData.csv' 'subject_1_cond_1008203500_testbed.yaml' 'subject_1/protocol_1'
 ```
-
-Assuming folder `./test_data/input/` contains the input data, and that `./test_data/output` exists and will contain the resulting files, the shell command is:
-
+2. GLOBAL PI: ARGUMENTS 'experiment folder' number_of_Protocol
 ```console
-./run_pi ./test_data/input/subject_10_trial_01.csv ./test_data/input/subject_10_anthropometry.yaml ./test_data/output
+run_Global_PI.bat 'subject_1' 1
 ```
 
-At this moment the script accepts two arguments (not less, not more).
+It is not possible to provide a number of arguments as inputs different from the specified one.
+The code will automatically open and run matlab, providing a set of plots and .csv file containing the results of the PI computation. You will find it in the related folder `./tests/subject_1/protocol_1/Global_PI`.
 
-## Build docker image
-
-Run the following command in order to create the docker image for this PI:
-
-```console
-docker build . -t pi_csic_docker_image
-```
-
-## Launch the docker image
-
-Assuming the `test_data/input/` contains the input data, and that the directory `test_data/output/` is created, and will contain the PI output:
-
-```shell
-docker run --rm -v $PWD/test_data/input:/in -v $PWD/test_data/output:/out pi_csic_docker_image ./run_pi /in/subject_10_trial_01.csv /in/subject_10_anthropometry.yaml /out
-```
 
 ## Acknowledgements
 
