@@ -1,0 +1,32 @@
+debug_acquisition: false
+pendulum:
+  added_mass: 0.0
+  axis_height: 1.72
+  id: '0000'
+  length: 1.0
+  tip_type: default
+platform:
+  ground_inclination: 0.0
+  ground_type: default
+  id: '00'
+protocol:
+  id: 3
+  name: sinusoidal_force_disturbance
+  notes: ''
+  parameters:
+    cycles_number: 5
+    force_amplitude: 4.0
+    frequency: 2.0
+    id: '420'
+  repetitions: 10
+reset_pendulum: false
+sampling_frequency: 10000.0
+subject:
+  base_depth: 0.26
+  base_width: 0.57
+  com_height: 0.41
+  height: 1.0
+  id: 1
+  mass: 26.0
+  name: AlterEgo
+  orientation: 0.0
