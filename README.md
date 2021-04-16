@@ -9,7 +9,5 @@ This code is aimed to control the pendulum of the EUROBENCH DYSTURBANCE platform
 ## [`Dysturbance_Pi`](Dysturbance_Pi)
 This code is aimed to compute the PI algorithms on the data collected in the experiments on the EUROBENCH DYSTURBANCE platform.
 
-## [`docs`](docs) and [`examples`](examples)
-These directories contains the documentation of the EUROBENCH DYSTURBANCE platform, and some examples of data acquisition.
- 
->Data examples come form early experiments and due to the COVID-19 delays the final platform data will probably differ from the one proposed.
+## [`docs`](docs)
+These directories contains the documentation of the EUROBENCH DYSTURBANCE platform.

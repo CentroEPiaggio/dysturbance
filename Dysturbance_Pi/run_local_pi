@@ -1,0 +1,22 @@
+#!/usr/bin/octave -qf
+
+printf("Current directory: %s\n\n", pwd());
+addpath("src");
+
+arg_list = argv();
+if nargin != 3
+  printf("ERROR: There should be exactly 3 arguments\n");
+  printf(" * an input '.csv' file containing the experiment data\n");
+  printf(" * an input '.yaml' file containing the experiment info (testbed, subject, etc...)\n");
+  printf(" * an output directory where the results is stored\n");
+  printf("\nUsage example:\n");
+  printf(" ./run_local_pi.m csv_file_path yaml_file_path output_dir_path\n");
+  exit(127);
+endif
+
+printf ("Experiment data input file: %s\n", arg_list{1});
+printf ("Experiment info input file: %s\n", arg_list{2});
+printf ("Output directory: %s\n\n", arg_list{3});
+
+printf("Starting computation...\n\n");
+Compute_Local_PI(arg_list{1}, arg_list{2}, arg_list{3});

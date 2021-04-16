@@ -1,47 +1,88 @@
-# Gait performance analysis
+The equivalent matlab function for these runs are:
+- run_local_pi --> Compute_Local_PI(filename,yaml_file, result_folder)
+- run_global_pi --> Compute_Global_PI(data_folder, Protocol)
 
-Code developed by CSIC, and optimized for Eurobench purposes by Tecnalia.
+%-----------------------------------------------------------------------
+% Compute the Local PI
+% Compute_Local_PI(filename,yaml_file, result_folder)
+%-----------------------------------------------------------------------
 
-## Installation guidelines
+1. Open matlab, and set the working directory to Dysturbance_pi;
 
-Follow the upper [Readme](../README.md) indications.
+2. add the path src to find functions
 
-## Description
+addpath("src");
 
-The original entry point `Main.m` is deprecated, and has been removed.
+3. Argument of the function Compute_Local_PI(filename,yaml_file, result_folder)
+ -  filename is the name of the csv in which are stored the raw datas.
+Ex:
+filename = "subject_2_cond_1000000000_run_0_platformData.csv";
 
-The current entry point is [computePI.m](computePI.m).
+ -  yaml_file is the name of the yaml in which it is stored the information of the experiment(testbed, subject, etc);
+Ex:
+yaml_file = "subject_2_cond_1000000000_testbed.yaml";
 
-```octave
-computePI("[path_to]/jointAngle.csv", "[path_to]/anthropometry.yaml")
-```
+ -  result_folder is the folder in which we store all the raw datas and information from experiments. Only subject and protocol folder must be specified;
+Ex:
+result_folder = "subject_2\protocol_1";
 
-The two parameters are:
+4. run the function for local pi:
+Ex:
+Compute_Local_PI(filename,yaml_file, result_folder);
 
-- `jointAngle.csv`: a `csv` file containing the joint angles recorded, assuming the first column ia a timestamp in second.
-- `anthropometry.yaml`: yaml file containing anthropometric data related to the subject.
-  We are expecting values for `Shank`, `Thigh`, `Arm`, `Trunk`, `Foot`.
+These three entry are sufficient for the code to compute the local Pi of the single experiment.
 
-The current code is to be launched **per trial**.
-There is no inter-trial computation for the moment.
+%-----------------------------------------------------------------------
+% Compute the Global PI
+% Compute_Global_PI(data_folder, Protocol)
+%-----------------------------------------------------------------------
 
-## Initial code structure
+1. Open matlab, and set the working directory to Dysturbance_pi;
 
-The current documentation may not be updated.
+2. add the path src to find functions
 
-Matlab algorithm to obtain some spatiotemporal data (step length, step and stride time) for human gait.
+addpath("src");
 
-The main algorithm uses four functions to obtain the desired spatiotemporals:
+3. Argument of the function Compute_Global_PI(data_folder, Protocol)
+ -  data_folder is the folder in which it is store all the data of the tested subject
+Ex:
+data_folder = "subject_2";
 
-- `find_leg_extension.m`:
-  Detects each leg extension as the minimum after each peak in the angle of the knee.
-  It returns a matrix, where the first row contains the angle at leg extension (a negative angle in this case), and the second row will contain the indices where the leg extension occurs.
-- `segment_gait.m`:
-  Segments the gait cycle using the leg extension.
-- `calculate_events.m`:
-  Saves the beginning of each stride (segment) as the heel strike.
-  Since we used the leg extension to mark the beginning of each stride, it coincides with the heel strike.
-- `calculate_spatiotemporal.m`:
-  - Calculates the stride and the step time using the Heel Strike (obtained in calculate_events.m; above explained).
-  - Uses these pre-processed parameters to obtain the step length.
-  - As a bonus: it also takes the angles measured by the inertial sensors to calculate the joint positions.
+ -  Protocol is the variable (double) that identifies the protocol executed.
+Ex:
+Protocol = 1;
+
+Protocols numbers:
+1. Impulsive Disturbance
+2. Sinusiodal Displacement Disturbance
+3. Sinusoidal Force Disturbance
+4. Quasi_static Displacement Disturbance
+5. Quasi-static Force Disturbance
+
+%-----------------------------------------------------------------------
+NOTE:
+For an easier management of the large amount of different csv and yaml data, during the acquisition we divide and store the data in folders with the following structure:
+
+tests -->
+	subject_i --> 
+		Protocol_j --> 
+			subject_i_cond_jxxxxxxxxx --> 
+					raw_data_input --> 
+							yaml_file (subject_i_cond_jxxxxxxxxx_testbed.yaml);
+							csv file, one per each n run (subject_i_cond_jxxxxxxxxx_run_n_platformData.csv);
+
+
+During the Computations, the code will create additionals folders containing:
+- Preprocessed datas: 
+	subject_i_cond_jxxxxxxxxx -->
+			 Preprocessed_data-->
+				csv file, one per each n run (subject_i_cond_jxxxxxxxxx_run_n_pp_platformData.csv)
+- Local PIs:
+	subject_i_cond_jxxxxxxxxx -->
+			 Local_PI -->
+				csv files, one per each PI
+- Global PIs: 
+tests --> 
+	subject_i --> 
+		Protocol_j --> 
+			Global_PI

@@ -1,38 +1,40 @@
 # PI DYSTURBANCE
-
 The Performance Indicator computation for Dysturbance Testbench is implemented in MATLAB.
 Further modifications are still needed to be used within the Eurobench Benchmarking Software.
 
 ## Purposes
-
 Characterize the balancing performances of robotic subjects under external disturbances.
-Technical details on the folder structure are provided in [README](./READ_ME.txt)
-More technical details on the functions will be provided within the code [README](src/README.md)
+Technical details on the folder structure are provided in [src/README.md](src/README.md)
 
 ## Usage
+There are two distinct scripts for the PI computation of the DYSTURBANCE testbed:
+1. `run_local_pi` computes the PI for a specific run on a series of experiments on a given subject.
 
-We created two scripts to launches the PI computation from the shell of a machine with MATLAB installed.
-The two scripts are:
- - `run_Local_PI.bat` launches the computation of the PI for a specific run of the experiments. It requires 3 arguments;
- - `run_Glabal_PI.bat` launches the computation of the PI for a type pf Protocol. It requires 2 arguments;
+   Args (all required):
+   1. an input `.csv` file containing the experiment data;
+   2. an input `.yaml` file containing the experiment info (testbed, subject, etc...)
+   3. an output directory where the results is stored
 
-Assuming the folder `./tests/` contains all the raw data, the shell commands are:
+2. `run_global_pi` computes the PI for a given protocol on the whole series of experiments on a given subject.
 
-1. LOCAL PI: ARGUMENTS 'csv file name' 'related yaml file name' 'placement folder'
-```console
-run_Local_PI.bat 'subject_1_cond_1008203500_run_0_platformData.csv' 'subject_1_cond_1008203500_testbed.yaml' 'subject_1/protocol_1'
-```
-2. GLOBAL PI: ARGUMENTS 'experiment folder' number_of_Protocol
-```console
-run_Global_PI.bat 'subject_1' 1
-```
+   Args (all required):
+    1. an input directory containing all the data of the tested subject
+    2. an integer which identifies the protocol to be evaluated (1-5)
+    3. an output directory where the results is stored
+
+Assuming folder `./tests/data/input` contains all the raw input data, and that `./tests/data/output` exists and will contain the resulting files, the shell command examples are:
+1. ```console
+   ./run_local_pi ./tests/data/input/subject_1/protocol_1/subject_1_cond_1008203500/raw_data_input/subject_1_cond_1008203500_run_0_platformData.csv ./tests/data/input/subject_1/protocol_1/subject_1_cond_1008203500/raw_data_input/subject_1_cond_1008203500_testbed.yaml ./tests/data/output/
+   ```
+2. ```console
+   ./run_global_pi ./tests/data/input/subject_1/ 1 ./tests/data/output/
+   ```
 
 It is not possible to provide a number of arguments as inputs different from the specified one.
-The code will automatically open and run matlab, providing a set of plots and .csv file containing the results of the PI computation. You will find it in the related folder `./tests/subject_1/protocol_1/Global_PI`.
 
+The code will automatically open and run MATLAB, providing a set of plots and .csv file containing the results of the PI computation.
 
 ## Acknowledgements
-
 <a href="http://eurobench2020.eu">
   <img src="http://eurobench2020.eu/wp-content/uploads/2018/06/cropped-logoweb.png"
        alt="rosin_logo" height="60" >
