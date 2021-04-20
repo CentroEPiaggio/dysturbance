@@ -14,8 +14,13 @@ num2 = 0;
 num3 = 0;
 for i = 1:num_folder
     local_folder = Tests_folders(i);
-    OLD_FOLDER = cd(local_folder);
-    Protocol_matrix = readtable("protocol_check.csv");
+    
+    FILE_check = cellstr(local_folder);
+    index_check = cell2mat(strfind(FILE_check,"\"));
+    raw_folder = FILE_check{1}(index_check(4)+1:index_check(end));
+
+    Protocol_matrix = readtable(strcat(".\tests\data\input\",raw_folder,"protocol_check.csv"));
+    OLD_FOLDER = cd(FILE_check{1}(1:index_check(end)));
     Protocol_number = Protocol_matrix.Protocol_number;
     if Protocol_number == Protocol
         cd("Local_PI");

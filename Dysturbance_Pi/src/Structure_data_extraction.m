@@ -1,4 +1,4 @@
-function [Pendulum_data, Pendulum_tip, Frontal_or_lateral] = Structure_data_extraction(structureyaml)
+function [Pendulum_data, Pendulum_tip, Frontal_or_lateral] = Structure_data_extraction(structureyaml,subject_yaml)
 %--------------------------------------------------------------------------
 % This function get the structure data from the specified yaml file, in
 % order to be used in the computation of the PIs
@@ -32,7 +32,9 @@ Pendulum_mass = Bar_mass + Pendulum_added_mass;
 %store pendulum data in a vector
 Pendulum_data = [Pendulum_length, Pendulum_height, Pendulum_added_mass, sampling_frequency];
 
-Orientation = data_structure.subject.orientation;
+data_subject = ReadYaml(subject_yaml);
+
+Orientation = data_subject.subject.orientation;
 if Orientation == 0
     Frontal_or_lateral = "Frontal";
 else 

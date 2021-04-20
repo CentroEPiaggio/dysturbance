@@ -1,4 +1,4 @@
-function [protocol_data, datapath, isfall, Protocol_TIME, flag_isempty] = Dysturbance_raw_data_extraction(filename, yaml_file, result_dir)
+function [protocol_data, datapath, Output_folder, isfall, Protocol_TIME, flag_isempty] = Dysturbance_raw_data_extraction(filename, yaml_file, result_dir)
 %--------------------------------------------------------------------------
 % This function get the raw data file in format .csv and extract the raw
 % data ready for post processing
@@ -13,8 +13,8 @@ delta = 4.13;           % [Kg/m] linear density of the pendulum
 
 %% data extraction from raw files
 
-yaml_path = strcat(result_dir,'\raw_data_input\',yaml_file);
-raw_filepath = strcat(result_dir,'\raw_data_input\',filename);
+yaml_path = yaml_file;%strcat(result_dir,'\raw_data_input\',yaml_file);
+raw_filepath = filename;%strcat(result_dir,'\raw_data_input\',filename);
 flag_yaml_empty = 0;
 if exist(yaml_path,'file')
     Yaml_data = ReadYaml(yaml_path);
@@ -133,10 +133,13 @@ if flag_isempty == 0
     
     % data must be saved in a specified folder
     FILE = cellstr(filename);
-    index = cell2mat(strfind(FILE,"platformData")) - 1;
-    Pre_processed_file_name = strcat(FILE{1}(1:index),'pp_platformData.csv');
-    Pre_processed_data_folder = strcat(result_dir,'\Preprocessed_data');
+    index_1 = cell2mat(strfind(FILE,"raw_data_input")) - 1;
+    preprocessed_folder = strcat(result_dir, FILE{1}(index_1-26:index_1));
     
+    index_2 = cell2mat(strfind(FILE,"platformData")) - 1;
+    Pre_processed_file_name = strcat(FILE{1}(index_1+16:index_2),'pp_platformData.csv');
+    Pre_processed_data_folder = strcat(preprocessed_folder,'Preprocessed_data');
+    Output_folder = preprocessed_folder;
     mkdir(Pre_processed_data_folder);
     datapath = strcat(Pre_processed_data_folder,'\',Pre_processed_file_name);
     % creating the file in datapath

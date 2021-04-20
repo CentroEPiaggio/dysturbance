@@ -1,4 +1,4 @@
-function Compute_all_LOCAL_PI(Tests_folders, Protocol)
+function Compute_all_LOCAL_PI(Tests_folders, Protocol, subject_yaml_info)
 %Compute the Local PIs in each folders the program recognize there are
 %experiments runs.
 num_folder = size(Tests_folders,1);
@@ -39,8 +39,10 @@ for i = 1:num_folder
     for i3 = 1:num_csv
         %searching if local PI is already have been calculated for that
         %experiment
-        
-        folder_local_pi = strcat(folder,'\Local_PI');
+        FILE = cellstr(folder);
+        index = cell2mat(strfind(FILE,"\"));
+        name_of_output_folder = strcat(".\tests\data\output",FILE{1}(index(4):end));
+        folder_local_pi = strcat(name_of_output_folder,'\Local_PI');
         if ~exist(folder_local_pi, 'dir')
             mkdir(folder_local_pi)
         end
@@ -100,7 +102,13 @@ for i = 1:num_folder
         end
         % computation of the missing PI
         if NO_need_for_computation == 0
-            Compute_Local_PI(computed_csv, yaml_file, result_folder);
+            FILE_res = cellstr(folder_local_pi);
+            index_res = cell2mat(strfind(FILE_res,"\")) - 1;
+            folder_of_results = folder_local_pi{1}(1:index_res(6));
+            filename_comp = strcat(raw_data_folder,"\", computed_csv);
+            yaml_filepath = strcat(raw_data_folder,"\", yaml_file);
+            subject_yaml = subject_yaml_info;
+            Compute_Local_PI(filename_comp,yaml_filepath, subject_yaml, folder_of_results);%computed_csv, yaml_file, result_folder);
         end
     end
 end
