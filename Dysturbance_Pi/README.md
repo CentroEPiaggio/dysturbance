@@ -12,8 +12,9 @@ There are two distinct scripts for the PI computation of the DYSTURBANCE testbed
 
    Args (all required):
    1. an input `.csv` file containing the experiment data;
-   2. an input `.yaml` file containing the experiment info (testbed, subject, etc...)
-   3. an output directory where the results is stored
+   2. an input `.yaml` file containing the experiment info (testbed, conditions, etc...)
+   3. an input `.yaml` file containing the subject info
+   4. an output directory where the results is stored
 
 2. `run_global_pi` computes the PI for a given protocol on the whole series of experiments on a given subject.
 
@@ -24,10 +25,12 @@ There are two distinct scripts for the PI computation of the DYSTURBANCE testbed
 
 Assuming folder `./tests/data/input` contains all the raw input data, and that `./tests/data/output` exists and will contain the resulting files, the shell command examples are:
 1. ```console
-   ./run_local_pi ./tests/data/input/subject_1/protocol_1/subject_1_cond_1008203500/raw_data_input/subject_1_cond_1008203500_run_0_platformData.csv ./tests/data/input/subject_1/protocol_1/subject_1_cond_1008203500/raw_data_input/subject_1_cond_1008203500_testbed.yaml ./tests/data/output/
+   ./run_local_pi .\tests\data\input\subject_1\protocol_1\subject_1_cond_1008203500\raw_data_input\subject_1_cond_1008203500_run_0_platformData.csv .\tests\data\input\subject_1\protocol_1\subject_1_cond_1008203500\raw_data_input\subject_1_cond_1008203500_testbed.yaml 
+.\tests\data\input\subject_1\subject_1_info.yaml  
+.\tests\data\output\subject_1\protocol_1
    ```
 2. ```console
-   ./run_global_pi ./tests/data/input/subject_1/ 1 ./tests/data/output/
+   ./run_global_pi .\tests\data\input\subject_1 1 .\tests\data\output
    ```
 
 It is not possible to provide a number of arguments as inputs different from the specified one.
