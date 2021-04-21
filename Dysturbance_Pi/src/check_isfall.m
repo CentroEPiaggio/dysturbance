@@ -17,7 +17,7 @@ end
 header = "check for fall";
 Fall_matrix = [header; check_fall];
 Fall_file_name = strcat("Fall_check_",filename);
-writematrix(Fall_matrix,strcat(Data_local_folder,'\',Fall_file_name));
+writematrix(Fall_matrix,fullfile(Data_local_folder,Fall_file_name));
 
 end
 

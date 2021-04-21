@@ -134,6 +134,6 @@ header = ["Mean Energy Percentage","Standard Deviation energy percentage", ...
 
 
 Data_matrix = [header;Absorbed_energy_KPI_matrix];
-writematrix(Data_matrix, strcat(Global_PI_folder,'\Global_Absorbed_energy.csv'));
+writematrix(Data_matrix, fullfile(Global_PI_folder,'Global_Absorbed_energy.csv'));
 end
 

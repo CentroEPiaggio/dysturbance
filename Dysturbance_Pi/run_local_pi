@@ -1,24 +1,21 @@
-#!/usr/bin/octave -qf
+#!/usr/bin/env bash
 
-printf("Current directory: %s\n\n", pwd());
-addpath("src");
+printf "\nCurrent directory: '$(pwd)'\n"
 
-arg_list = argv();
-if nargin != 4
-  printf("ERROR: There should be exactly 3 arguments\n");
-  printf(" * an input '.csv' file containing the experiment data\n");
-  printf(" * an input '.yaml' file containing the experiment info (testbed, conditions, etc...)\n");
-  printf(" * an input '.yaml' file containing the subject info\n");
-  printf(" * an output directory where the results is stored\n");
-  printf("\nUsage example:\n");
-  printf(" ./run_local_pi.m csv_file_path yaml_file_path yaml_subject_path output_dir_path\n");
-  exit(127);
-endif
+if [[ $# -ne 4 ]]; then
+  printf "\nERROR: There should be exactly 4 arguments\n"
+  printf " * an input '.csv' file containing the experiment data\n"
+  printf " * an input '.yaml' file containing the experiment info (testbed, conditions, etc...)\n"
+  printf " * an input '.yaml' file containing the subject info\n"
+  printf " * an output directory where the results is stored\n\n"
+  printf "Usage example:\n"
+  printf " ./run_local_pi exp_csv_file_path exp_yaml_file_path subject_yaml_file_path output_dir_path\n"
+  exit 127
+fi
 
-printf ("Experiment data input file: %s\n", arg_list{1});
-printf ("Experiment info input file: %s\n", arg_list{2});
-printf ("Subject info input file: %s\n", arg_list{3});
-printf ("Output directory: %s\n\n", arg_list{4});
+printf "Experiment data input file: '$1'\n"
+printf "Experiment info input file: '$2'\n"
+printf "Subject info input file: '$3'\n"
+printf "Output directory: '$4'\n\n"
 
-printf("Starting computation...\n\n");
-Compute_Local_PI(arg_list{1}, arg_list{2}, arg_list{3}, arg_list{4});
+matlab -sd "./" -batch "run_local_pi('$1', '$2', '$3', '$4')"

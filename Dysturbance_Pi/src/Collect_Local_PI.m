@@ -1,4 +1,4 @@
-function [Stability_margin_matrix, Second_PI] = Collect_Local_PI(Tests_folders, Protocol)
+function [Stability_margin_matrix, Second_PI] = Collect_Local_PI(input_folder, Tests_folders, Protocol)
 %--------------------------------------------------------------------------
 % Collect Local PI for the Dysturbance Tests
 %
@@ -16,10 +16,10 @@ for i = 1:num_folder
     local_folder = Tests_folders(i);
     
     FILE_check = cellstr(local_folder);
-    index_check = cell2mat(strfind(FILE_check,"\"));
+    index_check = cell2mat(strfind(FILE_check,filesep));
     raw_folder = FILE_check{1}(index_check(4)+1:index_check(end));
 
-    Protocol_matrix = readtable(strcat(".\tests\data\input\",raw_folder,"protocol_check.csv"));
+    Protocol_matrix = readtable(fullfile(input_folder,raw_folder,'protocol_check.csv'));
     OLD_FOLDER = cd(FILE_check{1}(1:index_check(end)));
     Protocol_number = Protocol_matrix.Protocol_number;
     if Protocol_number == Protocol

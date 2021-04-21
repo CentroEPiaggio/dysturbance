@@ -111,6 +111,6 @@ end
 
 header = ["Equivalent Inertia [Kg]","Equivalent Damping coefficient [Ns/m]","Equivalent Elasticity [N/m]","frequency [Hz]"];
 Equivalence_matrix = [header;Data_structure];
-writematrix(Equivalence_matrix,strcat(Global_PI_folder,'\Global_Equivalent_Impedance.csv'));
+writematrix(Equivalence_matrix,fullfile(Global_PI_folder,'Global_Equivalent_Impedance.csv'));
 end
 

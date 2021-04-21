@@ -181,7 +181,7 @@ Data_local_stability_folder = Data_folder;
 FILE = cellstr(datafile);
 index = cell2mat(strfind(FILE,"Preprocessed_data")) + 18;
 Stability_file_name = strcat("Stability_margin_",FILE{1}(index:end));
-writematrix(Stability_Margin,strcat(Data_local_stability_folder,'\',Stability_file_name));
+writematrix(Stability_Margin,fullfile(Data_local_stability_folder,Stability_file_name));
 
 end
 

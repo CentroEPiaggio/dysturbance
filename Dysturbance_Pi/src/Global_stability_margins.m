@@ -207,7 +207,7 @@ switch Protocol
             "mean medium force [N]","mean impulse time [s]", ...
             "Medium Impulse [Ns]"];
         Stability_margin_PI_Plot = [header;PI_plot_output];
-        writematrix(Stability_margin_PI_Plot,strcat(Global_PI_folder,'\Global_Stability_margin_plot.csv'));
+        writematrix(Stability_margin_PI_Plot,fullfile(Global_PI_folder, 'Global_Stability_margin_plot.csv'));
         
     case 3
         % Initial input has the form [KPI_value, frequency]
@@ -295,7 +295,7 @@ switch Protocol
             "Mean frequency [Hz]", "Standard deviation on frequency [Hz]"];
         Stability_margin_PI_Plot = [header;PI_plot_output];
         Stability_margin_PI = Data_fallen;
-        writematrix(Stability_margin_PI_Plot,strcat(Global_PI_folder,'\Global_Stability_margin_plot.csv'));
+        writematrix(Stability_margin_PI_Plot,fullfile(Global_PI_folder,'Global_Stability_margin_plot.csv'));
         
     case 2
         % Initial input has the form [KPI_value, frequency]
@@ -390,7 +390,7 @@ switch Protocol
             "Standard deviation normalized displacement sinusoidal stability margin [m]"];
         Stability_margin_PI_Plot = [header;PI_plot_output];
         Stability_margin_PI = Data_fallen;
-        writematrix(Stability_margin_PI_Plot,strcat(Global_PI_folder,'\Global_Stability_margin_plot.csv'));
+        writematrix(Stability_margin_PI_Plot,fullfile(Global_PI_folder,'Global_Stability_margin_plot.csv'));
     case 4
         % The experiment always brings the system to fail. Then, we must
         % compute a mean of the value of destabilization
@@ -406,6 +406,6 @@ switch Protocol
 end
 
 Stability_margin_PI_value = [header;Stability_margin_PI];
-writematrix(Stability_margin_PI_value,strcat(Global_PI_folder,'\Global_Stability_margin.csv'));
+writematrix(Stability_margin_PI_value,fullfile(Global_PI_folder,'Global_Stability_margin.csv'));
 end
 

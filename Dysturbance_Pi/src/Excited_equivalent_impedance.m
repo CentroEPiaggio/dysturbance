@@ -98,7 +98,7 @@ FILE = cellstr(datafile);
 index = cell2mat(strfind(FILE,"Preprocessed_data")) + 18;
 Impedance_file_name = strcat("Equivalent_impedance_",FILE{1}(index:end));
 
-writematrix(Equivalent_impedance,strcat(Data_local_impedance_folder,'\',Impedance_file_name));
+writematrix(Equivalent_impedance,fullfile(Data_local_impedance_folder,Impedance_file_name));
 
 end
 

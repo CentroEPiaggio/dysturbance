@@ -7,18 +7,25 @@ function Compute_Global_PI(data_folder, Protocol, result_folder)
 % mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
 
-% creation of the folder to store the Global PI data
-Protocol_folder = strcat("\protocol_",num2str(Protocol));
-FILE = cellstr(data_folder);
-index = cell2mat(strfind(FILE,"\"));
-name_of_subject = FILE{1}(index(end)+1:end);
+warning('OFF', 'MATLAB:table:ModifiedAndSavedVarnames');
 
-Global_PI_folder = strcat(result_folder,'\', name_of_subject,Protocol_folder,'\Global_PIs');
-mkdir(Global_PI_folder);
+Protocol = str2double(Protocol); % it is parsed as a string
+
+% creation of the folder to store the Global PI data
+Protocol_folder = strcat('protocol_',num2str(Protocol));
+FILE = cellstr(data_folder);
+index = cell2mat(strfind(FILE,filesep));
+name_of_subject = FILE{1}(index(end)+1:end);
+input_folder = FILE{1}(1:index(end));
+
+Global_PI_folder = fullfile(result_folder,name_of_subject,Protocol_folder,'Global_PIs');
+if ~exist(Global_PI_folder, 'dir')
+    mkdir(Global_PI_folder)
+end
 
 % Now we must retrieve the local PI data from each experiment folder
-output_folders = strcat(result_folder,'\', name_of_subject,Protocol_folder);
-Experiment_folder = strcat(data_folder,Protocol_folder);
+output_folders = fullfile(result_folder,name_of_subject,Protocol_folder);
+Experiment_folder = fullfile(data_folder,Protocol_folder);
 
 % in Test_Data there are n folders related to n experiments. Each one of them contains a raw data folder and a local PI folder
 
@@ -33,10 +40,11 @@ num_dir = numel(all_dir);
 
 % Removing virtual folders
 j = 0;
+Tests_folders = {};
 for i = 1:num_dir
     if all_dir(i).name ~= "."  &&  all_dir(i).name ~= ".." &&  all_dir(i).name ~= "Global_PIs"
         j = j + 1;
-        Tests_folders(j,1) = strcat(Experiment_folder,"\",all_dir(i).name);
+        Tests_folders(j,1) = {fullfile(Experiment_folder,all_dir(i).name)};
     end
 end
 % Come Back at the starting folder
@@ -56,14 +64,14 @@ j = 0;
 for i = 1:num_data
     if contains(all_data(i).name,"subject_")
         j = j + 1;
-        subject_yaml_info = strcat(Subject_folder,"\",all_data.name);
+        subject_yaml_info = fullfile(Subject_folder,all_data.name);
     end
 end
 % Come Back at the starting folder
 cd(Oldfolder);
 
 % Compute local PIs for each experiment
-Compute_all_LOCAL_PI(Tests_folders,Protocol, subject_yaml_info);
+Compute_all_LOCAL_PI(Tests_folders,Protocol, subject_yaml_info, result_folder);
 
 % move into the Experiment data directory
 Old_Folder = cd(output_folders);
@@ -76,10 +84,11 @@ num_dir = numel(all_dir);
 
 % Removing virtual folders
 j = 0;
+PI_folders = {};
 for i = 1:num_dir
     if all_dir(i).name ~= "."  &&  all_dir(i).name ~= ".." &&  all_dir(i).name ~= "Global_PIs"
         j = j + 1;
-        PI_folders(j,1) = strcat(output_folders,"\",all_dir(i).name,"\Local_PI");
+        PI_folders(j,1) = {fullfile(output_folders,all_dir(i).name,'Local_PI')};
     end
 end
 % Come Back at the starting folder
@@ -87,7 +96,7 @@ cd(Old_Folder);
 
 %Collect the PI datas from each generated folders
 fprintf("Collecting Local PI from experiments folders ... \n");
-[Stability_margin_matrix, Second_PI] = Collect_Local_PI(PI_folders, Protocol);
+[Stability_margin_matrix, Second_PI] = Collect_Local_PI(input_folder, PI_folders, Protocol);
 % Second_PI is the matrix of the other PI.
 
 fprintf("Computing Global PI ... \n");

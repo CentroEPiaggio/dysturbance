@@ -143,6 +143,6 @@ Data_local_energy_folder = Local_PI_folder;
 FILE = cellstr(datafile);
 index = cell2mat(strfind(FILE,"Preprocessed_data")) + 18;
 Energy_file_name = strcat('Absorbed_energy_',FILE{1}(index:end));
-writematrix(KPI_matrix,strcat(Data_local_energy_folder,"\",Energy_file_name));
+writematrix(KPI_matrix,fullfile(Data_local_energy_folder,Energy_file_name));
 end
 
