@@ -1,4 +1,5 @@
-function [Stability_margin_matrix, Second_PI] = Collect_Local_PI(input_folder, Tests_folders, Protocol)
+function [Stability_margin_matrix, Second_PI] = Collect_Local_PI(PI_folders, Protocol)
+
 %--------------------------------------------------------------------------
 % Collect Local PI for the Dysturbance Tests
 %
@@ -8,19 +9,20 @@ function [Stability_margin_matrix, Second_PI] = Collect_Local_PI(input_folder, T
 % mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
 
-num_folder = size(Tests_folders,1);
+num_folder = size(PI_folders,1);
 num1 = 0;
 num2 = 0;
 num3 = 0;
 for i = 1:num_folder
-    local_folder = Tests_folders(i);
+    local_folder = PI_folders(i);
     
     FILE_check = cellstr(local_folder);
-    index_check = cell2mat(strfind(FILE_check,filesep));
-    raw_folder = FILE_check{1}(index_check(4)+1:index_check(end));
+    index_check = cell2mat(strfind(FILE_check,"Local_"));
+    check_folder = FILE_check{1}(1:index_check-1);
 
-    Protocol_matrix = readtable(fullfile(input_folder,raw_folder,'protocol_check.csv'));
-    OLD_FOLDER = cd(FILE_check{1}(1:index_check(end)));
+    Protocol_matrix = readtable(fullfile(check_folder,"Preprocessed_data","protocol_check.csv"));
+
+    OLD_FOLDER = cd(FILE_check{1}(1:index_check-1));
     Protocol_number = Protocol_matrix.Protocol_number;
     if Protocol_number == Protocol
         cd("Local_PI");
@@ -32,16 +34,22 @@ for i = 1:num_folder
                     clear Data Data_2;
                     if contains(all_files(j).name, "Stability_margin_")
                         num1 = num1 + 1;
-                        Data = readtable(all_files(j).name);
-                        Stability_margin_mat(num1,:) = table2array(Data);
+                        % read from yaml
+                        Data = ReadYaml(all_files(j).name);
+                        Stability_margin_mat(num1,:) = Data.value;
+                        %Data = readtable(all_files(j).name);
+                        %Stability_margin_mat(num1,:) = table2array(Data);
                     elseif contains(all_files(j).name, "Absorbed_energy_")
                         num2 = num2 + 1;
-                        Data_2 = readtable(all_files(j).name);
-                        Sec_PI(num2,:) = table2array(Data_2);
+                        % read from yaml
+                        Data_2 = ReadYaml(all_files(j).name);
+                        Sec_PI(num2,:) = Data_2.value;
+%                         Data_2 = readtable(all_files(j).name);
+%                         Sec_PI(num2,:) = table2array(Data_2);
                     elseif contains(all_files(j).name, "Fall_check_")
                         num3 = num3 + 1;
-                        Check = readtable(all_files(j).name);
-                        Check_Fall(num3,:) = Check.checkForFall;
+                        Check = ReadYaml(all_files(j).name);% readtable(all_files(j).name);
+                        Check_Fall(num3,:) = Check.value;%checkForFall;
                     end
                 end
                 Stability_margin_matrix = [Stability_margin_mat,Check_Fall];
@@ -50,16 +58,21 @@ for i = 1:num_folder
                 for j = 1:numel(all_files)
                     if contains(all_files(j).name, "Stability_margin_")
                         num1 = num1 + 1;
-                        Data = readtable(all_files(j).name);
-                        Stability_margin_mat(num1,:) = table2array(Data);
+                        % read from yaml
+                        Data = ReadYaml(all_files(j).name);
+                        Stability_margin_mat(num1,:) = Data.value;
+%                         Data = readtable(all_files(j).name);
+%                         Stability_margin_mat(num1,:) = table2array(Data);
                     elseif contains(all_files(j).name, "Equivalent_impedance_")
                         num2 = num2 + 1;
-                        Data_2 = readtable(all_files(j).name);
-                        Sec_PI(num2,:) = table2array(Data_2);
+                        Data_2 = ReadYaml(all_files(j).name);
+                        Sec_PI(num2,:) = Data_2.value;
+%                         Data_2 = readtable(all_files(j).name);
+%                         Sec_PI(num2,:) = table2array(Data_2);
                     elseif contains(all_files(j).name, "Fall_check_")
                         num3 = num3 + 1;
-                        Check = readtable(all_files(j).name);
-                        Check_Fall(num3,:) = Check.checkForFall;
+                        Check = ReadYaml(all_files(j).name);% readtable(all_files(j).name);
+                        Check_Fall(num3,:) = Check.value;
                     end
                 end
                 Stability_margin_matrix = [Stability_margin_mat,Check_Fall];
@@ -68,16 +81,21 @@ for i = 1:num_folder
                 for j = 1:numel(all_files)
                     if contains(all_files(j).name, "Stability_margin_")
                         num1 = num1 + 1;
-                        Data = readtable(all_files(j).name);
-                        Stability_margin_mat(num1,:) = table2array(Data);
+                        % read from yaml
+                        Data = ReadYaml(all_files(j).name);
+                        Stability_margin_mat(num1,:) = Data.value;
+%                         Data = readtable(all_files(j).name);
+%                         Stability_margin_mat(num1,:) = table2array(Data);
                     elseif contains(all_files(j).name, "Equivalent_impedance_")
                         num2 = num2 + 1;
-                        Data_2 = readtable(all_files(j).name);
-                        Sec_PI(num2,:) = table2array(Data_2);
+                        Data_2 = ReadYaml(all_files(j).name);
+                        Sec_PI(num2,:) = Data_2.value;
+%                         Data_2 = readtable(all_files(j).name);
+%                         Sec_PI(num2,:) = table2array(Data_2);
                     elseif contains(all_files(j).name, "Fall_check_")
                         num3 = num3 + 1;
-                        Check = readtable(all_files(j).name);
-                        Check_Fall(num3,:) = Check.checkForFall;
+                        Check = ReadYaml(all_files(j).name);% readtable(all_files(j).name);
+                        Check_Fall(num3,:) = Check.value;
                     end
                 end
                 Stability_margin_matrix = [Stability_margin_mat,Check_Fall];
@@ -86,12 +104,15 @@ for i = 1:num_folder
                 for j = 1:numel(all_files)
                     if contains(all_files(j).name, "Stability_margin_")
                         num1 = num1 + 1;
-                        Data = readtable(all_files(j).name);
-                        Stability_margin_mat(num1,:) = table2array(Data);
+                        % read from yaml
+                        Data = ReadYaml(all_files(j).name);
+                        Stability_margin_mat(num1,:) = Data.value;
+%                         Data = readtable(all_files(j).name);
+%                         Stability_margin_mat(num1,:) = table2array(Data);
                     elseif contains(all_files(j).name, "Fall_check_")
                         num3 = num3 + 1;
-                        Check = readtable(all_files(j).name);
-                        Check_Fall(num3,:) = Check.checkForFall;
+                        Check = ReadYaml(all_files(j).name);% readtable(all_files(j).name);
+                        Check_Fall(num3,:) = Check.value;
                     end
                     
                 end
@@ -102,12 +123,15 @@ for i = 1:num_folder
                 for j = 1:numel(all_files)
                     if contains(all_files(j).name, "Stability_margin_")
                         num1 = num1 + 1;
-                        Data = readtable(all_files(j).name);
-                        Stability_margin_mat(num1,:) = table2array(Data);
+                        % read from yaml
+                        Data = ReadYaml(all_files(j).name);
+                        Stability_margin_mat(num1,:) = Data.value;
+%                         Data = readtable(all_files(j).name);
+%                         Stability_margin_mat(num1,:) = table2array(Data);
                     elseif contains(all_files(j).name, "Fall_check_")
                         num3 = num3 + 1;
-                        Check = readtable(all_files(j).name);
-                        Check_Fall(num3,:) = Check.checkForFall;
+                        Check = ReadYaml(all_files(j).name);% readtable(all_files(j).name);
+                        Check_Fall(num3,:) = Check.value;
                     end
                     
                 end

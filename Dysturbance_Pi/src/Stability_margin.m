@@ -127,8 +127,8 @@ Norm_displacement = Norm_factor(3);
 switch Protocol_number
     case 1 
         %% Protocol number 1: Impulsive disturbances test
-        header = ["Local Stability Margin [N]","Normalized Local Stability Margin [N]","Initial Pendulum Position [deg]","Pendulum_mass [Kg]", "Pendulum_length [m]", "Expected Impulse [Ns]","Expected Energy [J]","Impulse Time [s]","Impulse Medium Force[N]","Impulse [Ns]","Impulse thorugh velocity [Ns]"];
-        Stability_Margin = [header;[max(Force_sensor), max(Force_sensor)/Norm_force, initial_pendulum_position, Pendulum_mass, Pendulum_length,exp_I, init_E,Impulse_time,Medium_force, Impulse,Impulse_vel]]; 
+        header = "[Local Stability Margin [N],Normalized Local Stability Margin [N],Initial Pendulum Position [deg],Pendulum_mass [Kg], Pendulum_length [m], Expected Impulse [Ns], Expected Energy [J], Impulse Time [s], Impulse Medium Force[N], Impulse [Ns], Impulse thorugh velocity [Ns]]";
+        Stability_Margin = [max(Force_sensor), max(Force_sensor)/Norm_force, initial_pendulum_position, Pendulum_mass, Pendulum_length,exp_I, init_E,Impulse_time,Medium_force, Impulse,Impulse_vel]; 
     case 3 
         %% Protocol number 3: Sinusoidal force disturbances test
         data_number = size(Force_indirect,1);
@@ -143,8 +143,8 @@ switch Protocol_number
         Maximi(i_maxmax) = [];
         Maximum = mean(Maximi);
                 
-        header = ["Local Stability Margin [N]","Normalized Local Stability Margin [N]","Test_frequency [Hz]", "Expected Force Amplitude [N]"];
-        Stability_Margin = [header;[abs(Maximum - Minimum)/2,abs(Maximum - Minimum)/2/Norm_force , frequency_pendulum, Force_amplitude]];
+        header = "[Local Stability Margin [N], Normalized Local Stability Margin [N], Test_frequency [Hz], Expected Force Amplitude [N]]";
+        Stability_Margin = [abs(Maximum - Minimum)/2,abs(Maximum - Minimum)/2/Norm_force , frequency_pendulum, Force_amplitude];
         
     case 2 
         %% Protocol number 2: Sinusoidal displacements disturbances test
@@ -158,17 +158,17 @@ switch Protocol_number
         i_maxmax = find(Maximi == max(Maximi),1);
         Maximi(i_maxmax) = [];
         Maximum = mean(Maximi);
-        header = ["Local Stability Margin [m]","Normalized Local Stability Margin [m]","Test_frequency [Hz]","Expected Displacement [degrees]"];
-        Stability_Margin = [header;[(Pendulum_length*sind(Maximum - Minimum))/2,(Pendulum_length*sind(Maximum - Minimum))/2/Norm_displacement, frequency_pendulum, Displ_amplitude]];
+        header = "[Local Stability Margin [m], Normalized Local Stability Margin [m], Test_frequency [Hz], Expected Displacement [degrees]]";
+        Stability_Margin = [(Pendulum_length*sind(Maximum - Minimum))/2,(Pendulum_length*sind(Maximum - Minimum))/2/Norm_displacement, frequency_pendulum, Displ_amplitude];
     case 5 
         %% Protocol number 5: Quasi-static force disturbances test
-        header = ["Local Stability Margin [N]","Normalized Local Stability Margin [N]","empty"];
-        Stability_Margin = [header;[max(Force_indirect), max(Force_indirect)/Norm_force,0]];
+        header = "[Local Stability Margin [N], Normalized Local Stability Margin [N], empty]";
+        Stability_Margin = [max(Force_indirect), max(Force_indirect)/Norm_force,0];
     case 4
          %% Protocol number 4: Quasi-static displacement disturbances test
          Displacement = Pendulum_length * sind(max(Pendulum_position)) - Pendulum_length * sind(min(initial_pendulum_position));
-        header = ["Local Stability Margin [N]","Normalized Local Stability Margin [N]","empty"];
-        Stability_Margin = [header;[ Displacement, Displacement/Norm_displacement,0]];
+        header = "[Local Stability Margin [N], Normalized Local Stability Margin [N], empty]";
+        Stability_Margin = [ Displacement, Displacement/Norm_displacement,0];
     otherwise
         error('ERROR: Wrong Protocol Number Inserted');
 end
@@ -180,8 +180,16 @@ Data_local_stability_folder = Data_folder;
 % find name from datafile
 FILE = cellstr(datafile);
 index = cell2mat(strfind(FILE,"Preprocessed_data")) + 18;
-Stability_file_name = strcat("Stability_margin_",FILE{1}(index:end));
-writematrix(Stability_Margin,fullfile(Data_local_stability_folder,Stability_file_name));
+Stability_file_name = strcat("Stability_margin_",FILE{1}(index:end-4),".yaml");
+
+type = find_type(Stability_Margin);
+
+fileID = fopen(fullfile(Data_local_stability_folder,Stability_file_name),'w');
+fprintf(fileID,'type: %s \n',type);
+fprintf(fileID, 'label: %s \n',header);
+fmt = ['value: [', repmat('%g, ', 1, numel(Stability_Margin)-1), '%g]\n'];
+fprintf(fileID, fmt, Stability_Margin);
+fclose(fileID);
 
 end
 

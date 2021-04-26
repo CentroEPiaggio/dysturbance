@@ -1,6 +1,7 @@
 function results = ReadYaml(filePath)
 %--------------------------------------------------------------------------
 % This is a modified version of the function from Lloyd Russell 2017
+%
 % Modifications are made to convert the yaml structure to a matlab
 % structure. Earlier version does not consider the original yaml structure
 % and cancel all the variable with the same name.

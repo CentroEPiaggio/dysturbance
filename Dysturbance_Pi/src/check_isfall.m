@@ -15,9 +15,16 @@ else
 end
 
 header = "check for fall";
-Fall_matrix = [header; check_fall];
-Fall_file_name = strcat("Fall_check_",filename);
-writematrix(Fall_matrix,fullfile(Data_local_folder,Fall_file_name));
+Fall_file_name = strcat("Fall_check_",filename(1:end-4),'.yaml');
+
+type = find_type(check_fall);
+
+fileID = fopen(fullfile(Data_local_folder,Fall_file_name),'w');
+fprintf(fileID,'type: %s \n',type);
+fprintf(fileID, 'label: %s \n',header);
+fmt = ['value: [', repmat('%g, ', 1, numel(check_fall)-1), '%g]\n'];
+fprintf(fileID, fmt, check_fall);
+fclose(fileID);
 
 end
 

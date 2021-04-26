@@ -1,0 +1,3 @@
+type: vector 
+label: [E_perc, Force Max [N], Normalized Max Force [N], Max (Initial) Energy [J], Normalized Max (Initial) Energy [J], Initial Angle [deg], Added Mass [Kg], Impulse [Ns], Absorbed Energy [J]] 
+value: [1, 170.467, 186.309, 0.346413, 0.479004, -7.78012, 3.5, 1.06475, 0.346413]

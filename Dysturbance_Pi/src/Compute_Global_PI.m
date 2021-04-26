@@ -16,7 +16,6 @@ Protocol_folder = strcat('protocol_',num2str(Protocol));
 FILE = cellstr(data_folder);
 index = cell2mat(strfind(FILE,filesep));
 name_of_subject = FILE{1}(index(end)+1:end);
-input_folder = FILE{1}(1:index(end));
 
 Global_PI_folder = fullfile(result_folder,name_of_subject,Protocol_folder,'Global_PIs');
 if ~exist(Global_PI_folder, 'dir')
@@ -96,7 +95,7 @@ cd(Old_Folder);
 
 %Collect the PI datas from each generated folders
 fprintf("Collecting Local PI from experiments folders ... \n");
-[Stability_margin_matrix, Second_PI] = Collect_Local_PI(input_folder, PI_folders, Protocol);
+[Stability_margin_matrix, Second_PI] = Collect_Local_PI(PI_folders, Protocol);
 % Second_PI is the matrix of the other PI.
 
 fprintf("Computing Global PI ... \n");
