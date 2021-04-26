@@ -135,14 +135,23 @@ Initial_angle = theta_max; % maybe it is necessary to use another one (ex:10) to
 
 
 % Saving Data in a CSV file
-header =["E_perc","Force Max [N]","Normalized Max Force [N]","Max (Initial) Energy [J]","Normalized Max (Initial) Energy [J]","Initial Angle [deg]","Added Mass [Kg]","Impulse [Ns]","Absorbed Energy [J]"];
-KPI_matrix = [header;[E_perc, force_max, normalized_force_max, (E_max-E_friction), normalized_E_max, Initial_angle, M, Impulse_vel,DE]];
+header ="[E_perc, Force Max [N], Normalized Max Force [N], Max (Initial) Energy [J], Normalized Max (Initial) Energy [J], Initial Angle [deg], Added Mass [Kg], Impulse [Ns], Absorbed Energy [J]]";
+KPI_matrix = [E_perc, force_max, normalized_force_max, (E_max-E_friction), normalized_E_max, Initial_angle, M, Impulse_vel,DE];
 
 % data must be saved in a specified folder
 Data_local_energy_folder = Local_PI_folder;
 FILE = cellstr(datafile);
 index = cell2mat(strfind(FILE,"Preprocessed_data")) + 18;
-Energy_file_name = strcat('Absorbed_energy_',FILE{1}(index:end));
-writematrix(KPI_matrix,strcat(Data_local_energy_folder,"\",Energy_file_name));
+Energy_file_name = strcat('Absorbed_energy_',FILE{1}(index:end-4),".yaml");
+
+type = find_type(KPI_matrix);
+
+fileID = fopen(strcat(Data_local_energy_folder,'\',Energy_file_name),'w');
+fprintf(fileID,'type: %s \n',type);
+fprintf(fileID, 'label: %s \n',header);
+fmt = ['value: [', repmat('%g, ', 1, numel(KPI_matrix)-1), '%g]\n'];
+fprintf(fileID, fmt, KPI_matrix);
+fclose(fileID);
+
 end
 

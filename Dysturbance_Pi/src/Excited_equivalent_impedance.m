@@ -84,11 +84,11 @@ K_equivalent = abs(PI(3));
 % K_equivalent = (alpha(2)-alpha(1))/alpha(3);
 
 if Protocol == 2
-    header = ["Equivalent Inertia [Kg]","Equivalent Damping coefficient [Ns/m]","Equivalent Elastic coefficient [N/m]","Test frequency [Hz]","Displacement Amplitude [degrees]"];
+    header = "[Equivalent Inertia [Kg], Equivalent Damping coefficient [Ns/m], Equivalent Elastic coefficient [N/m], Test frequency [Hz], Displacement Amplitude [degrees]]";
 else
-    header = ["Equivalent Inertia [Kg]","Equivalent Damping coefficient [Ns/m]","Equivalent Elastic coefficient [N/m]","Test frequency [Hz]","Force Amplitude [N]"];
+    header = "[Equivalent Inertia [Kg], Equivalent Damping coefficient [Ns/m], Equivalent Elastic coefficient [N/m], Test frequency [Hz], Force Amplitude [N]]";
 end
-Equivalent_impedance = [header;[I_equivalent, D_equivalent, K_equivalent, frequency_pendulum, amplitude]];
+Equivalent_impedance = [I_equivalent, D_equivalent, K_equivalent, frequency_pendulum, amplitude];
 
 % Data must be saved in the correct path
 
@@ -96,9 +96,18 @@ Data_local_impedance_folder = Local_PI_folder;
 
 FILE = cellstr(datafile);
 index = cell2mat(strfind(FILE,"Preprocessed_data")) + 18;
-Impedance_file_name = strcat("Equivalent_impedance_",FILE{1}(index:end));
+Impedance_file_name = strcat("Equivalent_impedance_",FILE{1}(index:end-4),".yaml");
 
-writematrix(Equivalent_impedance,strcat(Data_local_impedance_folder,'\',Impedance_file_name));
+% writematrix(Equivalent_impedance,strcat(Data_local_impedance_folder,'\',Impedance_file_name));
+
+type = find_type(Equivalent_impedance);
+
+fileID = fopen(strcat(Data_local_impedance_folder,'\',Impedance_file_name),'w');
+fprintf(fileID,'type: %s \n',type);
+fprintf(fileID, 'label: %s \n',header);
+fmt = ['value: [', repmat('%g, ', 1, numel(Equivalent_impedance)-1), '%g]\n'];
+fprintf(fileID, fmt, Equivalent_impedance);
+fclose(fileID);
 
 end
 

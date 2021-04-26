@@ -134,7 +134,11 @@ if flag_isempty == 0
     % data must be saved in a specified folder
     FILE = cellstr(filename);
     index_1 = cell2mat(strfind(FILE,"raw_data_input")) - 1;
-    preprocessed_folder = strcat(result_dir, FILE{1}(index_1-26:index_1));
+    
+    index_subject = cell2mat(strfind(FILE,"subject_"));
+    subject_id = FILE{1}(index_subject:index_subject+8);
+    protocol_id = strcat("\protocol_",num2str(Test_protocol));
+    preprocessed_folder = strcat(result_dir,'\',subject_id,protocol_id, FILE{1}(index_1-26:index_1));
     
     index_2 = cell2mat(strfind(FILE,"platformData")) - 1;
     Pre_processed_file_name = strcat(FILE{1}(index_1+16:index_2),'pp_platformData.csv');

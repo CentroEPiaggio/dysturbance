@@ -1,0 +1,3 @@
+type: vector 
+label: [mean peak force [N], initial energy [J], mean medium force [N], mean impulse time [s], Medium Impulse [Ns]] 
+value: [[170.152, 0.531292, 93.9642, 0.01065, 0.99811]]

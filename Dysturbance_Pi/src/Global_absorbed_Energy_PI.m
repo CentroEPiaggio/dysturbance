@@ -122,18 +122,24 @@ xlabel('Impulse [Ns]');
 ylabel('Initial Energy [J]');
 zlabel('Absorbed Energy [%]');
 title('Protocol 1 Absorbed Energy Plot');
-header = ["Mean Energy Percentage","Standard Deviation energy percentage", ...
-    "Mean Max force [N]","Standard Deviation Max force [N]", ...
-    "Mean normalized Max force [N]","Standard deviation normalized Max force [N]", ...
-    "Mean Initial Energy [J]", "Standard deviation Initial Energy [J]", ...
-    "Mean Normalized Initial Energy [J]", "Standard deviation normalized Initial Energy [J]", ...
-    "Mean Impulse [Ns]", "Standard deviation Impulse [Ns]", ...
-    "Mean Absorbed Energy [J]","Standard deviation Absorbed Energy [J]",...
-    "Mean Initial Angle [degrees]","added_mass [Kg]","fallen"];
+header = "[Mean Energy Percentage, Standard Deviation energy percentage,Mean Max force [N], Standard Deviation Max force [N], Mean normalized Max force [N], Standard deviation normalized Max force [N], Mean Initial Energy [J], Standard deviation Initial Energy [J], Mean Normalized Initial Energy [J], Standard deviation normalized Initial Energy [J], Mean Impulse [Ns], Standard deviation Impulse [Ns], Mean Absorbed Energy [J], Standard deviation Absorbed Energy [J], Mean Initial Angle [degrees], added_mass [Kg], fallen]";
 
-
-
-Data_matrix = [header;Absorbed_energy_KPI_matrix];
-writematrix(Data_matrix, strcat(Global_PI_folder,'\Global_Absorbed_energy.csv'));
+if ~isempty(Absorbed_energy_KPI_matrix)
+    type = find_type(Absorbed_energy_KPI_matrix);
+    
+    fileID = fopen(strcat(Global_PI_folder,'\Global_Absorbed_energy.yaml'),'w');
+    fprintf(fileID,'type: %s \n',type);
+    fprintf(fileID, 'label: %s \n',header);
+    fmt = ['value: [[', repmat('%g, ', 1, numel(Absorbed_energy_KPI_matrix(1,:))-1), '%g]'];
+    fprintf(fileID, fmt, Absorbed_energy_KPI_matrix(1,:));
+    for pi_i = 2:size(Absorbed_energy_KPI_matrix,1)
+        fmd = [',[', repmat('%g, ', 1, numel(Absorbed_energy_KPI_matrix(pi_i,:))-1) '%g]'];
+        fprintf(fileID, fmd, Absorbed_energy_KPI_matrix(pi_i,:));
+    end
+    fprintf(fileID, ']\n');
+    fclose(fileID);
+end
+% Data_matrix = [header;Absorbed_energy_KPI_matrix];
+% writematrix(Data_matrix, strcat(Global_PI_folder,'\Global_Absorbed_energy.csv'));
 end
 

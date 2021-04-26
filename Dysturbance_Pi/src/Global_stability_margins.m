@@ -125,13 +125,13 @@ switch Protocol
                 end
             end
         end
-
-
+        
+        
         I_check = linspace(0,4.0,101);
         delta = 4.13;
         g = 9.81;
         L_min = 0.5;
-        L_max = 1.0;     
+        L_max = 1.0;
         Corrector = 1.0;
         E_check_1 = 3.*I_check.^2 ./ (2*delta*L_min*0.67);
         E_check_2 = I_check.^2./(2 * 0.5 * (10 + delta * L_max));
@@ -159,12 +159,12 @@ switch Protocol
         plot(I_check/Corrector,E_check_4,'k','LineWidth',3);
         plot(I_check/Corrector,E_check_5,'k','LineWidth',3);
         grid;
-%         xlim([0,2.5]);
+        %         xlim([0,2.5]);
         ylim([0,3]);
         xlabel('Expected Impulse [Ns]');
         ylabel('Expected Initial Energy [J]');
         title('Protocol 1 Stability Margin Plot');
-
+        
         
         
         figure('defaultAxesFontSize',36);
@@ -198,16 +198,29 @@ switch Protocol
         xlabel('Force [N]');
         ylabel('Initial Energy [J]');
         title('Protocol 1 Stability Margin Plot');
-                     
+        
         PI_plot_output = [PI_matrix; Data_fallen_part; Data_fallen];
         
         Stability_margin_PI = Data_fallen;
         
-        header = ["mean peak force [N]","initial energy [J]", ...
-            "mean medium force [N]","mean impulse time [s]", ...
-            "Medium Impulse [Ns]"];
-        Stability_margin_PI_Plot = [header;PI_plot_output];
-        writematrix(Stability_margin_PI_Plot,strcat(Global_PI_folder,'\Global_Stability_margin_plot.csv'));
+        header = "[mean peak force [N], initial energy [J], mean medium force [N], mean impulse time [s], Medium Impulse [Ns]]";
+        %         Stability_margin_PI_Plot = PI_plot_output;
+        
+        type = find_type(PI_plot_output);
+        
+        fileID = fopen(strcat(Global_PI_folder,'\Global_Stability_margin_plot.yaml'),'w');
+        fprintf(fileID,'type: %s \n',type);
+        fprintf(fileID, 'label: %s \n',header);
+        fmt = ['value: [[', repmat('%g, ', 1, numel(PI_plot_output(1,:))-1), '%g]'];
+        fprintf(fileID, fmt, PI_plot_output(1,:));
+        for pi_i = 2:size(PI_plot_output,1)
+            fmd = [',[', repmat('%g, ', 1, numel(PI_plot_output(pi_i,:))-1) '%g]'];
+            fprintf(fileID, fmd, PI_plot_output(pi_i,:));
+        end
+        fprintf(fileID, ']\n');
+        fclose(fileID);
+        
+        %         writematrix(Stability_margin_PI_Plot,strcat(Global_PI_folder,'\Global_Stability_margin_plot.csv'));
         
     case 3
         % Initial input has the form [KPI_value, frequency]
@@ -230,6 +243,15 @@ switch Protocol
             end
         end
         
+        PI_mean_std = [];
+        PI_matrix = [];
+        Exp_points = [];
+        PI_mean_std_fallen = [];
+        Data_fallen = [];
+        Exp_points_fallen = [];
+        PI_mean_std_fallen_part = [];
+        Data_fallen_part = [];
+        Exp_points_fallen_part = [];
         for i_mas = 1:size(Data_structure,2)
             clear Matrix_Data;
             Matrix_Data = sortrows(Data_structure{i_mas},4);
@@ -279,23 +301,41 @@ switch Protocol
         end
         
         PI_plot_output = [PI_matrix; Data_fallen];
-                
+        
         figure('defaultAxesFontSize',36);
-        plot(Exp_points(:,2),Exp_points(:,1),'bx','LineWidth',3);
+        if ~isempty(Exp_points)
+            plot(Exp_points(:,2),Exp_points(:,1),'bx','LineWidth',3);
+        end
         hold on;
-        plot(Exp_points_fallen(:,2),Exp_points_fallen(:,1),'rx','LineWidth',3);
-        plot(Exp_points_fallen_part(:,2),Exp_points_fallen_part(:,1),'gx','LineWidth',3);
+        if ~isempty(Exp_points_fallen)
+            plot(Exp_points_fallen(:,2),Exp_points_fallen(:,1),'rx','LineWidth',3);
+        end
+        if ~isempty(Exp_points_fallen_part)
+            plot(Exp_points_fallen_part(:,2),Exp_points_fallen_part(:,1),'gx','LineWidth',3);
+        end
         grid;
         xlabel('Frequency [Hz]');
         ylabel('Force [N]');
         title('Protocol 3 Stability Margin Plot');
         
-        header = ["mean force sinusoidal stability margin [N]","Standard deviation force sinusoidal stability margin [N]", ...
-            "mean normalized force sinusoidal stability margin [N]","Standard deviation normalized sinusoidal force stability margin [N]", ...
-            "Mean frequency [Hz]", "Standard deviation on frequency [Hz]"];
-        Stability_margin_PI_Plot = [header;PI_plot_output];
+        header = "[mean force sinusoidal stability margin [N], Standard deviation force sinusoidal stability margin [N], mean normalized force sinusoidal stability margin [N], Standard deviation normalized sinusoidal force stability margin [N], Mean frequency [Hz], Standard deviation on frequency [Hz]]";
+        %         Stability_margin_PI_Plot = PI_plot_output;
         Stability_margin_PI = Data_fallen;
-        writematrix(Stability_margin_PI_Plot,strcat(Global_PI_folder,'\Global_Stability_margin_plot.csv'));
+        %         writematrix(Stability_margin_PI_Plot,strcat(Global_PI_folder,'\Global_Stability_margin_plot.csv'));
+        
+        type = find_type(PI_plot_output);
+        
+        fileID = fopen(strcat(Global_PI_folder,'\Global_Stability_margin_plot.yaml'),'w');
+        fprintf(fileID,'type: %s \n',type);
+        fprintf(fileID, 'label: %s \n',header);
+        fmt = ['value: [[', repmat('%g, ', 1, numel(PI_plot_output(1,:))-1), '%g]'];
+        fprintf(fileID, fmt, PI_plot_output(1,:));
+        for pi_i = 2:size(PI_plot_output,1)
+            fmd = [',[', repmat('%g, ', 1, numel(PI_plot_output(pi_i,:))-1) '%g]'];
+            fprintf(fileID, fmd, PI_plot_output(pi_i,:));
+        end
+        fprintf(fileID, ']\n');
+        fclose(fileID);
         
     case 2
         % Initial input has the form [KPI_value, frequency]
@@ -359,24 +399,24 @@ switch Protocol
                     elseif Perc_fallen >= 0.3
                         Data_fallen(point2,:) = [Displ_amplitude,Norm_displ_amplitude,frequency, Perc_fallen, Exp_displ, std_displ,std_norm_displ];
                         point2 = point2 + 1;
-                    else 
+                    else
                         Data_fallen_part(point3,:) = [Displ_amplitude,Norm_displ_amplitude,frequency, Perc_fallen, Exp_displ, std_displ,std_norm_displ];
                         point3 = point3 + 1;
                     end
                 end
             end
         end
-                
+        
         figure('defaultAxesFontSize',36);
         if ~isempty(PI_matrix)
-        plot(PI_matrix(:,3),sind(PI_matrix(:,5)),'x','LineWidth',3);
+            plot(PI_matrix(:,3),sind(PI_matrix(:,5)),'x','LineWidth',3);
         end
         hold on;
         if ~isempty(Data_fallen)
-        plot(Data_fallen(:,3),sind(Data_fallen(:,5)),'rx','LineWidth',3);
+            plot(Data_fallen(:,3),sind(Data_fallen(:,5)),'rx','LineWidth',3);
         end
         if ~isempty(Data_fallen_part)
-        plot(Data_fallen_part(:,3),sind(Data_fallen_part(:,5)),'gx','LineWidth',3);
+            plot(Data_fallen_part(:,3),sind(Data_fallen_part(:,5)),'gx','LineWidth',3);
         end
         grid;
         xlabel('Frequency [Hz]');
@@ -385,12 +425,26 @@ switch Protocol
         
         PI_plot_output = [PI_matrix;Data_fallen_part;Data_fallen];
         
-        header = ["mean displacement sinusoidal stability margin [m]","mean normalized displacement sinusoidal stability margin [m]", ...
-            "Mean frequency [Hz]", "fall percentage","Expected Displacement [m]", "Standard deviation displacement sinusoidal stability margin [m]", ...
-            "Standard deviation normalized displacement sinusoidal stability margin [m]"];
-        Stability_margin_PI_Plot = [header;PI_plot_output];
+        header = "[mean displacement sinusoidal stability margin [m], mean normalized displacement sinusoidal stability margin [m], Mean frequency [Hz], fall percentage ,Expected Displacement [m], Standard deviation displacement sinusoidal stability margin [m], Standard deviation normalized displacement sinusoidal stability margin [m]]";
+        %         Stability_margin_PI_Plot = [header;PI_plot_output];
         Stability_margin_PI = Data_fallen;
-        writematrix(Stability_margin_PI_Plot,strcat(Global_PI_folder,'\Global_Stability_margin_plot.csv'));
+        
+        type = find_type(PI_plot_output);
+        
+        fileID = fopen(strcat(Global_PI_folder,'\Global_Stability_margin_plot.yaml'),'w');
+        fprintf(fileID,'type: %s \n',type);
+        fprintf(fileID, 'label: %s \n',header);
+        fmt = ['value: [[', repmat('%g, ', 1, numel(PI_plot_output(1,:))-1), '%g]'];
+        fprintf(fileID, fmt, PI_plot_output(1,:));
+        for pi_i = 2:size(PI_plot_output,1)
+            fmd = [',[', repmat('%g, ', 1, numel(PI_plot_output(pi_i,:))-1) '%g]'];
+            fprintf(fileID, fmd, PI_plot_output(pi_i,:));
+        end
+        fprintf(fileID, ']\n');
+        fclose(fileID);
+        
+        
+        %         writematrix(Stability_margin_PI_Plot,strcat(Global_PI_folder,'\Global_Stability_margin_plot.csv'));
     case 4
         % The experiment always brings the system to fail. Then, we must
         % compute a mean of the value of destabilization
@@ -405,7 +459,25 @@ switch Protocol
         error('ERROR: unknown protocol e for Key Performance Indicator');
 end
 
-Stability_margin_PI_value = [header;Stability_margin_PI];
-writematrix(Stability_margin_PI_value,strcat(Global_PI_folder,'\Global_Stability_margin.csv'));
+
+% Stability_margin_PI_value = [header;Stability_margin_PI];
+if ~isempty(Stability_margin_PI)
+    type = find_type(Stability_margin_PI);
+    
+    fileID = fopen(strcat(Global_PI_folder,'\Global_Stability_margin.yaml'),'w');
+    fprintf(fileID,'type: %s \n',type);
+    fprintf(fileID, 'label: %s \n',header);
+    fmt = ['value: [[', repmat('%g, ', 1, numel(Stability_margin_PI(1,:))-1), '%g]'];
+    fprintf(fileID, fmt, Stability_margin_PI(1,:));
+    for pi_i = 2:size(Stability_margin_PI,1)
+        fmd = [',[', repmat('%g, ', 1, numel(Stability_margin_PI(pi_i,:))-1) '%g]'];
+        fprintf(fileID, fmd, Stability_margin_PI(pi_i,:));
+    end
+    fprintf(fileID, ']\n');
+    fclose(fileID);
+end
+
+
+% writematrix(Stability_margin_PI_value,strcat(Global_PI_folder,'\Global_Stability_margin.csv'));
 end
 

@@ -1,0 +1,3 @@
+type: vector 
+label: [Local Stability Margin [N],Normalized Local Stability Margin [N],Initial Pendulum Position [deg],Pendulum_mass [Kg], Pendulum_length [m], Expected Impulse [Ns], Expected Energy [J], Impulse Time [s], Impulse Medium Force[N], Impulse [Ns], Impulse thorugh velocity [Ns]] 
+value: [178.663, 195.267, -7.77181, 3.5, 1, 1.86329, 0.531292, 0.1106, 13.6532, 1.51004, 1.04925]

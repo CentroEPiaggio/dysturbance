@@ -1,0 +1,3 @@
+type: vector 
+label: [Mean Energy Percentage, Standard Deviation energy percentage,Mean Max force [N], Standard Deviation Max force [N], Mean normalized Max force [N], Standard deviation normalized Max force [N], Mean Initial Energy [J], Standard deviation Initial Energy [J], Mean Normalized Initial Energy [J], Standard deviation normalized Initial Energy [J], Mean Impulse [Ns], Standard deviation Impulse [Ns], Mean Absorbed Energy [J], Standard deviation Absorbed Energy [J], Mean Initial Angle [degrees], added_mass [Kg], fallen] 
+value: [[1, 0, 170.152, 16.9975, 185.965, 18.5774, 0.360789, 0.0202701, 0.489942, 0.0129126, 0.99811, 0.142641, 0.360789, 0.0202701, -7.86796, 3.5, 0]]

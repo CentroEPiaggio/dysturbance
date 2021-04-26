@@ -104,7 +104,7 @@ for i = 1:num_folder
         if NO_need_for_computation == 0
             FILE_res = cellstr(folder_local_pi);
             index_res = cell2mat(strfind(FILE_res,"\")) - 1;
-            folder_of_results = folder_local_pi{1}(1:index_res(6));
+            folder_of_results = folder_local_pi{1}(1:index_res(4));
             filename_comp = strcat(raw_data_folder,"\", computed_csv);
             yaml_filepath = strcat(raw_data_folder,"\", yaml_file);
             subject_yaml = subject_yaml_info;

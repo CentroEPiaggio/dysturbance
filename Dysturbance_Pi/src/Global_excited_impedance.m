@@ -109,8 +109,27 @@ else
     title('Protocol 3 Equivalent Impedance');
 end
 
-header = ["Equivalent Inertia [Kg]","Equivalent Damping coefficient [Ns/m]","Equivalent Elasticity [N/m]","frequency [Hz]"];
-Equivalence_matrix = [header;Data_structure];
-writematrix(Equivalence_matrix,strcat(Global_PI_folder,'\Global_Equivalent_Impedance.csv'));
+header = "[Equivalent Inertia [Kg], Equivalent Damping coefficient [Ns/m], Equivalent Elasticity [N/m], frequency [Hz]]";
+% Equivalence_matrix = [header;Data_structure];
+
+
+if ~isempty(Data_structure)
+    type = find_type(Data_structure);
+    
+    fileID = fopen(strcat(Global_PI_folder,'\Global_Equivalent_Impedance.yaml'),'w');
+    fprintf(fileID,'type: %s \n',type);
+    fprintf(fileID, 'label: %s \n',header);
+    fmt = ['value: [[', repmat('%g, ', 1, numel(Data_structure(1,:))-1), '%g]'];
+    fprintf(fileID, fmt, Data_structure(1,:));
+    for pi_i = 2:size(Data_structure,1)
+        fmd = [',[', repmat('%g, ', 1, numel(Data_structure(pi_i,:))-1) '%g]'];
+        fprintf(fileID, fmd, Data_structure(pi_i,:));
+    end
+    fprintf(fileID, ']\n');
+    fclose(fileID);
+end
+
+
+% writematrix(Equivalence_matrix,strcat(Global_PI_folder,'\Global_Equivalent_Impedance.csv'));
 end
 
