@@ -180,7 +180,7 @@ Data_local_stability_folder = Data_folder;
 % find name from datafile
 FILE = cellstr(datafile);
 index = cell2mat(strfind(FILE,"Preprocessed_data")) + 18;
-Stability_file_name = strcat("Stability_margin_",FILE{1}(index:end-4),".yaml");
+Stability_file_name = strcat("Stability_margin.yaml");
 
 type = find_type(Stability_Margin);
 

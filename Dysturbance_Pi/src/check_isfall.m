@@ -16,7 +16,7 @@ end
 
 header = "check for fall";
 % Fall_matrix = [header; check_fall];
-Fall_file_name = strcat("Fall_check_",filename(1:end-3),'yaml');
+Fall_file_name = strcat("Fall_check.yaml");
 
 
 type = find_type(check_fall);
