@@ -26,6 +26,8 @@ There are two distinct scripts for the PI computation of the DYSTURBANCE testbed
 Assuming folder `./tests/data/input` contains all the raw input data, and that `./tests/data/output` exists and will contain the resulting files, the shell command examples are:
 1. ```console
    ./run_local_pi .\tests\data\input\subject_1\protocol_1\subject_1_cond_1008203500\raw_data_input\subject_1_cond_1008203500_run_0_platformData.csv .\tests\data\input\subject_1\protocol_1\subject_1_cond_1008203500\raw_data_input\subject_1_cond_1008203500_testbed.yaml .\tests\data\input\subject_1\subject_1_info.yaml .\tests\data\output\subject_1\protocol_1
+
+   ./run_local_pi ./tests/data/input/subject_1/protocol_1/subject_1_cond_1008203500/raw_data_input/subject_1_cond_1008203500_run_0_platformData.csv ./tests/data/input/subject_1/protocol_1/subject_1_cond_1008203500/raw_data_input/subject_1_cond_1008203500_testbed.yaml ./tests/data/input/subject_1/subject_1_info.yaml ./tests/data/output/subject_1/protocol_1
    ```
 2. ```console
    ./run_global_pi .\tests\data\input\subject_1 1 .\tests\data\output

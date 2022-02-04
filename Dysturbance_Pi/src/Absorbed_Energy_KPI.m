@@ -6,7 +6,13 @@ function [E_max, E_final, DE, E_perc, KPI_matrix] = Absorbed_Energy_KPI(datafile
 % Created By: Simone Monteleone
 % mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
-
+if isunix
+    disp('linux environment');
+    folder_sep = '/';
+else
+    disp('windows environment');
+    folder_sep =  '\';
+end
 %% Pedulum_data
 Pendulum_length = Pendulum_data(1);
 Pendulum_height = Pendulum_data(2);
@@ -146,7 +152,7 @@ Energy_file_name = strcat("Absorbed_energy.yaml");
 
 type = find_type(KPI_matrix);
 
-fileID = fopen(strcat(Data_local_energy_folder,'\',Energy_file_name),'w');
+fileID = fopen(strcat(Data_local_energy_folder, folder_sep, Energy_file_name), 'w');
 fprintf(fileID,'type: %s \n',type);
 fprintf(fileID, 'label: %s \n',header);
 fmt = ['value: [', repmat('%g, ', 1, numel(KPI_matrix)-1), '%g]\n'];
