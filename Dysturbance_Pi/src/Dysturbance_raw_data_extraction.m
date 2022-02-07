@@ -1,4 +1,4 @@
-function [protocol_data, datapath, Output_folder, isfall, Protocol_TIME, flag_isempty] = Dysturbance_raw_data_extraction(filename, yaml_file, result_dir)
+function [protocol_data, datapath, Output_folder, isfall, Protocol_TIME, flag_isempty] = Dysturbance_raw_data_extraction(filename, yaml_file, result_dir, is_eurobench_mode)
 %--------------------------------------------------------------------------
 % This function get the raw data file in format .csv and extract the raw
 % data ready for post processing
@@ -7,6 +7,17 @@ function [protocol_data, datapath, Output_folder, isfall, Protocol_TIME, flag_is
 % Created By: Simone Monteleone
 % mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
+if nargin < 4
+    is_eurobench_mode = 0;
+end
+if isunix
+    disp('linux environment');
+    folder_sep = '/';
+else
+    disp('windows environment');
+    folder_sep =  '\';
+end
+
 %% Data
 grav = 9.81;            % [m/s^2] gravity coefficient
 delta = 4.13;           % [Kg/m] linear density of the pendulum
@@ -71,7 +82,7 @@ end
 if flag_isempty == 0
     % The first row of Data matrix is the header, and must cut out
     Raw_Data_Matrix = Data_Matrix;
-    
+
     %% UTC_Time
     % collect the UTC time the test is started. It is done to avoid to use
     % the same data when we compute the Global PI
@@ -138,14 +149,20 @@ if flag_isempty == 0
     index_subject = cell2mat(strfind(FILE,"subject_"));
     subject_id = FILE{1}(index_subject:index_subject+8);
     protocol_id = strcat("\protocol_",num2str(Test_protocol));
-    preprocessed_folder = strcat(result_dir,'\',subject_id,protocol_id, FILE{1}(index_1-26:index_1));
-    
-    index_2 = cell2mat(strfind(FILE,"platformData")) - 1;
-    Pre_processed_file_name = strcat(FILE{1}(index_1+16:index_2),'pp_platformData.csv');
-    Pre_processed_data_folder = strcat(preprocessed_folder,'Preprocessed_data');
-    Output_folder = preprocessed_folder;
-    mkdir(Pre_processed_data_folder);
-    datapath = strcat(Pre_processed_data_folder,'\',Pre_processed_file_name);
+    if is_eurobench_mode
+
+        mkdir(strcat(result_dir, folder_sep, 'Preprocessed_data'));
+        datapath = strcat(result_dir, folder_sep, 'Preprocessed_data', folder_sep, 'pp_platformData.csv');
+        Output_folder = result_dir;
+    else
+        preprocessed_folder = strcat(result_dir,folder_sep, subject_id,protocol_id, FILE{1}(index_1-26:index_1));
+        index_2 = cell2mat(strfind(FILE,"platformData")) - 1;
+        Pre_processed_file_name = strcat(FILE{1}(index_1+16:index_2),'pp_platformData.csv');
+        Pre_processed_data_folder = strcat(preprocessed_folder,'Preprocessed_data');
+        Output_folder = preprocessed_folder;
+        mkdir(Pre_processed_data_folder);
+        datapath = strcat(Pre_processed_data_folder, folder_sep, Pre_processed_file_name);
+    end
     % creating the file in datapath
     writematrix(Pre_processed_data_matrix,datapath);
 else

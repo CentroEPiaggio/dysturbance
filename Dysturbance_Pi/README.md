@@ -1,13 +1,17 @@
 # PI DYSTURBANCE
+
 The Performance Indicator computation for Dysturbance Testbench is implemented in MATLAB.
 Further modifications are still needed to be used within the Eurobench Benchmarking Software.
 
 ## Purposes
+
 Characterize the balancing performances of robotic subjects under external disturbances.
 Technical details on the folder structure are provided in [src/README.md](src/README.md)
 
 ## Usage
+
 There are two distinct scripts for the PI computation of the DYSTURBANCE testbed:
+
 1. `run_local_pi` computes the PI for a specific run on a series of experiments on a given subject.
 
    Args (all required):
@@ -24,9 +28,11 @@ There are two distinct scripts for the PI computation of the DYSTURBANCE testbed
     3. an output directory where the results is stored
 
 Assuming folder `./tests/data/input` contains all the raw input data, and that `./tests/data/output` exists and will contain the resulting files, the shell command examples are:
+
 1. ```console
    ./run_local_pi .\tests\data\input\subject_1\protocol_1\subject_1_cond_1008203500\raw_data_input\subject_1_cond_1008203500_run_0_platformData.csv .\tests\data\input\subject_1\protocol_1\subject_1_cond_1008203500\raw_data_input\subject_1_cond_1008203500_testbed.yaml .\tests\data\input\subject_1\subject_1_info.yaml .\tests\data\output\subject_1\protocol_1
    ```
+
 2. ```console
    ./run_global_pi .\tests\data\input\subject_1 1 .\tests\data\output
    ```
@@ -36,6 +42,7 @@ It is not possible to provide a number of arguments as inputs different from the
 The code will automatically open and run MATLAB, providing a set of plots and .csv file containing the results of the PI computation.
 
 ## Acknowledgements
+
 <a href="http://eurobench2020.eu">
   <img src="http://eurobench2020.eu/wp-content/uploads/2018/06/cropped-logoweb.png"
        alt="rosin_logo" height="60" >

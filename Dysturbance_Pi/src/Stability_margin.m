@@ -15,6 +15,15 @@ function [Stability_Margin] = Stability_margin(datafile, Data_folder, Pendulum_d
 % Created By: Simone Monteleone
 % mail: simone.monteleone@@phd.unipi.it
 %--------------------------------------------------------------------------
+
+if isunix
+    disp('linux environment');
+    folder_sep = '/';
+else
+    disp('windows environment');
+    folder_sep =  '\';
+end
+
 %% Pendulum_data
 Pendulum_length = Pendulum_data(1);
 Pendulum_height = Pendulum_data(2);
@@ -184,7 +193,7 @@ Stability_file_name = strcat("Stability_margin.yaml");
 
 type = find_type(Stability_Margin);
 
-fileID = fopen(strcat(Data_local_stability_folder,'\',Stability_file_name),'w');
+fileID = fopen(strcat(Data_local_stability_folder, folder_sep, Stability_file_name), 'w');
 fprintf(fileID,'type: %s \n',type);
 fprintf(fileID, 'label: %s \n',header);
 fmt = ['value: [', repmat('%g, ', 1, numel(Stability_Margin)-1), '%g]\n'];
