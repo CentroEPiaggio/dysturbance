@@ -14,13 +14,15 @@ num2 = 0;
 num3 = 0;
 for i = 1:num_folder
     local_folder = PI_folders(i);
-    
-    FILE_check = cellstr(local_folder);
-    index_check = cell2mat(strfind(FILE_check,"\Local_"));
-    check_folder = FILE_check{1}(1:index_check);
 
-    Protocol_matrix = readtable(strcat(check_folder,"Preprocessed_data\","protocol_check.csv"));
-    OLD_FOLDER = cd(FILE_check{1}(1:index_check(end)));
+    FILE_check = cellstr(local_folder);
+    index_check = cell2mat(strfind(FILE_check,"Local_"));
+    check_folder = FILE_check{1}(1:index_check-1);
+
+    Protocol_matrix = readtable(fullfile(check_folder,"Preprocessed_data","protocol_check.csv"));
+
+    OLD_FOLDER = cd(FILE_check{1}(1:index_check-1));
+
     Protocol_number = Protocol_matrix.Protocol_number;
     if Protocol_number == Protocol
         cd("Local_PI");

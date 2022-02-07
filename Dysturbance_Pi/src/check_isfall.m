@@ -24,19 +24,19 @@ end
 
 header = "check for fall";
 % Fall_matrix = [header; check_fall];
-Fall_file_name = strcat("Fall_check.yaml");
+% Fall_file_name = strcat("Fall_check_",filename(1:end-4),'.yaml');
 
+Fall_file_name = strcat("Fall_check.yaml");
 
 type = find_type(check_fall);
 
-fileID = fopen(strcat(Data_local_folder, folder_sep, Fall_file_name), 'w');
+fileID = fopen(fullfile(Data_local_folder, Fall_file_name), 'w');
+
 fprintf(fileID,'type: %s \n',type);
 fprintf(fileID, 'label: %s \n',header);
 fmt = ['value: [', repmat('%g, ', 1, numel(check_fall)-1), '%g]\n'];
 fprintf(fileID, fmt, check_fall);
 fclose(fileID);
-
-% writematrix(Fall_matrix,strcat(Data_local_folder,'\',Fall_file_name));
 
 end
 

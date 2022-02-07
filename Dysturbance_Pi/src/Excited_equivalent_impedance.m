@@ -96,13 +96,14 @@ Data_local_impedance_folder = Local_PI_folder;
 
 FILE = cellstr(datafile);
 index = cell2mat(strfind(FILE,"Preprocessed_data")) + 18;
-Impedance_file_name = strcat("Equivalent_impedance.yaml");
 
-% writematrix(Equivalent_impedance,strcat(Data_local_impedance_folder,'\',Impedance_file_name));
+% Impedance_file_name = strcat("Equivalent_impedance_",FILE{1}(index:end-4),".yaml");
+Impedance_file_name = strcat("Equivalent_impedance.yaml");
 
 type = find_type(Equivalent_impedance);
 
-fileID = fopen(strcat(Data_local_impedance_folder,'\',Impedance_file_name),'w');
+fileID = fopen(fullfile(Data_local_impedance_folder,Impedance_file_name),'w');
+
 fprintf(fileID,'type: %s \n',type);
 fprintf(fileID, 'label: %s \n',header);
 fmt = ['value: [', repmat('%g, ', 1, numel(Equivalent_impedance)-1), '%g]\n'];

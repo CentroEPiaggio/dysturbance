@@ -148,11 +148,13 @@ KPI_matrix = [E_perc, force_max, normalized_force_max, (E_max-E_friction), norma
 Data_local_energy_folder = Local_PI_folder;
 FILE = cellstr(datafile);
 index = cell2mat(strfind(FILE,"Preprocessed_data")) + 18;
+
 Energy_file_name = strcat("Absorbed_energy.yaml");
 
 type = find_type(KPI_matrix);
 
-fileID = fopen(strcat(Data_local_energy_folder, folder_sep, Energy_file_name), 'w');
+fileID = fopen(fullfile(Data_local_energy_folder, Energy_file_name), 'w');
+
 fprintf(fileID,'type: %s \n',type);
 fprintf(fileID, 'label: %s \n',header);
 fmt = ['value: [', repmat('%g, ', 1, numel(KPI_matrix)-1), '%g]\n'];

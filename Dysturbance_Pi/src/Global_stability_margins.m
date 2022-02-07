@@ -202,13 +202,13 @@ switch Protocol
         PI_plot_output = [PI_matrix; Data_fallen_part; Data_fallen];
         
         Stability_margin_PI = Data_fallen;
-        
+
         header = "[mean peak force [N], initial energy [J], mean medium force [N], mean impulse time [s], Medium Impulse [Ns]]";
         %         Stability_margin_PI_Plot = PI_plot_output;
         
         type = find_type(PI_plot_output);
         
-        fileID = fopen(strcat(Global_PI_folder,'\Global_Stability_margin_plot.yaml'),'w');
+        fileID = fopen(fullfile(Global_PI_folder,'Global_Stability_margin_plot.yaml'),'w');
         fprintf(fileID,'type: %s \n',type);
         fprintf(fileID, 'label: %s \n',header);
         fmt = ['value: [[', repmat('%g, ', 1, numel(PI_plot_output(1,:))-1), '%g]'];
@@ -219,9 +219,7 @@ switch Protocol
         end
         fprintf(fileID, ']\n');
         fclose(fileID);
-        
-        %         writematrix(Stability_margin_PI_Plot,strcat(Global_PI_folder,'\Global_Stability_margin_plot.csv'));
-        
+
     case 3
         % Initial input has the form [KPI_value, frequency]
         % We must divided the experiments in runs with the same
@@ -321,11 +319,10 @@ switch Protocol
         header = "[mean force sinusoidal stability margin [N], Standard deviation force sinusoidal stability margin [N], mean normalized force sinusoidal stability margin [N], Standard deviation normalized sinusoidal force stability margin [N], Mean frequency [Hz], Standard deviation on frequency [Hz]]";
         %         Stability_margin_PI_Plot = PI_plot_output;
         Stability_margin_PI = Data_fallen;
-        %         writematrix(Stability_margin_PI_Plot,strcat(Global_PI_folder,'\Global_Stability_margin_plot.csv'));
-        
+
         type = find_type(PI_plot_output);
         
-        fileID = fopen(strcat(Global_PI_folder,'\Global_Stability_margin_plot.yaml'),'w');
+        fileID = fopen(fullfile(Global_PI_folder,'Global_Stability_margin_plot.yaml'),'w');
         fprintf(fileID,'type: %s \n',type);
         fprintf(fileID, 'label: %s \n',header);
         fmt = ['value: [[', repmat('%g, ', 1, numel(PI_plot_output(1,:))-1), '%g]'];
@@ -431,7 +428,7 @@ switch Protocol
         
         type = find_type(PI_plot_output);
         
-        fileID = fopen(strcat(Global_PI_folder,'\Global_Stability_margin_plot.yaml'),'w');
+        fileID = fopen(fullfile(Global_PI_folder,'Global_Stability_margin_plot.yaml'),'w');
         fprintf(fileID,'type: %s \n',type);
         fprintf(fileID, 'label: %s \n',header);
         fmt = ['value: [[', repmat('%g, ', 1, numel(PI_plot_output(1,:))-1), '%g]'];
@@ -442,9 +439,6 @@ switch Protocol
         end
         fprintf(fileID, ']\n');
         fclose(fileID);
-        
-        
-        %         writematrix(Stability_margin_PI_Plot,strcat(Global_PI_folder,'\Global_Stability_margin_plot.csv'));
     case 4
         % The experiment always brings the system to fail. Then, we must
         % compute a mean of the value of destabilization
@@ -464,7 +458,7 @@ end
 if ~isempty(Stability_margin_PI)
     type = find_type(Stability_margin_PI);
     
-    fileID = fopen(strcat(Global_PI_folder,'\Global_Stability_margin.yaml'),'w');
+    fileID = fopen(fullfile(Global_PI_folder,'Global_Stability_margin.yaml'),'w');
     fprintf(fileID,'type: %s \n',type);
     fprintf(fileID, 'label: %s \n',header);
     fmt = ['value: [[', repmat('%g, ', 1, numel(Stability_margin_PI(1,:))-1), '%g]'];
@@ -477,7 +471,5 @@ if ~isempty(Stability_margin_PI)
     fclose(fileID);
 end
 
-
-% writematrix(Stability_margin_PI_value,strcat(Global_PI_folder,'\Global_Stability_margin.csv'));
 end
 

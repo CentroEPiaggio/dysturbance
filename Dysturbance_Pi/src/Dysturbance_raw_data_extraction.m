@@ -24,8 +24,8 @@ delta = 4.13;           % [Kg/m] linear density of the pendulum
 
 %% data extraction from raw files
 
-yaml_path = yaml_file;%strcat(result_dir,'\raw_data_input\',yaml_file);
-raw_filepath = filename;%strcat(result_dir,'\raw_data_input\',filename);
+yaml_path = yaml_file;%fullfile(result_dir,'raw_data_input',yaml_file);
+raw_filepath = filename;%fullfile(result_dir,'raw_data_input',filename);
 flag_yaml_empty = 0;
 if exist(yaml_path,'file')
     Yaml_data = ReadYaml(yaml_path);
@@ -148,20 +148,23 @@ if flag_isempty == 0
     
     index_subject = cell2mat(strfind(FILE,"subject_"));
     subject_id = FILE{1}(index_subject:index_subject+8);
-    protocol_id = strcat("\protocol_",num2str(Test_protocol));
+    protocol_id = strcat("protocol_",num2str(Test_protocol));
     if is_eurobench_mode
 
         mkdir(strcat(result_dir, folder_sep, 'Preprocessed_data'));
         datapath = strcat(result_dir, folder_sep, 'Preprocessed_data', folder_sep, 'pp_platformData.csv');
         Output_folder = result_dir;
     else
-        preprocessed_folder = strcat(result_dir,folder_sep, subject_id,protocol_id, FILE{1}(index_1-26:index_1));
+        preprocessed_folder = fullfile(result_dir, subject_id, protocol_id, FILE{1}(index_1-26:index_1));
+
         index_2 = cell2mat(strfind(FILE,"platformData")) - 1;
         Pre_processed_file_name = strcat(FILE{1}(index_1+16:index_2),'pp_platformData.csv');
-        Pre_processed_data_folder = strcat(preprocessed_folder,'Preprocessed_data');
+        Pre_processed_data_folder = fullfile(preprocessed_folder, 'Preprocessed_data');
         Output_folder = preprocessed_folder;
-        mkdir(Pre_processed_data_folder);
-        datapath = strcat(Pre_processed_data_folder, folder_sep, Pre_processed_file_name);
+        if ~exist(Pre_processed_data_folder, 'dir')
+            mkdir(Pre_processed_data_folder)
+        end
+        datapath = fullfile(Pre_processed_data_folder, Pre_processed_file_name);
     end
     % creating the file in datapath
     writematrix(Pre_processed_data_matrix,datapath);

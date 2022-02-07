@@ -1,27 +1,24 @@
-#!/usr/bin/octave -qf
+#!/usr/bin/env bash
 
-printf("Current directory: %s\n\n", pwd());
-addpath("src");
+printf "\nCurrent directory: '$(pwd)'\n"
 
-arg_list = argv();
-if nargin != 3
-  printf("ERROR: There should be exactly 3 arguments\n");
-  printf(" * an input directory containing all the data of the tested subject\n");
-  printf(" * an integer which identifies the protocol to be evaluated:\n");
-  printf("    1) Impulsive Disturbance\n");
-  printf("    2) Sinusiodal Displacement Disturbance\n");
-  printf("    3) Sinusoidal Force Disturbance\n");
-  printf("    4) Quasi_static Displacement Disturbance\n");
-  printf("    5) Quasi-static Force Disturbance\n");
-  printf(" * an output directory where the results is stored\n");
-  printf("\nUsage example:\n");
-  printf(" ./run_global_pi.m input_dir_path protocol_num output_dir_path\n");
-  exit(127);
-endif
+if [[ $# -ne 3 ]]; then
+  printf "\nERROR: There should be exactly 3 arguments\n"
+  printf " * an input directory containing all the data of the tested subject\n"
+  printf " * an integer which identifies the protocol to be evaluated:\n"
+  printf "    1) Impulsive Disturbance\n"
+  printf "    2) Sinusiodal Displacement Disturbance\n"
+  printf "    3) Sinusoidal Force Disturbance\n"
+  printf "    4) Quasi_static Displacement Disturbance\n"
+  printf "    5) Quasi-static Force Disturbance\n"
+  printf " * an output directory where the results is stored\n\n"
+  printf "Usage example:\n"
+  printf " ./run_global_pi input_dir_path protocol_num output_dir_path\n"
+  exit 127
+fi
 
-printf ("Input directory: %s\n", arg_list{1});
-printf ("Input protocol number: %s\n", arg_list{2});
-printf ("Output directory: %s\n\n", arg_list{3});
+printf "Input directory: '$1'\n"
+printf "Input protocol number: '$2'\n"
+printf "Output directory: '$3'\n\n"
 
-printf("Starting computation...\n\n");
-Compute_Global_PI(arg_list{1}, arg_list{2}, arg_list{3});
+matlab -sd "./" -batch "run_global_pi('$1', '$2', '$3')"

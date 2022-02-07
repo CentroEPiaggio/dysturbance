@@ -110,13 +110,11 @@ else
 end
 
 header = "[Equivalent Inertia [Kg], Equivalent Damping coefficient [Ns/m], Equivalent Elasticity [N/m], frequency [Hz]]";
-% Equivalence_matrix = [header;Data_structure];
-
 
 if ~isempty(Data_structure)
     type = find_type(Data_structure);
-    
-    fileID = fopen(strcat(Global_PI_folder,'\Global_Equivalent_Impedance.yaml'),'w');
+
+    fileID = fopen(fullfile(Global_PI_folder,'Global_Equivalent_Impedance.yaml'),'w');
     fprintf(fileID,'type: %s \n',type);
     fprintf(fileID, 'label: %s \n',header);
     fmt = ['value: [[', repmat('%g, ', 1, numel(Data_structure(1,:))-1), '%g]'];
@@ -128,8 +126,5 @@ if ~isempty(Data_structure)
     fprintf(fileID, ']\n');
     fclose(fileID);
 end
-
-
-% writematrix(Equivalence_matrix,strcat(Global_PI_folder,'\Global_Equivalent_Impedance.csv'));
 end
 

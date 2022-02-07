@@ -189,17 +189,19 @@ Data_local_stability_folder = Data_folder;
 % find name from datafile
 FILE = cellstr(datafile);
 index = cell2mat(strfind(FILE,"Preprocessed_data")) + 18;
+
+
+% Stability_file_name = strcat("Stability_margin_",FILE{1}(index:end-4),".yaml");
 Stability_file_name = strcat("Stability_margin.yaml");
 
 type = find_type(Stability_Margin);
 
-fileID = fopen(strcat(Data_local_stability_folder, folder_sep, Stability_file_name), 'w');
+fileID = fopen(fullfile(Data_local_stability_folder,Stability_file_name),'w');
 fprintf(fileID,'type: %s \n',type);
 fprintf(fileID, 'label: %s \n',header);
 fmt = ['value: [', repmat('%g, ', 1, numel(Stability_Margin)-1), '%g]\n'];
 fprintf(fileID, fmt, Stability_Margin);
 fclose(fileID);
-% writematrix(Stability_Margin,strcat(Data_local_stability_folder,'\',Stability_file_name));
 
 end
 
