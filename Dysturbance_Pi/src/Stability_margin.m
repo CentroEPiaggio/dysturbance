@@ -16,13 +16,6 @@ function [Stability_Margin] = Stability_margin(datafile, Data_folder, Pendulum_d
 % mail: simone.monteleone@@phd.unipi.it
 %--------------------------------------------------------------------------
 
-if isunix
-    disp('linux environment');
-    folder_sep = '/';
-else
-    disp('windows environment');
-    folder_sep =  '\';
-end
 
 %% Pendulum_data
 Pendulum_length = Pendulum_data(1);
@@ -34,7 +27,7 @@ delta = 4.13;
 g = 9.81;
 %% Protocol_data
 Protocol_number = Protocol_data(1);
-switch Protocol_number 
+switch Protocol_number
     case 1
         Initial_position = Protocol_data(2);
         init_E = (Pendulum_mass + delta * Pendulum_length/2)*g*Pendulum_length*(1-cosd(Initial_position));
@@ -81,7 +74,7 @@ if Protocol_number == 1
         if Force_sensor(steps) >= Force_start + thres && found_start == 0
             step_start = steps;
             found_start = 1;
-        end        
+        end
     end
 %     for steps_ = i_fmax:(i_fmax+1000)
 %         if Force_sensor(steps_) <= force_max/2 && found_stop == 0
@@ -90,11 +83,11 @@ if Protocol_number == 1
 %         end
 %     end
 %     if found_stop == 0 || found_start == 0
-%         fprintf("Error: %s file has a strange impulse behavior.... \n", datafile);   
+%         fprintf("Error: %s file has a strange impulse behavior.... \n", datafile);
 %     end
     step_stop = i_fmax + (i_fmax -step_start);
     Impulse_time = Time(step_stop)- Time(step_start);
-    
+
     Impulse = 0;
 
     for i_imp = step_start:step_stop
@@ -104,22 +97,22 @@ if Protocol_number == 1
     if abs(initial_pendulum_position - Initial_position) > 5
         fprintf("Initial Pendulum position is different than expected...\n Computing with new Initial position... \n");
     end
-    
- 
+
+
     %initial velocity
     Position_one_start = pi/180*mean(Pendulum_position((step_start-220):(step_start-200)));
     Position_two_start = pi/180*mean(Pendulum_position((step_start-120):(step_start-100)));
-    
+
     velocity_start = (Position_two_start-Position_one_start)/0.0100;
 %     velocity_start = pi/180*(Position_filtered(step_start-100)-Position_filtered(step_start-200))/0.01;
-    
+
     %final velocity
     Position_one_stop = pi/180*mean(Pendulum_position((step_stop+100):(step_stop+120)));
     Position_two_stop = pi/180*mean(Pendulum_position((step_stop+200):(step_stop+220)));
-    
+
     velocity_stop = (Position_two_stop-Position_one_stop)/0.0100;
 %     velocity_stop = pi/180*(Position_filtered(step_stop+100)-Position_filtered(step_stop))/0.01;
-    
+
     Impulse_vel = (Pendulum_mass *Pendulum_length^2 + 4.13*Pendulum_length^3/3)*(velocity_start-velocity_stop)/Pendulum_length;
 end
 
@@ -134,42 +127,42 @@ Norm_force = Norm_factor(1);
 Norm_displacement = Norm_factor(3);
 
 switch Protocol_number
-    case 1 
+    case 1
         %% Protocol number 1: Impulsive disturbances test
         header = "[Local Stability Margin [N],Normalized Local Stability Margin [N],Initial Pendulum Position [deg],Pendulum_mass [Kg], Pendulum_length [m], Expected Impulse [Ns], Expected Energy [J], Impulse Time [s], Impulse Medium Force[N], Impulse [Ns], Impulse thorugh velocity [Ns]]";
-        Stability_Margin = [max(Force_sensor), max(Force_sensor)/Norm_force, initial_pendulum_position, Pendulum_mass, Pendulum_length,exp_I, init_E,Impulse_time,Medium_force, Impulse,Impulse_vel]; 
-    case 3 
+        Stability_Margin = [max(Force_sensor), max(Force_sensor)/Norm_force, initial_pendulum_position, Pendulum_mass, Pendulum_length,exp_I, init_E,Impulse_time,Medium_force, Impulse,Impulse_vel];
+    case 3
         %% Protocol number 3: Sinusoidal force disturbances test
         data_number = size(Force_indirect,1);
-        
+
         Minimi = mink(Force_indirect(floor(data_number/number_cycles):floor(data_number*2/number_cycles)),10);
         i_minmin = find(Minimi == min(Minimi),1);
         Minimi(i_minmin) = [];
         Minimum = mean(Minimi);
-        
+
         Maximi = maxk(Force_indirect(floor(data_number/number_cycles):floor(data_number*2/number_cycles)),10);
         i_maxmax = find(Maximi == max(Maximi),1);
         Maximi(i_maxmax) = [];
         Maximum = mean(Maximi);
-                
+
         header = "[Local Stability Margin [N], Normalized Local Stability Margin [N], Test_frequency [Hz], Expected Force Amplitude [N]]";
         Stability_Margin = [abs(Maximum - Minimum)/2,abs(Maximum - Minimum)/2/Norm_force , frequency_pendulum, Force_amplitude];
-        
-    case 2 
+
+    case 2
         %% Protocol number 2: Sinusoidal displacements disturbances test
         data_number = size(Pendulum_position,1);
         Minimi = mink(Pendulum_position(floor(data_number/number_cycles):floor(data_number*2/number_cycles)),10);
         i_minmin = find(Minimi == min(Minimi),1);
         Minimi(i_minmin) = [];
         Minimum = mean(Minimi);
-        
+
         Maximi = maxk(Pendulum_position(floor(data_number/number_cycles):floor(data_number*2/number_cycles)),10);
         i_maxmax = find(Maximi == max(Maximi),1);
         Maximi(i_maxmax) = [];
         Maximum = mean(Maximi);
         header = "[Local Stability Margin [m], Normalized Local Stability Margin [m], Test_frequency [Hz], Expected Displacement [degrees]]";
         Stability_Margin = [(Pendulum_length*sind(Maximum - Minimum))/2,(Pendulum_length*sind(Maximum - Minimum))/2/Norm_displacement, frequency_pendulum, Displ_amplitude];
-    case 5 
+    case 5
         %% Protocol number 5: Quasi-static force disturbances test
         header = "[Local Stability Margin [N], Normalized Local Stability Margin [N], empty]";
         Stability_Margin = [max(Force_indirect), max(Force_indirect)/Norm_force,0];

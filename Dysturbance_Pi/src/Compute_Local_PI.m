@@ -10,14 +10,7 @@ function Compute_Local_PI(filename,yaml_file, subject_yaml, result_folder)
 
 % Find the folder where to store the experiment data. It should already exists containing the input raw data
 % to delimit Eurobench constraints
-is_eurobench_mode = 1
-if isunix
-    disp('linux environment');
-    folder_sep = '/';
-else
-    disp('windows environment');
-    folder_sep =  '\';
-end
+is_eurobench_mode = 1;
 
 warning('OFF', 'MATLAB:table:ModifiedAndSavedVarnames');
 
@@ -35,7 +28,7 @@ if flag_isempty == 0
     fprintf("Extracting Data Structures ...  \n");
     %yaml_data_position = fullfile(Experiment_folder,'raw_data_input',yaml_file);
     [Pendulum_data, ~, Frontal_or_lateral] = Structure_data_extraction(yaml_file,subject_yaml);
-    
+
     % Save the protocol number in the main folder for a check during global PI
     % computation
     Protocol_file_name = "protocol_check.csv";

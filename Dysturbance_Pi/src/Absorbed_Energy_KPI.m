@@ -6,13 +6,7 @@ function [E_max, E_final, DE, E_perc, KPI_matrix] = Absorbed_Energy_KPI(datafile
 % Created By: Simone Monteleone
 % mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
-if isunix
-    disp('linux environment');
-    folder_sep = '/';
-else
-    disp('windows environment');
-    folder_sep =  '\';
-end
+
 %% Pedulum_data
 Pendulum_length = Pendulum_data(1);
 Pendulum_height = Pendulum_data(2);
@@ -118,23 +112,23 @@ Initial_angle = theta_max; % maybe it is necessary to use another one (ex:10) to
         if Force_sensor(steps) >= Force_start + thres && found_start == 0
             step_start = steps;
             found_start = 1;
-        end        
+        end
     end
-    
+
     step_stop = i_fmax + (i_fmax -step_start);
 
     %initial velocity
     Position_one_start = pi/180*mean(Pendulum_position((step_start-220):(step_start-200)));
     Position_two_start = pi/180*mean(Pendulum_position((step_start-120):(step_start-100)));
-    
+
     velocity_start = (Position_two_start-Position_one_start)/0.0100;
-    
+
     %final velocity
     Position_one_stop = pi/180*mean(Pendulum_position((step_stop+100):(step_stop+120)));
     Position_two_stop = pi/180*mean(Pendulum_position((step_stop+200):(step_stop+220)));
-    
+
     velocity_stop = (Position_two_stop-Position_one_stop)/0.0100;
-    
+
     Impulse_vel = (Pendulum_mass *Pendulum_length^2 + 4.13*Pendulum_length^3/3)*(velocity_start-velocity_stop)/Pendulum_length;
 
 

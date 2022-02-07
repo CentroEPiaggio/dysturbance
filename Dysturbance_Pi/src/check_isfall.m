@@ -6,19 +6,12 @@ function check_isfall(isfall, filename, Data_local_folder)
 % Created By: Simone Monteleone
 % mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
-if isunix
-    disp('linux environment');
-    folder_sep = '/';
-else
-    disp('windows environment');
-    folder_sep =  '\';
-end
 
 if isfall == "true"
     check_fall = 1;
 elseif isfall == "false"
     check_fall = 0;
-else 
+else
     error("boolean isfall is not true nor false. Please correct it in %s, folder %s \n", filename, Data_local_folder);
 end
 
