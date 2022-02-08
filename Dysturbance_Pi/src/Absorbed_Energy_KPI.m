@@ -112,23 +112,23 @@ Initial_angle = theta_max; % maybe it is necessary to use another one (ex:10) to
         if Force_sensor(steps) >= Force_start + thres && found_start == 0
             step_start = steps;
             found_start = 1;
-        end        
+        end
     end
-    
+
     step_stop = i_fmax + (i_fmax -step_start);
 
     %initial velocity
     Position_one_start = pi/180*mean(Pendulum_position((step_start-220):(step_start-200)));
     Position_two_start = pi/180*mean(Pendulum_position((step_start-120):(step_start-100)));
-    
+
     velocity_start = (Position_two_start-Position_one_start)/0.0100;
-    
+
     %final velocity
     Position_one_stop = pi/180*mean(Pendulum_position((step_stop+100):(step_stop+120)));
     Position_two_stop = pi/180*mean(Pendulum_position((step_stop+200):(step_stop+220)));
-    
+
     velocity_stop = (Position_two_stop-Position_one_stop)/0.0100;
-    
+
     Impulse_vel = (Pendulum_mass *Pendulum_length^2 + 4.13*Pendulum_length^3/3)*(velocity_start-velocity_stop)/Pendulum_length;
 
 
@@ -142,11 +142,13 @@ KPI_matrix = [E_perc, force_max, normalized_force_max, (E_max-E_friction), norma
 Data_local_energy_folder = Local_PI_folder;
 FILE = cellstr(datafile);
 index = cell2mat(strfind(FILE,"Preprocessed_data")) + 18;
-Energy_file_name = strcat('Absorbed_energy_',FILE{1}(index:end-4),".yaml");
+
+Energy_file_name = strcat("Absorbed_energy.yaml");
 
 type = find_type(KPI_matrix);
 
-fileID = fopen(fullfile(Data_local_energy_folder,Energy_file_name),'w');
+fileID = fopen(fullfile(Data_local_energy_folder, Energy_file_name), 'w');
+
 fprintf(fileID,'type: %s \n',type);
 fprintf(fileID, 'label: %s \n',header);
 fmt = ['value: [', repmat('%g, ', 1, numel(KPI_matrix)-1), '%g]\n'];

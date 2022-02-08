@@ -1,4 +1,4 @@
-function [protocol_data, datapath, Output_folder, isfall, Protocol_TIME, flag_isempty] = Dysturbance_raw_data_extraction(filename, yaml_file, result_dir)
+function [protocol_data, datapath, Output_folder, isfall, Protocol_TIME, flag_isempty] = Dysturbance_raw_data_extraction(filename, yaml_file, result_dir, is_eurobench_mode)
 %--------------------------------------------------------------------------
 % This function get the raw data file in format .csv and extract the raw
 % data ready for post processing
@@ -7,6 +7,10 @@ function [protocol_data, datapath, Output_folder, isfall, Protocol_TIME, flag_is
 % Created By: Simone Monteleone
 % mail: simone.monteleone@phd.unipi.it
 %--------------------------------------------------------------------------
+if nargin < 4
+    is_eurobench_mode = 0;
+end
+
 %% Data
 grav = 9.81;            % [m/s^2] gravity coefficient
 delta = 4.13;           % [Kg/m] linear density of the pendulum
@@ -71,7 +75,7 @@ end
 if flag_isempty == 0
     % The first row of Data matrix is the header, and must cut out
     Raw_Data_Matrix = Data_Matrix;
-    
+
     %% UTC_Time
     % collect the UTC time the test is started. It is done to avoid to use
     % the same data when we compute the Global PI
@@ -90,33 +94,33 @@ if flag_isempty == 0
     % Torque sensor is placed between motor and clutch. Those measurements
     % means something only if the clutch is engaged.
     Torque_sensor = Raw_Data_Matrix(2:end-1,:).pendulum_torque_Nm_;
-    
+
     % Save important datas from Yaml
     protocol_data = [Test_protocol, Test_condition];
     Protocol_TIME = UTC_Time;
     % Some datas, as pendulum_position and torque_sensor, requires a filtering.
     % Force will be not filtered because we are interested in the peaks of the
     % piezo, and doing that, we will lose it.
-    
+
     %--------------------------- Outliers filtering ---------------------------
     % Outliers measures in torques and position of the pendulum are not
     % feasible, so a filtering is necessary.
     Torque_No_outliers = medfilt1(Torque_sensor,'omitnan');
     Position_No_outliers = medfilt1(Pendulum_position, 'omitnan');
-    
+
     %----------------------- Symmetric Noise filtering ------------------------
     Filter_order_position = 100;
     Filter_order_torque = 5000;
     Torque_filtered = smooth(Torque_No_outliers,Filter_order_torque);
     Position_filtered = smooth(Position_No_outliers,Filter_order_position);
-    
+
     %---------------------------- Gravity Rejection ---------------------------
-    
+
     % DA CANCELLARE!!!
     if Position_filtered(1,1) > 6
         Position_filtered = Position_filtered - Position_filtered(1,1);
     end
-    
+
     for i = 1:size(Torque_filtered,1)
         if mean(Position_filtered(1:100)) < 8
             Torque_No_grav(i,1) = Torque_filtered(i,1) - (added_mass * pend_length + delta*pend_length * pend_length/2)*grav*sind(Position_filtered(i,1));
@@ -130,24 +134,31 @@ if flag_isempty == 0
     %------------------ Pre - Processed Data File Creation --------------------
     header =["Time_s_","PendulumAngularPosition_deg_","ContactForce_N_","OutputTorque_Nm_"];
     Pre_processed_data_matrix = [header; [Time, Position_filtered, Force_sensor, Torque_No_grav]];
-    
+
     % data must be saved in a specified folder
     FILE = cellstr(filename);
     index_1 = cell2mat(strfind(FILE,"raw_data_input")) - 1;
-    
+
     index_subject = cell2mat(strfind(FILE,"subject_"));
     subject_id = FILE{1}(index_subject:index_subject+8);
     protocol_id = strcat("protocol_",num2str(Test_protocol));
-    preprocessed_folder = fullfile(result_dir,subject_id,protocol_id, FILE{1}(index_1-26:index_1));
-    
-    index_2 = cell2mat(strfind(FILE,"platformData")) - 1;
-    Pre_processed_file_name = strcat(FILE{1}(index_1+16:index_2),'pp_platformData.csv');
-    Pre_processed_data_folder = fullfile(preprocessed_folder,'Preprocessed_data');
-    Output_folder = preprocessed_folder;
-    if ~exist(Pre_processed_data_folder, 'dir')
-        mkdir(Pre_processed_data_folder)
+    if is_eurobench_mode
+
+        mkdir(fullfile(result_dir,'Preprocessed_data'));
+        datapath = fullfile(result_dir, 'Preprocessed_data', 'pp_platformData.csv');
+        Output_folder = result_dir;
+    else
+        preprocessed_folder = fullfile(result_dir, subject_id, protocol_id, FILE{1}(index_1-26:index_1));
+
+        index_2 = cell2mat(strfind(FILE,"platformData")) - 1;
+        Pre_processed_file_name = strcat(FILE{1}(index_1+16:index_2),'pp_platformData.csv');
+        Pre_processed_data_folder = fullfile(preprocessed_folder, 'Preprocessed_data');
+        Output_folder = preprocessed_folder;
+        if ~exist(Pre_processed_data_folder, 'dir')
+            mkdir(Pre_processed_data_folder)
+        end
+        datapath = fullfile(Pre_processed_data_folder, Pre_processed_file_name);
     end
-    datapath = fullfile(Pre_processed_data_folder,Pre_processed_file_name);
     % creating the file in datapath
     writematrix(Pre_processed_data_matrix,datapath);
 else

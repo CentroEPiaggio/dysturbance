@@ -106,9 +106,10 @@ for i = 1:num_folder
         if NO_need_for_computation == 0
             FILE_res = cellstr(folder_local_pi);
             index_res = cell2mat(strfind(FILE_res,filesep)) - 1;
-            %folder_of_results = folder_local_pi(1:index_res(4));  % already computed in Compute_Local_PI
-            filename_comp = fullfile(raw_data_folder,computed_csv);
-            yaml_filepath = fullfile(raw_data_folder,yaml_file);
+            %folder_of_results = folder_local_pi{1}(1:index_res(4));
+            filename_comp = fullfile(raw_data_folder, computed_csv);
+            yaml_filepath = fullfile(raw_data_folder, yaml_file);
+
             subject_yaml = subject_yaml_info;
             Compute_Local_PI(filename_comp,yaml_filepath, subject_yaml, result_folder);%computed_csv, yaml_file, result_folder);
         end

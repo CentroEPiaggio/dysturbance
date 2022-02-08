@@ -126,7 +126,7 @@ header = "[Mean Energy Percentage, Standard Deviation energy percentage,Mean Max
 
 if ~isempty(Absorbed_energy_KPI_matrix)
     type = find_type(Absorbed_energy_KPI_matrix);
-    
+
     fileID = fopen(fullfile(Global_PI_folder,'Global_Absorbed_energy.yaml'),'w');
     fprintf(fileID,'type: %s \n',type);
     fprintf(fileID, 'label: %s \n',header);
@@ -139,6 +139,5 @@ if ~isempty(Absorbed_energy_KPI_matrix)
     fprintf(fileID, ']\n');
     fclose(fileID);
 end
-
 end
 

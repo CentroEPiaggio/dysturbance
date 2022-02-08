@@ -126,6 +126,5 @@ if ~isempty(Data_structure)
     fprintf(fileID, ']\n');
     fclose(fileID);
 end
-
 end
 

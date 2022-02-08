@@ -9,15 +9,18 @@ function Compute_Local_PI(filename,yaml_file, subject_yaml, result_folder)
 %--------------------------------------------------------------------------
 
 % Find the folder where to store the experiment data. It should already exists containing the input raw data
+% to delimit Eurobench constraints
+is_eurobench_mode = 1;
 
 warning('OFF', 'MATLAB:table:ModifiedAndSavedVarnames');
 
 FILENAME = cellstr(filename);
-index = cell2mat(strfind(FILENAME,filesep));
+% was using filesep instead
+index = cell2mat(strfind(FILENAME, filesep));
 name_of_file = FILENAME{1}(index(end)+1:end);
-% Experiment_folder = fullfile(result_folder,name);
-fprintf("Pre-processing Raw Data ...  \n");
-[Protocol_data, preprocessed_datapath, Output_folder, isfall, Protocol_TIME, flag_isempty] = Dysturbance_raw_data_extraction(filename, yaml_file, result_folder);
+% Experiment_folder = strcat(result_folder,"\",name);
+fprintf("Pre-processing Raw Datas ...  \n");
+[Protocol_data, preprocessed_datapath, Output_folder, isfall, Protocol_TIME, flag_isempty] = Dysturbance_raw_data_extraction(filename, yaml_file, result_folder, is_eurobench_mode);
 
 if flag_isempty == 0
     % Experiment data
@@ -25,26 +28,33 @@ if flag_isempty == 0
     fprintf("Extracting Data Structures ...  \n");
     %yaml_data_position = fullfile(Experiment_folder,'raw_data_input',yaml_file);
     [Pendulum_data, ~, Frontal_or_lateral] = Structure_data_extraction(yaml_file,subject_yaml);
-    
+
     % Save the protocol number in the main folder for a check during global PI
     % computation
     Protocol_file_name = "protocol_check.csv";
     Protocol_matrix = ["Protocol_number"; Protocol_number];
-    writematrix(Protocol_matrix,fullfile(Output_folder,'Preprocessed_data',Protocol_file_name));
-    
+    if is_eurobench_mode
+        writematrix(Protocol_matrix,fullfile(result_folder, "Preprocessed_data", Protocol_file_name));
+    else
+        writematrix(Protocol_matrix,fullfile(Output_folder, "Preprocessed_data", Protocol_file_name));
+    end
+
     % Normalization factor computation.
     % The output is a vector 1x3 with [norm_force, norm_energy, norm_displacement]
     fprintf("Computing Normalization Factors ...  \n");
     Norm_factor = normalization_factor(subject_yaml, Frontal_or_lateral);
-    
-    % local PI folder
-    Local_PI_folder = fullfile(Output_folder,'Local_PI');
-    if ~exist(Local_PI_folder, 'dir')
-        mkdir(Local_PI_folder);
+    if is_eurobench_mode
+        Local_PI_folder = result_folder;
+    else
+        % local PI folder
+        Local_PI_folder = fullfile(Output_folder,"Local_PI");
+        if ~exist(Local_PI_folder, 'dir')
+            mkdir(Local_PI_folder);
+        end
     end
     fprintf("Checking if the system fails ... \n");
     check_isfall(isfall, name_of_file, Local_PI_folder);
-    
+
     fprintf("Computing Local PI ... \n");
     % Local PI Computation
     switch Protocol_number
@@ -67,8 +77,7 @@ if flag_isempty == 0
             % protocol 5 is linear ramp force test
             Stability_margin(preprocessed_datapath, Local_PI_folder, Pendulum_data, Protocol_data, Norm_factor);
     end
-    
-    
+
 end
 end
 

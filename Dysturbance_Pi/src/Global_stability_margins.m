@@ -439,7 +439,6 @@ switch Protocol
         end
         fprintf(fileID, ']\n');
         fclose(fileID);
-
     case 4
         % The experiment always brings the system to fail. Then, we must
         % compute a mean of the value of destabilization
