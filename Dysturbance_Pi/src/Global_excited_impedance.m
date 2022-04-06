@@ -82,7 +82,7 @@ hold off;
 grid;
 xlabel('Frequency [Hz]');
 ylabel('Impedance Values');
-legend('Equivalent Inertia [Kgm^2]','Equivalent Damping [Nms/rad]','Equivalent Elasticity [Nm/rad]');
+legend('Equivalent Inertia (Kgm^2)','Equivalent Damping (Nms/rad)','Equivalent Elasticity (Nm/rad)');
 if Protocol == 2
     title('Protocol 2 Equivalent Impedance');
 else 
@@ -109,7 +109,7 @@ else
     title('Protocol 3 Equivalent Impedance');
 end
 
-header = "[Equivalent Inertia [Kg], Equivalent Damping coefficient [Ns/m], Equivalent Elasticity [N/m], frequency [Hz]]";
+header = "[Equivalent Inertia (Kg), Equivalent Damping coefficient (Ns/m), Equivalent Elasticity (N/m), frequency (Hz)]";
 
 if ~isempty(Data_structure)
     type = find_type(Data_structure);

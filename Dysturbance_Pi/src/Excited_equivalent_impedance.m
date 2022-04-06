@@ -84,9 +84,9 @@ K_equivalent = abs(PI(3));
 % K_equivalent = (alpha(2)-alpha(1))/alpha(3);
 
 if Protocol == 2
-    header = "[Equivalent Inertia [Kg], Equivalent Damping coefficient [Ns/m], Equivalent Elastic coefficient [N/m], Test frequency [Hz], Displacement Amplitude [degrees]]";
+    header = "[Equivalent Inertia (Kg), Equivalent Damping coefficient (Ns/m), Equivalent Elastic coefficient (N/m), Test frequency (Hz), Displacement Amplitude (degrees)]";
 else
-    header = "[Equivalent Inertia [Kg], Equivalent Damping coefficient [Ns/m], Equivalent Elastic coefficient [N/m], Test frequency [Hz], Force Amplitude [N]]";
+    header = "[Equivalent Inertia (Kg), Equivalent Damping coefficient (Ns/m), Equivalent Elastic coefficient (N/m), Test frequency (Hz), Force Amplitude (N)]";
 end
 Equivalent_impedance = [I_equivalent, D_equivalent, K_equivalent, frequency_pendulum, amplitude];
 
