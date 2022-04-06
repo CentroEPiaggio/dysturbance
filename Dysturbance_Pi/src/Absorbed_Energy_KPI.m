@@ -131,11 +131,8 @@ Initial_angle = theta_max; % maybe it is necessary to use another one (ex:10) to
 
     Impulse_vel = (Pendulum_mass *Pendulum_length^2 + 4.13*Pendulum_length^3/3)*(velocity_start-velocity_stop)/Pendulum_length;
 
-
-
-
 % Saving Data in a CSV file
-header ="[E_perc, Force Max [N], Normalized Max Force [N], Max (Initial) Energy [J], Normalized Max (Initial) Energy [J], Initial Angle [deg], Added Mass [Kg], Impulse [Ns], Absorbed Energy [J]]";
+header ="[E_perc, Force Max (N), Normalized Max Force (N), Max (Initial) Energy (J), Normalized Max (Initial) Energy (J), Initial Angle (deg), Added Mass (Kg), Impulse (Ns), Absorbed Energy (J)]";
 KPI_matrix = [E_perc, force_max, normalized_force_max, (E_max-E_friction), normalized_E_max, Initial_angle, M, Impulse_vel,DE];
 
 % data must be saved in a specified folder

@@ -122,7 +122,7 @@ xlabel('Impulse [Ns]');
 ylabel('Initial Energy [J]');
 zlabel('Absorbed Energy [%]');
 title('Protocol 1 Absorbed Energy Plot');
-header = "[Mean Energy Percentage, Standard Deviation energy percentage,Mean Max force [N], Standard Deviation Max force [N], Mean normalized Max force [N], Standard deviation normalized Max force [N], Mean Initial Energy [J], Standard deviation Initial Energy [J], Mean Normalized Initial Energy [J], Standard deviation normalized Initial Energy [J], Mean Impulse [Ns], Standard deviation Impulse [Ns], Mean Absorbed Energy [J], Standard deviation Absorbed Energy [J], Mean Initial Angle [degrees], added_mass [Kg], fallen]";
+header = "[Mean Energy Percentage, Standard Deviation energy percentage,Mean Max force (N), Standard Deviation Max force (N), Mean normalized Max force (N), Standard deviation normalized Max force (N), Mean Initial Energy (J), Standard deviation Initial Energy (J), Mean Normalized Initial Energy (J), Standard deviation normalized Initial Energy (J), Mean Impulse (Ns), Standard deviation Impulse (Ns), Mean Absorbed Energy (J), Standard deviation Absorbed Energy (J), Mean Initial Angle (degrees), added_mass (Kg), fallen]";
 
 if ~isempty(Absorbed_energy_KPI_matrix)
     type = find_type(Absorbed_energy_KPI_matrix);

@@ -203,7 +203,7 @@ switch Protocol
         
         Stability_margin_PI = Data_fallen;
 
-        header = "[mean peak force [N], initial energy [J], mean medium force [N], mean impulse time [s], Medium Impulse [Ns]]";
+        header = "[mean peak force (N), initial energy (J), mean medium force (N), mean impulse time (s), Medium Impulse (Ns)]";
         %         Stability_margin_PI_Plot = PI_plot_output;
         
         type = find_type(PI_plot_output);
@@ -316,7 +316,7 @@ switch Protocol
         ylabel('Force [N]');
         title('Protocol 3 Stability Margin Plot');
         
-        header = "[mean force sinusoidal stability margin [N], Standard deviation force sinusoidal stability margin [N], mean normalized force sinusoidal stability margin [N], Standard deviation normalized sinusoidal force stability margin [N], Mean frequency [Hz], Standard deviation on frequency [Hz]]";
+        header = "[mean force sinusoidal stability margin (N), Standard deviation force sinusoidal stability margin (N), mean normalized force sinusoidal stability margin (N), Standard deviation normalized sinusoidal force stability margin (N), Mean frequency (Hz), Standard deviation on frequency (Hz)]";
         %         Stability_margin_PI_Plot = PI_plot_output;
         Stability_margin_PI = Data_fallen;
 
@@ -422,7 +422,7 @@ switch Protocol
         
         PI_plot_output = [PI_matrix;Data_fallen_part;Data_fallen];
         
-        header = "[mean displacement sinusoidal stability margin [m], mean normalized displacement sinusoidal stability margin [m], Mean frequency [Hz], fall percentage ,Expected Displacement [m], Standard deviation displacement sinusoidal stability margin [m], Standard deviation normalized displacement sinusoidal stability margin [m]]";
+        header = "[mean displacement sinusoidal stability margin (m), mean normalized displacement sinusoidal stability margin (m), Mean frequency (Hz), fall percentage ,Expected Displacement (m), Standard deviation displacement sinusoidal stability margin (m), Standard deviation normalized displacement sinusoidal stability margin (m)]";
         %         Stability_margin_PI_Plot = [header;PI_plot_output];
         Stability_margin_PI = Data_fallen;
         
